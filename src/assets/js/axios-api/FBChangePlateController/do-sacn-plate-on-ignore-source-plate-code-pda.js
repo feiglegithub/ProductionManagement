@@ -1,0 +1,58 @@
+/**
+ * 封边采集PDA端[不校验源托状态]-扫前垫板与后垫板
+    OldPlateUpiCode    开始板件upi的编码
+    EndPlateCode      结束板件code
+    CurrentProcessId  当前工序id
+ * @return  obj={"Success": true,
+                 "Message": null,
+                  "Result": [],
+                 "Context": {
+                    "Ticket": "str"票据信息
+                }
+                }
+ *  @example $axiosApi.getAsnType().then(obj=>{})
+ */
+import Vue from 'vue';
+import Storage from '../../storage.js'
+export default function (OldPlateUpiCode,EndPlateCode,CurrentProcessId) {
+    return Vue.axios.post(Storage.url(), {
+        "ApiType": "FBChangePlateController",
+        "Parameters": [
+          {
+            "Value": OldPlateUpiCode
+          },
+          {
+            "Value": EndPlateCode
+          },
+          {
+            "Value": CurrentProcessId
+          }
+        ],
+        "Method": "DoSacnPlateOnIgnoreSourcePlateCode_PDA",
+        "Context": {
+            "Ticket": Storage.ticket(),
+            "InvOrgId": Storage.orgid()
+        }
+      }
+      
+    ).then(res => {
+        console.log(res);
+        if (res.data.Success) {
+            Storage.refreshTicket(res.data.Context.Ticket)
+        };
+        let obj = res.data
+        return obj
+    }).catch(err => {
+        if (Vue.$vux.loading.isVisible()) {
+            Vue.$vux.loading.hide()
+        }; //如果当前有显示loading就先隐藏 
+        Vue.$vux.toast.show({
+            // text: err.toString(),
+            text: "连接服务器失败",
+            width: '5rem',
+            time: 2000,
+            position: 'middle',
+            type: "text"
+        })
+    })
+}

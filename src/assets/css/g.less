@@ -1,0 +1,92 @@
+.g-flex{
+  display:flex;
+  &.flex-vertical{
+    flex-direction: column;
+    height:100%
+  }
+  .flexwrap{
+    flex-grow: 1;
+    overflow: scroll;
+    position: relative;
+  }
+  .flexfix{
+    flex-shrink: 0;
+    position: relative;
+  }
+  &.flex-horizontal{
+    flex-direction: row;
+    height:100%;
+  }
+}
+
+
+//lhj开始
+.g-index{
+  display: flex;
+  flex-direction: column;
+}
+.g-inp{
+  min-height: 80px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid black;
+  flex-direction: column;
+  padding: 5px;
+}
+.g-scrollbox{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+}
+.g-basebox{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid #8A6C4B;
+  border-radius: 0 0 10px 10px;
+  padding: 5px;
+  overflow: auto;
+}
+.g-notflexbox{
+  width: 100%;
+  border: 1px solid #8A6C4B;
+  border-radius: 0 0 10px 10px;
+  padding: 5px;
+  flex-shrink: 0
+}
+.g-tranbox{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  border: 1px solid #8A6C4B;
+  border-radius: 10px;
+  padding: 5px;
+  // height: 130px;
+  overflow: hidden;
+  transition: height 0.5s;
+  // margin-bottom: 10px;
+  .target{
+    position: absolute;
+    right: 10px;
+    bottom: 5px;
+    height: 24px;
+    line-height: 16px;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #8A6C4B;
+    text-align: center;
+    color: white;
+  }
+}
+.g-pdabtn{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  // justify-content: space-around;
+  width: 50vw;
+  margin: 10px auto;
+}
+//lhj结束
