@@ -254,7 +254,14 @@ export default {
         //选择班组
         changeGroup(val){
             console.log(val[0]);
+            console.log(val[0]);
             let myindex = this.$store.getters.getChoiceIndex
+            if(this.DataList[myindex].ResponseData.ResWorkGroupId!=val[0]){
+                this.DataList[myindex].ResponseData.ResEmployeeId=null
+                this.DataList[myindex].ResponseData.ResEmployee=null
+                this.DataList[myindex].ResponseData.JointEmpId=null
+                this.DataList[myindex].ResponseData.JointEmp=null
+            }
             let id = val[0]
             this.DataList[myindex].ResponseData.ResWorkGroupId=val[0]
             this.DataList[myindex].ResponseData.ResWorkGroup = this.GetGroup.find(item=>item.Id == id).Name
