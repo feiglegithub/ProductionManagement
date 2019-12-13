@@ -8,7 +8,7 @@
             <a slot="left" @click="goBaseIndex">
                 <span style="font-size:26px;" class="iconfont icon-weibiaoti-"></span>
             </a>
-                补料返工单
+                {{ReworkTitle}}
         </x-header>
         <div class="f-flexvw f-flexg1 f-pdlr5">
             <div class="u-add f-mt10" style="flex-shrink: 0;" @click="addFeedingRework(0)">+</div>
@@ -73,6 +73,7 @@ export default {
     name: 'FeedingReworkIndex',
     data() {
         return {
+            ReworkTitle:'补料返工',
             showThost:false,                //圈圈的显隐
             loadingtitle:'加载中',                //圈圈文字
 
@@ -117,18 +118,30 @@ export default {
             if(!!item){
                 //点击暂存的单据信息单，需要把信息传过去。
                 this.$store.dispatch('removeKeepAlive', 'AddFeedingRework')
-                this.$router.push({name:'AddFeedingRework',params:{data:item}})
+                this.$store.dispatch('removeKeepAlive', 'BatchAddFeedingRework')
+                if(this.$store.getters.getAddTtype==0){
+                    this.$router.push({name:'AddFeedingRework',params:{data:item}})
+                }
+                if(this.$store.getters.getAddTtype==1){
+                    this.$router.push({name:'BatchAddFeedingRework',params:{data:item}})
+                }
             }else{
                 this.$store.dispatch('removeKeepAlive', 'AddFeedingRework')
-                this.$router.push({name:'AddFeedingRework'})
+                this.$store.dispatch('removeKeepAlive', 'BatchAddFeedingRework')
+                if(this.$store.getters.getAddTtype==0){
+                    this.$router.push({name:'AddFeedingRework'})
+                }
+                if(this.$store.getters.getAddTtype==1){
+                    this.$router.push({name:'BatchAddFeedingRework'})
+                }
             }
             
         },
         //接口：获取暂存单据信息
-        getReproduct(){
+        getReproduct(AddType){
             this.loadingtitle='加载中'
             this.showThost=true
-            this.$axiosApi.getReproduct(0,0,1).then(res=>{
+            this.$axiosApi.getReproduct(0,0,1,AddType).then(res=>{
                 console.log(res.Result.Datas);
                 this.showThost=false
                 if(res.Success==true){
@@ -160,10 +173,19 @@ export default {
             })
         },
     },
+    created(){
+        if(this.$store.getters.getAddTtype==0){
+            this.ReworkTitle='补料返工'
+        }
+        if(this.$store.getters.getAddTtype==1){
+            this.ReworkTitle='批次补料返工'
+        }
+    },
     mounted () {
         this.$store.dispatch('removeKeepAlive', 'AddFeedingRework')
+        this.$store.dispatch('removeKeepAlive', 'BatchAddFeedingRework')
         this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetial')
-        this.getReproduct()
+        this.getReproduct(this.$store.getters.getAddTtype)
     }
 }
 </script>

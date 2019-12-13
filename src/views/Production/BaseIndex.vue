@@ -17,22 +17,22 @@
                         </div>
                     </div>
                 </grid-item>
-                <grid-item class="f-flexjscen" @click.native="$router.push({name:'Untying'})" v-if="showUntying">
+                <!-- <grid-item class="f-flexjscen" @click.native="$router.push({name:'Untying'})" v-if="showUntying">
                     <div class="m-otherchoice">
                         <div >
                             <span class="iconfont icon-dianjian"></span>
                             <p class="operationtitle">板件不良登记</p>
                         </div>
                     </div>
-                </grid-item>
-                <grid-item class="f-flexjscen" @click.native="$router.push({name:'ResourceSelection'})" v-if="showProcessHandover">
+                </grid-item> -->
+                <!-- <grid-item class="f-flexjscen" @click.native="$router.push({name:'ResourceSelection'})" v-if="showProcessHandover">
                     <div class="m-otherchoice">
                         <div >
                             <span class="iconfont icon-dianjian"></span>
                             <p class="operationtitle">工序交接</p>
                         </div>
                     </div>
-                </grid-item>
+                </grid-item> -->
                 <grid-item class="f-flexjscen" @click.native="$router.push({name:'OverResourceSelection'})" v-if="showOverStatiionCollection">
                     <div class="m-otherchoice">
                         <div >
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                 </grid-item>
-                <grid-item class="f-flexjscen" @click.native="$router.push({name:'FeedingReworkIndex'})" v-if="showFeedingReworkIndex">
+                <grid-item class="f-flexjscen" @click.native="goFeedingReworkIndex(0)" v-if="showFeedingReworkIndex">
                     <div class="m-otherchoice">
                         <div >
                             <span class="iconfont icon-dianjian"></span>
@@ -49,11 +49,27 @@
                         </div>
                     </div>
                 </grid-item>
-                <grid-item class="f-flexjscen" @click.native="$router.push({name:'FeedingReworkedList'})" v-if="showFeedingReworkedList">
+                <grid-item class="f-flexjscen" @click.native="goFeedingReworkIndex(1)" v-if="showBatchFeeding">
                     <div class="m-otherchoice">
                         <div >
                             <span class="iconfont icon-dianjian"></span>
-                            <p class="operationtitle">补料责任确定</p>
+                            <p class="operationtitle">批次补料创建</p>
+                        </div>
+                    </div>
+                </grid-item>
+                <grid-item class="f-flexjscen" @click.native="goFeedingReworkedList(0)" v-if="showFeedingReworkedList">
+                    <div class="m-otherchoice">
+                        <div >
+                            <span class="iconfont icon-dianjian"></span>
+                            <p class="operationtitle">补料审核</p>
+                        </div>
+                    </div>
+                </grid-item>
+                <grid-item class="f-flexjscen" @click.native="goFeedingReworkedList(1)" v-if="showBatchFeedingReworkedList">
+                    <div class="m-otherchoice">
+                        <div >
+                            <span class="iconfont icon-dianjian"></span>
+                            <p class="operationtitle">批次补料审核</p>
                         </div>
                     </div>
                 </grid-item>
@@ -65,22 +81,22 @@
                         </div>
                     </div>
                 </grid-item>
-                <grid-item class="f-flexjscen" @click.native="$router.push({name:'RepairResourceSelection'})" v-if="showRepairResourceSelection">
+                <!-- <grid-item class="f-flexjscen" @click.native="$router.push({name:'RepairResourceSelection'})" v-if="showRepairResourceSelection">
                     <div class="m-otherchoice">
                         <div >
                             <span class="iconfont icon-dianjian"></span>
                             <p class="operationtitle">维修采集</p>
                         </div>
                     </div>
-                </grid-item>
-                <grid-item class="f-flexjscen" @click.native="$router.push({name:'SealingResourceSelection'})" v-if="showSealingCollection">
+                </grid-item> -->
+                <!-- <grid-item class="f-flexjscen" @click.native="$router.push({name:'SealingResourceSelection'})" v-if="showSealingCollection">
                     <div class="m-otherchoice">
                         <div >
                             <span class="iconfont icon-dianjian"></span>
                             <p class="operationtitle">封边换托采集</p>
                         </div>
                     </div>
-                </grid-item>
+                </grid-item> -->
                 <grid-item class="f-flexjscen" @click.native="$router.push({name:'TaskScheduling'})" v-if="showTaskScheduling">
                     <div class="m-otherchoice">
                         <div >
@@ -113,6 +129,15 @@
                         </div>
                     </div>
                 </grid-item>
+
+                <grid-item class="f-flexjscen" @click.native="$router.push({name:'CheckWorkResourceSelection'})" v-if="showCheckWork">
+                    <div class="m-otherchoice">
+                        <div >
+                            <span class="iconfont icon-dianjian"></span>
+                            <p class="operationtitle">考勤登录</p>
+                        </div>
+                    </div>
+                </grid-item>
             </grid>
         </div>
         <div class="m-footers">
@@ -137,14 +162,17 @@ export default {
             showProcessHandover:false,
             showOverStatiionCollection:false,
             showFeedingReworkIndex:false,
+            showBatchFeeding:false,
             showFeedingReworkedList:false,
+            showBatchFeedingReworkedList:false,
             showPackResourceSelection:false,
             showRepairResourceSelection:false,
             showSealingCollection:false,
             showTaskScheduling:false,
             showPanelIntegration:false,
             showAbnormalSealingCollection:false,
-            showReleasePlate:false
+            showReleasePlate:false,
+            showCheckWork:false
         }
     },
     components: {
@@ -173,30 +201,36 @@ export default {
                         if(element.code=='封边返修合托'){
                             this.showExcretePanel=true
                         }
-                        if(element.code=='板件不良登记'){
-                            this.showUntying=true
-                        }
-                        if(element.code=='工序交接'){
-                            this.showProcessHandover=true
-                        }
+                        // if(element.code=='板件不良登记'){
+                        //     this.showUntying=true
+                        // }
+                        // if(element.code=='工序交接'){
+                        //     this.showProcessHandover=true
+                        // }
                         if(element.code=='过站采集'){
                             this.showOverStatiionCollection=true
                         }
                         if(element.code=='补料创建'){
                             this.showFeedingReworkIndex=true
                         }
-                        if(element.code=='补料责任确定'){
+                        if(element.code=='批次补料创建'){
+                            this.showBatchFeeding=true
+                        }
+                        if(element.code=='补料审核'){
                             this.showFeedingReworkedList=true
+                        }
+                        if(element.code=='批次补料审核'){
+                            this.showBatchFeedingReworkedList=true
                         }
                         if(element.code=='包装采集'){
                             this.showPackResourceSelection=true
                         }
-                        if(element.code=='维修采集'){
-                            this.showRepairResourceSelection=true
-                        }
-                        if(element.code=='封边换托采集'){
-                            this.showSealingCollection=true
-                        }
+                        // if(element.code=='维修采集'){
+                        //     this.showRepairResourceSelection=true
+                        // }
+                        // if(element.code=='封边换托采集'){
+                        //     this.showSealingCollection=true
+                        // }
                         if(element.code=='任务分派'){
                             this.showTaskScheduling=true
                         }
@@ -209,10 +243,24 @@ export default {
                         if(element.code=='垫板释放'){
                             this.showReleasePlate=true
                         }
+                        if(element.code=='考勤登录'){
+                            this.showCheckWork=true
+                        }
                     });
                 }
             })
         },
+        //进入补料功能（批次和非批次）
+        goFeedingReworkIndex(addtype){
+            console.log(addtype);
+            this.$store.dispatch('changeUserInfo',{attr:"addtype",val:addtype});
+            this.$router.push({name:'FeedingReworkIndex'})
+        },
+        //进入补料审核功能（批次和非批次）
+        goFeedingReworkedList(addtype){
+            this.$store.dispatch('changeUserInfo',{attr:"addtype",val:addtype});
+            this.$router.push({name:'FeedingReworkedList'})
+        }
     },
     created(){
         // window.location.replace("/")

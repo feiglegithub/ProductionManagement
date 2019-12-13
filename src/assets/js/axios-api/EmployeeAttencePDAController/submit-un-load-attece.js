@@ -1,0 +1,52 @@
+/**
+ * 一键下机
+ * ResourceManageId 资源id
+ * P_FindBeforeDay 默认7
+ * ProcessId  工序id
+ * ResourceManageId   资源id
+ * @return  obj={"Success": true,
+                 "Message": null,
+                  "Result": [],
+                 "Context": {
+                    "Ticket": "str"票据信息
+                }
+                }
+ *  @example $axiosApi.getAsnType().then(obj=>{})
+ */
+import Vue from 'vue';
+import Storage from '../../storage.js'
+export default function (ResourceManageId) {
+    return Vue.axios.post(Storage.url(), {
+      "ApiType": "EmployeeAttencePDAController",
+      "Parameters": [
+        {
+          "Value": ResourceManageId
+        }
+      ],
+      "Method": "SubmitUnLoadAttece",
+      "Context": {
+          "Ticket": Storage.ticket(),
+          "InvOrgId": Storage.orgid()
+      }
+    }
+    ).then(res => {
+        // console.log(res);
+        if (res.data.Success) {
+            Storage.refreshTicket(res.data.Context.Ticket)
+        };
+        let obj = res.data
+        return obj
+    }).catch(err => {
+        if (Vue.$vux.loading.isVisible()) {
+            Vue.$vux.loading.hide()
+        }; //如果当前有显示loading就先隐藏 
+        Vue.$vux.toast.show({
+            // text: err.toString(),
+            text: "连接服务器失败",
+            width: '5rem',
+            time: 2000,
+            position: 'middle',
+            type: "text"
+        })
+    })
+}

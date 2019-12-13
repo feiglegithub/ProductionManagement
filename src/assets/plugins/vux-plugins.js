@@ -115,7 +115,6 @@ Vue.component('swipeout',Swipeout),
 Vue.component('swipeout-item',SwipeoutItem),
 Vue.component('swipeout-button',SwipeoutButton),
 Vue.component('toast', Toast)
-  
 
 Vue.use(AlertPlugin)
 Vue.use(ToastPlugin)

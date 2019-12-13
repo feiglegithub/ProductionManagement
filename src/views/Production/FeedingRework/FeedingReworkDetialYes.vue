@@ -121,7 +121,7 @@ export default {
         },
         //点击删除按钮
         doDelete(){
-            this.$store.dispatch('removeKeepAlive', 'AddFeedingRework')
+            this.$store.dispatch('removeKeepAlive', 'BatchAddFeedingRework')
         },
 
         //点击提示弹窗的删除按钮
@@ -133,11 +133,14 @@ export default {
         //点击提交按钮
         doPost(){
             this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetialYes')
-            this.$router.push({name:'AddFeedingRework',params:{BtnType:'Save'}})
+            this.$router.push({name:'BatchAddFeedingRework',params:{BtnType:'Save'}})
         },
  
         addFeedingRework(){
-            this.$router.push({name:'AddFeedingRework'})
+            this.DetailData.ResponseData=this.DeepDetailData.ResponseData
+            console.log(this.DeepDetailData.ResponseData);
+            this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetial')
+            this.$router.push({name:'BatchAddFeedingRework',params:{BtnType:'Back'}})
         },
         //深拷贝
         deepClone(obj){

@@ -259,6 +259,7 @@ export default {
             GroupList:[[' ']],     //班组的列表
             Group:null,                //选择的班组
             GroupId:null,            //选择的班组
+            GroupIsProduct:null,        //选择的班组是否为生产班组
 
             ShowQualityTest:false,      //控制定责质检的显隐
             GetQualityTest:null,           //接口获取到定责质检的数据
@@ -316,6 +317,7 @@ export default {
                     "DefectDescription":null,   //缺陷描述
                     "ResWorkGroupId":null,      //责任班组id
                     "ResWorkGroup":null,        //责任班组名称
+                    "ResWorkGroupIsProduct":null,   //责任班组是否生产班组
                     "ResEmployeeId":null,       //责任人id
                     "ResEmployee":null,         //责任人名称
                     "QualityInspectionId":null, //定责质检id
@@ -339,6 +341,11 @@ export default {
 
         //点击修改按钮
         doEdit(){
+            if(this.GroupIsProduct==0 && this.QualityTest==null){
+                this.Msg='责任班组为非生产班组，定责质检必填'
+                this.showPositionValue=true
+                return
+            }
             // console.log(this.EquipmentId);
             this.DetailData.ResponseData={}
             this.DetailData.ResponseData.EquipId=this.EquipmentId
@@ -350,6 +357,7 @@ export default {
             this.DetailData.ResponseData.DefectDescription=this.DefectDescription
             this.DetailData.ResponseData.ResWorkGroupId=this.GroupId
             this.DetailData.ResponseData.ResWorkGroup=this.Group
+            this.DetailData.ResponseData.ResWorkGroupIsProduct=this.GroupIsProduct
             this.DetailData.ResponseData.ResEmployeeId=this.PersonLiableId
             this.DetailData.ResponseData.ResEmployee=this.PersonLiable
             this.DetailData.ResponseData.QualityInspectionId=this.QualityTestId
@@ -413,6 +421,12 @@ export default {
         },
         //点击提交按钮
         doPost(){
+            // console.log(this.GroupIsProduct);
+            if(this.GroupIsProduct==0 && this.QualityTest==null){
+                this.Msg='责任班组为非生产班组，定责质检必填'
+                this.showPositionValue=true
+                return
+            }
             this.DetailData.ResponseData={}
             console.log(this.DetailData.ResponseData);
             this.DetailData.ResponseData.EquipId=this.EquipmentId
@@ -424,6 +438,7 @@ export default {
             this.DetailData.ResponseData.DefectDescription=this.DefectDescription
             this.DetailData.ResponseData.ResWorkGroupId=this.GroupId
             this.DetailData.ResponseData.ResWorkGroup=this.Group
+            this.DetailData.ResponseData.ResWorkGroupIsProduct=this.GroupIsProduct
             this.DetailData.ResponseData.ResEmployeeId=this.PersonLiableId
             this.DetailData.ResponseData.ResEmployee=this.PersonLiable
             this.DetailData.ResponseData.QualityInspectionId=this.QualityTestId
@@ -507,6 +522,8 @@ export default {
             this.GroupId=val[0]
             if(!!this.GroupId){
                 this.Group = this.GetGroup.find(item=>item.Id == id).Name
+                this.GroupIsProduct=this.GetGroup.find(item=>item.Id == id).IsProduct
+                console.log(this.GroupIsProduct);
             }else{
                 this.GroupId=null
                 this.Group=null
@@ -677,14 +694,14 @@ export default {
         },
         //点击定责质检
         clickQualityTest(){
-            if(!this.GroupId){
-                this.showPositionValue=true
-                this.Msg='请先选择责任班组'
-                return
-            }
+            // if(!this.GroupId){
+            //     this.showPositionValue=true
+            //     this.Msg='请先选择责任班组'
+            //     return
+            // }
             this.ShowQualityTest=true
             // 0-选择责任人，1-选择连带责任人，2-选择定责质检
-            this.$axiosApi.getRepEmps(2,this.GroupId).then(res=>{
+            this.$axiosApi.getDetermineEmps(this.$route.params.PostProduceTaskId).then(res=>{
                 if(res.Success==true){
                     console.log(res);
                     this.GetQualityTest=res.Result
@@ -785,6 +802,7 @@ export default {
                 this.DefectDescription=this.DetailData.ResponseData.DefectDescription
                 this.GroupId=this.DetailData.ResponseData.ResWorkGroupId
                 this.Group=this.DetailData.ResponseData.ResWorkGroup
+                this.GroupIsProduct=this.DetailData.ResponseData.ResWorkGroupIsProduct
                 this.PersonLiableId=this.DetailData.ResponseData.ResEmployeeId
                 this.PersonLiable=this.DetailData.ResponseData.ResEmployee
                 this.QualityTestId=this.DetailData.ResponseData.QualityInspectionId

@@ -8,7 +8,7 @@
             <a slot="left" @click="goBaseIndex">
                 <span style="font-size:26px;" class="iconfont icon-weibiaoti-"></span>
             </a>
-                补料返工待确认列表
+                {{ExamieTitle}}
         </x-header>
         <div class="f-flexvw f-flexg1 f-pdlr5">
             <div class="g-scrollbox">
@@ -58,6 +58,7 @@
         @on-cancel="onCancel" 
         @on-confirm="onConfirm">
         </s-confirm>
+        <loading :show="showThost" :text="loadingtitle"></loading>
     </div>
 </template>
 
@@ -66,6 +67,7 @@ export default {
     name: 'FeedingReworkedList',
     data() {
         return {
+            ExamieTitle:'补料审核',
             ShowConfirm:false,      //控制提示弹窗的显隐
             SupportNumber:null,      //托号
             UPI:null,                //UPI
@@ -102,7 +104,9 @@ export default {
                 //     "ProductionTeam":"6949582463",
                 //     "BatchFeeding":false
                 // },
-            ]
+            ],
+            showThost:false,                //圈圈的显隐
+            loadingtitle:'提交中',                //圈圈文字
 
         }
     },
@@ -134,10 +138,10 @@ export default {
             }
         },
         //接口：获取暂存单据信息
-        getReproduct(){
+        getReproduct(AddType){
             this.loadingtitle='加载中'
             this.showThost=true
-            this.$axiosApi.getReproduct(1,0,1).then(res=>{
+            this.$axiosApi.getReproduct(1,0,1,AddType).then(res=>{
                 console.log(res.Result.Datas);
                 this.showThost=false
                 if(res.Success==true){
@@ -151,8 +155,16 @@ export default {
             })
         },
     },
+    created(){
+        if(this.$store.getters.getAddTtype==0){
+            this.ExamieTitle='补料审核'
+        }
+        if(this.$store.getters.getAddTtype==1){
+            this.ExamieTitle='批次补料审核'
+        }
+    },
     mounted () {
-        this.getReproduct()
+        this.getReproduct(this.$store.getters.getAddTtype)
     }
 }
 </script>

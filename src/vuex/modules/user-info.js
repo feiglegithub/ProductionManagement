@@ -13,6 +13,7 @@ export default {
    user:"",
    isbatchfeeding:"",
    choiceindex:0,
+   addtype:null,        //用于区分是批次还是非批次（补料）
    },
    mutations:{
        changeUserInfo(state,{attr,val}){
@@ -58,6 +59,9 @@ export default {
     },
     getChoiceIndex(state){
         return state.choiceindex
+    },
+    getAddTtype(state){
+        return state.addtype
     },
    },
    actions:{

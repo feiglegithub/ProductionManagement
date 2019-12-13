@@ -38,7 +38,7 @@ export default function (workshopId,processesId,keywork,pageSize,pageNumber) {
         }
       }
     ).then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.data.Success) {
             Storage.refreshTicket(res.data.Context.Ticket)
         };

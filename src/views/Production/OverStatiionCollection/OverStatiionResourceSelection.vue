@@ -22,6 +22,7 @@
                         <div>{{ChoiceWorkshop}}</div>
                     </div>    
                 </div>
+                
                 <div class="m-inp f-mtb5">
                     <span class="laber">工序</span>
                     <!-- <span class="inp s-bgwhile" @click="ShowProcedure = true">{{choiceDepartments}}</span> -->
@@ -35,10 +36,9 @@
                         <div>{{ChoiceProcess}}</div>
                     </div>    
                 </div>
-                <div class="m-inp f-mtb5">
+                <!-- <div class="m-inp f-mtb5">
                     <span class="laber">资源</span>
-                    <!-- <span class="inp s-bgwhile" @click="ShowProcedure = true">{{choiceDepartments}}</span> -->
-                    <div  @click="ShowResource = true" class="m-selector">
+                    <div  @click="doShowResource" class="m-selector">
                         <popup-picker 
                             :show.sync="ShowResource" 
                             :data="ResourceList" 
@@ -47,40 +47,45 @@
                         ></popup-picker>
                         <div>{{ChoiceResource}}</div>
                     </div>    
-                </div>
+                </div> -->
             </div>
         </div>
 
-        <s-confirm 
-        v-model="ShowConfirm" 
-        content="提交成功" 
-        :showConfirmButton='false' 
-        :showCancelButton='false' 
-        :showSuccessButton='true'
-        :showDangerButton='false'
-        @on-cancel="onCancel" 
-        @on-confirm="onConfirm">
-        </s-confirm>
+        <toast width='20em' v-model="showPositionValue" type="text" :time="2500" :text="Msg" position="middle"></toast>
+        <loading :show="showThost" :text="loadingtitle"></loading>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
 export default {
-    name: '',
+    name: 'PackResourceSelection',
     data() {
         return {
-            ShowProcedure:false,
-            ShowConfirm:false,
-            ShowWorkshop:false,
-            ChoiceWorkshop:null,
-            WorkshopList:[['部门一','部门二','部门三']],
-            ShowProcess:false,
-            ChoiceProcess:null,
-            ProcessList:[['工序一','工序二','工序三']],
-            ShowResource:false,
-            ChoiceResource:null,
-            ResourceList:[['资源一','资源二','资源三']],
-        }
+            showPositionValue:false,        //提示信息显隐
+            Msg:'有问题',                         //提示信息
+
+            showThost:false,                //圈圈的显隐
+            loadingtitle:'加载中',                //圈圈文字
+
+            ShowConfirm:false,          //控制提交弹窗显隐
+            ShowWorkshop:false,         //控制车间弹窗的显隐
+            ChoiceWorkshop:null,        //选择的车间名称
+            ChoiceWorkshopId:null,      //选择的车间id
+            WorkshopList:[[' ']],       //显示的车间列表
+            GetWorkshop:null,           //接口获取车间的数据
+
+            ShowProcess:false,          //控制工序弹窗的显隐
+            ChoiceProcess:null,         //选择的工序名称
+            ChoiceProcessId:null,       //选择的工序id
+            GetProcess:null,            //接口获取工序的数据
+            ProcessList:[[' ']],        //显示的工序列表
+
+            ShowResource:false,         //控制资源弹窗的显隐
+            ChoiceResource:null,        //选择的资源名称
+            ChoiceResourceId:null,      //选择的资源id
+            ResourceList:[[' ']],       //显示的资源列表
+            GetResource:null,           //接口获取资源的数据
+        }   
     },
     components: {
 
@@ -88,94 +93,208 @@ export default {
     methods: {
 
 
-
-
-        //触发单项左右滑动
-        handleEvents(type){
-            console.log(type);
-        },
-
-        //点击删除按钮，删除当前项
-        onButtonClick(index){
-            console.log(index);
-            this.checklistdata.splice(index,1)
-        },
-
-        //获取焦点事件
-        getFocus(){
-            console.log('获取焦点事件');
-        },
-
-        //获取焦点事件
-        getBlur(){
-            console.log('获取焦点事件');
-        },
-
-        //键盘回车事件
-        getEnter(){
-            console.log('键盘回车事件'+this.BarCode);
-        },
-
         //点击提示弹窗的删除按钮
         onCancel(){
-
         },
         //点击提示弹窗的确认按钮
         onConfirm(){},
         //点击提交按钮
         goCollection(){
-            this.$router.push({name:'OverCollection'})
+            if(this.ChoiceWorkshopId=='' || this.ChoiceWorkshopId==null){
+                this.Msg='请先选择车间'
+                this.showPositionValue=true
+                return
+            }
+            if(this.ChoiceProcessId=='' || this.ChoiceProcessId==null){
+                this.Msg='请先选择工序'
+                this.showPositionValue=true
+                return
+            }
+            // if(this.ChoiceResourceId=='' || this.ChoiceResourceId==null){
+            //     this.Msg='请先选择资源'
+            //     this.showPositionValue=true
+            //     return
+            // }
+            this.$router.push({name:'OverCollection',params:{
+                WorkshopId:this.ChoiceWorkshopId,
+                ProcessId:this.ChoiceProcessId,
+                ProcessName:this.ChoiceProcess
+            }})
+            // this.packageCheckAttendance(this.ChoiceWorkshopId,this.ChoiceProcessId,this.ChoiceResourceId)
+            
         },
+        //选择某一项车间
         changeWorkshop(value){
-            this.ChoiceWorkshop=value[0]
-            localStorage.setItem('OverWorkshopKey',this.ChoiceWorkshop)
+            let id = value[0]
+            this.ChoiceWorkshopId=value[0]
+            localStorage.setItem('OverStatiionWorkshopKey',this.ChoiceWorkshopId)
+            this.ChoiceWorkshop = this.GetWorkshop.find(item=>item.Id == id).Code
+            this.ChoiceResourceId=null
+            this.ChoiceResource=null
         },
+        //选择某一项工序
         changeProcess(value){
-            this.ChoiceProcess=value[0]
-            localStorage.setItem('OverProcessKey',this.ChoiceProcess)
+            let id = value[0]
+            this.ChoiceProcessId=value[0]
+            localStorage.setItem('OverStatiionProcessKey',this.ChoiceProcessId)
+            this.ChoiceProcess = this.GetProcess.find(item=>item.Id == id).Name
+            this.ChoiceResourceId=null
+            this.ChoiceResource=null
+            localStorage.setItem('OverStatiionResourceKey',this.ChoiceResourceId)
         },
+        //选择某一项资源
         changeResource(value){
-            this.ChoiceResource=value[0]
-            localStorage.setItem('OverResourceKey',this.ChoiceResource)
+            let id = value[0]
+            this.ChoiceResourceId=value[0]
+            localStorage.setItem('OverStatiionResourceKey',this.ChoiceResourceId)
+            this.ChoiceResource = this.GetResource.find(item=>item.Id == id).Name
+        },
+        //接口：获取车间数据接口
+        async getCollectWorkshops(){
+            this.loadingtitle='加载中'
+            this.showThost=true
+            await this.$axiosApi.getCollectWorkshops('',0,1).then(res=>{
+                this.showThost=false
+                if(res.Success==true){
+                    // console.log(res);
+                    this.GetWorkshop=res.Result.Datas
+                    this.WorkshopList=[[]]
+                    this.WorkshopList = [this.GetWorkshop.map(item=>{
+                       return {name:item.Code,value:item.Id}
+                    })]
+                }else{
+                    this.showPositionValue=true
+                    this.Msg=res.Message
+                }
+            }) 
+        },
+        //接口：获取工序数据接口
+        async getCollectProcesses(){
+            this.loadingtitle='加载中'
+            this.showThost=true
+            await this.$axiosApi.getCollectProcesses('',0,1).then(res=>{
+                this.showThost=false
+                if(res.Success==true){
+                    // console.log(res);
+                    this.GetProcess=res.Result.Datas
+                    this.ProcessList=[[]]
+                    this.ProcessList = [this.GetProcess.map(item=>{
+                       return {name:item.Name,value:item.Id}
+                    })]
+                }else{
+                    this.showPositionValue=true
+                    this.Msg=res.Message
+                }
+            }) 
+        },
+        //接口：获取资源数据接口
+        async getCollectResources(workshopId,processesId){
+            this.loadingtitle='加载中'
+            this.showThost=true
+            await this.$axiosApi.getCollectResources(workshopId,processesId,'',0,1).then(res=>{
+                this.showThost=false
+                if(res.Success==true){
+                    console.log(res);
+                    this.GetResource=res.Result.Datas
+                    this.ResourceList=[[]]
+                    this.ResourceList = [this.GetResource.map(item=>{
+                       return {name:item.Name,value:item.Id}
+                    })]
+                }else{
+                    this.showPositionValue=true
+                    this.Msg=res.Message
+                }
+            }) 
+        },
+        //接口：查找考勤情况
+        packageCheckAttendance(workshopId,processId,resourceId){
+            this.loadingtitle='加载中'
+            this.showThost=true
+            this.$axiosApi.packageCheckAttendance(workshopId,processId,resourceId).then(res=>{
+                this.showThost=false
+                if(res.Success==true){
+                    console.log(res);
+                    this.$router.push({name:'SealingCollection',params:{
+                        WorkshopCode:this.ChoiceWorkshop,
+                        ProcessId:this.ChoiceProcessId,
+                        ResourceId:this.ChoiceResourceId,
+                        WorkGroupNumber:res.Result
+                    }})
+                }else{
+                    this.showPositionValue=true
+                    this.Msg=res.Message
+                }
+            }) 
+        },
+        //获取存在本地的车间，并且判断之前存储的值是否在当前车间列表中存在，存在才赋值
+        async judgeWorkshop(){
+            await this.getCollectWorkshops()
+            if (localStorage.getItem('OverStatiionWorkshopKey')) {
+                let newArr=this.GetWorkshop.filter(item=>{
+                    return item.Id==localStorage.getItem('OverStatiionWorkshopKey')
+                })
+                if(newArr.length>0){
+                    this.ChoiceWorkshopId=localStorage.getItem('OverStatiionWorkshopKey')
+                    this.ChoiceWorkshop=newArr[0].Code
+                }
+            }
+        },
+        //获取存在本地的工序，并且判断之前存储的值是否在当前工序列表中存在，存在才赋值
+        async judgeProcess(){
+            await this.getCollectProcesses()
+            if (localStorage.getItem('OverStatiionProcessKey')) {
+                let newArr=this.GetProcess.filter(item=>{
+                    return item.Id==localStorage.getItem('OverStatiionProcessKey')
+                })
+                if(newArr.length>0){
+                    this.ChoiceProcessId=localStorage.getItem('OverStatiionProcessKey')
+                    this.ChoiceProcess=newArr[0].Name
+                }
+            }
+        },
+        //获取存在本地的资源，并且判断之前存储的值是否在当前工序列表中存在，存在才赋值
+        async judgeResources(){
+            
+            await this.getCollectResources(this.ChoiceWorkshopId,this.ChoiceProcessId)
+            if (localStorage.getItem('OverStatiionResourceKey')) {
+                let newArr=this.GetResource.filter(item=>{
+                    return item.Id==localStorage.getItem('OverStatiionResourceKey')
+                })
+                if(newArr.length>0){
+                    this.ChoiceResourceId=localStorage.getItem('OverStatiionResourceKey')
+                    this.ChoiceResource=newArr[0].Name
+                }
+            }
+        },
+        //点击资源，获取资源数据
+        doShowResource(){
+            if(this.ChoiceWorkshopId=='' || this.ChoiceWorkshopId==null){
+                this.Msg='请先选择车间'
+                this.showPositionValue=true
+                return
+            }
+            if(this.ChoiceProcessId=='' || this.ChoiceProcessId==null){
+                this.Msg='请先选择工序'
+                this.showPositionValue=true
+                return
+            }
+            this.ShowResource=true
+            this.getCollectResources(this.ChoiceWorkshopId,this.ChoiceProcessId)
+        },
+        async controlExecutionOrder(){
+            await this.judgeWorkshop()
+            await this.judgeProcess()
+            // console.log(!!this.ChoiceWorkshopId && !!this.ChoiceProcessId);
+            // if(!!this.ChoiceWorkshopId && !!this.ChoiceProcessId){
+            //     this.judgeResources()
+            // }
         }
     },
+    created(){
+        this.controlExecutionOrder()
+    },
     mounted () {
-        // console.log('WorkshopKey'+localStorage.getItem('WorkshopKey'));
-        // console.log('ProcessKey'+localStorage.getItem('ProcessKey'));
-        // console.log('ResourceKey'+localStorage.getItem('ResourceKey'));
-
-
-        //获取存在本地的车间，并且判断之前存储的值是否在当前车间列表中存在，存在才赋值
-        if (localStorage.getItem('OverWorkshopKey')) {
-            let newArr=this.WorkshopList[0].filter(item=>{
-                return item==localStorage.getItem('OverWorkshopKey')
-            })
-            if(newArr.length>0){
-                this.ChoiceWorkshop=localStorage.getItem('OverWorkshopKey')
-            }
-        }
-
-        //获取存在本地的工序，并且判断之前存储的值是否在当前工序列表中存在，存在才赋值
-        if (localStorage.getItem('OverProcessKey')) {
-            let newArr=this.ProcessList[0].filter(item=>{
-                return item==localStorage.getItem('OverProcessKey')
-            })
-            console.log(newArr);
-            if(newArr.length>0){
-                console.log(666);
-                this.ChoiceProcess=localStorage.getItem('OverProcessKey')
-            }
-        }
-        //获取存在本地的资源，并且判断之前存储的值是否在当前资源列表中存在，存在才赋值
-        if (localStorage.getItem('OverResourceKey')) {
-            let newArr=this.ResourceList[0].filter(item=>{
-                return item==localStorage.getItem('OverResourceKey')
-            })
-            if(newArr.length>0){
-                this.ChoiceResource=localStorage.getItem('OverResourceKey')
-            }
-        }
-        console.log("BillNo:"+localStorage.getItem('BillNo'));
+       
     }
 }
 </script>

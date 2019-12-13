@@ -13,6 +13,7 @@ import OverResourceSelection from '../../views/Production/OverStatiionCollection
 //补料返工单
 import FeedingReworkIndex from '../../views/Production/FeedingRework/FeedingReworkIndex.vue'
 import AddFeedingRework from '../../views/Production/FeedingRework/AddFeedingRework.vue'
+import BatchAddFeedingRework from '../../views/Production/FeedingRework/BatchAddFeedingRework.vue'
 import FeedingReworkDetial from '../../views/Production/FeedingRework/FeedingReworkDetial.vue'
 import EditFeedingRework from '../../views/Production/FeedingRework/EditFeedingRework.vue'
 import FeedingReworkDetialYes from '../../views/Production/FeedingRework/FeedingReworkDetialYes.vue'
@@ -43,6 +44,10 @@ import AbnormalSealingResourceSelection from '../../views/Production/AbnormalSea
 
 // 垫板释放
 import ReleasePlate from '../../views/Production/ReleasePlate/ReleasePlate.vue'
+
+// 考勤登录
+import CheckWorkCollection from '../../views/Production/CheckWorkAttendance/CheckWorkCollection.vue'
+import CheckWorkResourceSelection from '../../views/Production/CheckWorkAttendance/CheckWorkResourceSelection.vue'
 export default [
     
   {
@@ -94,6 +99,11 @@ export default [
     path: '/AddFeedingRework',
     name: 'AddFeedingRework',
     component: AddFeedingRework,
+  },
+  {
+    path: '/BatchAddFeedingRework',
+    name: 'BatchAddFeedingRework',
+    component: BatchAddFeedingRework,
   },
   {
     path: '/FeedingReworkDetial',
@@ -191,4 +201,17 @@ export default [
     name: 'ReleasePlate',
     component: ReleasePlate,
   },
+
+  // 考勤登录
+  {
+    path: '/CheckWorkCollection',
+    name: 'CheckWorkCollection',
+    component: CheckWorkCollection,
+  },
+  {
+    path: '/CheckWorkResourceSelection',
+    name: 'CheckWorkResourceSelection',
+    component: CheckWorkResourceSelection,
+  },
+
 ]

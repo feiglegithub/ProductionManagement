@@ -1,5 +1,5 @@
 /**
- * 扫描upi
+ * 补料返工单扫描upi
  * @return  obj={"Success": true,
                  "Message": null,
                   "Result": [],

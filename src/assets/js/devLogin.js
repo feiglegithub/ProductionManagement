@@ -22,7 +22,7 @@ export default function devLogin(vue){
 
 }else{
   console.log('进来了登陆接口了');
-  Vue.prototype.$axiosApi.login("30000183","123456").then(res=>{
+  Vue.prototype.$axiosApi.login("30000166","123456").then(res=>{
 
     if(res.Success){
 //  console.log(res);

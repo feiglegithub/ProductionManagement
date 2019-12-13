@@ -16,11 +16,10 @@
                         <input v-model="BarCode" ref="BarcodeInp" type="text" @keyup.enter="getBarCode()" class="s-inpbg">
                     </span>
                 </div>
-                <div class="m-inp f-mtb5">
+                <!-- <div class="m-inp f-mtb5">
                     <x-switch class="f-mtb5" style="font-size: 16px;padding:0 10px;margin-left: 1px;width:140px" title="批次补料" :value-map="['否','是']" v-model="IsBatchFeeding" @on-change="changeIsBatchFeeding" :disabled='FeedingReworkData.Details.length>0'></x-switch>
                     <div style="font-size: 16px;margin-left: 5px;">{{IsBatchFeeding}}</div>
-                </div>
-                
+                </div> -->
             </div>
             <div class="g-scrollbox">
                 <div class="f-auto">
@@ -50,7 +49,7 @@
                             <span class="label80" >创建日期:</span>
                             <span class="text">{{FeedingReworkData.CreateDate}}</span>
                         </div>
-                        <div class="m-baserowbox" v-show="IsBatchFeeding=='否'">
+                        <div class="m-baserowbox">
                             <span class="label80">附件:</span>
 
                             <upload-img :imgData="arrayImage" @add="addImg" @del="deleteImg" :maxLength='imglength'/>
@@ -70,7 +69,7 @@
                         </div>
 
                         <!-- 批次补料 类型为：是  的情况 -->
-                        <div v-show="IsBatchFeeding=='是'">
+                        <!-- <div v-show="IsBatchFeeding=='是'">
                             
                             <div class="m-baserowbox">
                                 <span class="label80" >设备:</span>
@@ -184,23 +183,11 @@
                                     <div class="select-text">{{RelationExamine}}</div>
                                 </div>
                             </div>
-                            <!-- <div class="m-baserowbox">
-                                <span class="label80" >制单人:</span>
-                                <div class="select s-bgwhile"  @click="clickMaker">
-                                    <popup-picker 
-                                        :show.sync="ShowMaker"
-                                        :data="MakerList"
-                                        @on-change="changeMaker"
-                                        value-text-align='left'
-                                    ></popup-picker>
-                                    <div class="select-text">{{Maker}}</div>
-                                </div>
-                            </div> -->
                             <div class="m-baserowbox">
                                 <span class="label80">附件:</span>
                                 <upload-img :imgData="arrayImage" @add="addImg" @del="deleteImg" :maxLength='imglength'/>
                             </div>
-                        </div>
+                        </div> -->
 
                     </div>
                     
@@ -295,7 +282,6 @@ export default {
                 PackingTypeId:null,     //装箱类别id
                 PhotoList:[],         //图片列表
                 ProduceTaskId:null,     //生产流程单
-                ProduceTaskSaleOrderId:null,    //生产任务销售订单id
                 ResponseData:null,      // 单据选择的概要信息
                 StockFlowId:null,       //备货流程
             },
@@ -399,6 +385,8 @@ export default {
             IsPost:null,                     //判断是暂存还是提交
 
             FeedingId:null,                 //单ID
+            NowBatchNo:null,                //当前批次
+            PostIsBatch:0,                  //非批次补料传0
         }
     },
     components: {
@@ -430,14 +418,17 @@ export default {
         goDetial(item){
             console.log(item);
             this.Details=item
-            if(this.IsBatchFeeding=='否'){
-                this.$router.push({name:'FeedingReworkDetial',params:{Details:this.Details}})
-                this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetial')
-            }
-            if(this.IsBatchFeeding=='是'){
-                this.$router.push({name:'FeedingReworkDetialYes',params:{Details:this.Details}})
-                this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetialYes')
-            }
+            this.$router.push({name:'FeedingReworkDetial',params:{Details:this.Details,PostProduceTaskId:this.FeedingReworkData.ProduceTaskId}})
+            this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetial')
+
+            // if(this.IsBatchFeeding=='否'){
+            //     this.$router.push({name:'FeedingReworkDetial',params:{Details:this.Details}})
+            //     this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetial')
+            // }
+            // if(this.IsBatchFeeding=='是'){
+            //     this.$router.push({name:'FeedingReworkDetialYes',params:{Details:this.Details}})
+            //     this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetialYes')
+            // }
         },
 
         //查看更多信息
@@ -606,24 +597,24 @@ export default {
                     this.FeedingReworkData.PhotoList=[]
                 }
                 console.log(JSON.stringify(this.FeedingReworkData) );
-                this.saveReproduce(this.FeedingReworkData)
+                // this.saveReproduce(this.FeedingReworkData)
                 return
             }
-            if(this.FeedingReworkData.IsBatch==1){
-                this.makePostData()
-                if(!this.FeedingReworkData.CreateById){
-                    this.showPositionValue=true
-                    this.Msg='制单人不能为空'
-                    return
-                }
-                this.FeedingReworkData.PhotoList=this.arrayImage
-                if(this.FeedingReworkData.PhotoList==null || this.FeedingReworkData.PhotoList==''){
-                    this.FeedingReworkData.PhotoList=[]
-                }
-                console.log(JSON.stringify(this.FeedingReworkData));
-                this.saveReproduce(this.FeedingReworkData)
-                return
-            }
+            // if(this.FeedingReworkData.IsBatch==1){
+            //     this.makePostData()
+            //     if(!this.FeedingReworkData.CreateById){
+            //         this.showPositionValue=true
+            //         this.Msg='制单人不能为空'
+            //         return
+            //     }
+            //     this.FeedingReworkData.PhotoList=this.arrayImage
+            //     if(this.FeedingReworkData.PhotoList==null || this.FeedingReworkData.PhotoList==''){
+            //         this.FeedingReworkData.PhotoList=[]
+            //     }
+            //     console.log(JSON.stringify(this.FeedingReworkData));
+            //     this.saveReproduce(this.FeedingReworkData)
+            //     return
+            // }
         },
         //点击提交按钮
         doPost(){
@@ -669,41 +660,41 @@ export default {
                 this.submitReproduce(this.FeedingReworkData)
                 return
             }
-            if(this.FeedingReworkData.IsBatch==1){
-                this.makePostData()
-                if(!this.FeedingReworkData.CreateById){
-                    this.showPositionValue=true
-                    this.Msg='制单人不能为空'
-                    return
-                }
-                if(!this.FeedingReworkData.ResponseData.DefectId){
-                    this.showPositionValue=true
-                    this.Msg=`缺陷代码不能为空`
-                    return
-                }
-                if(!this.FeedingReworkData.ResponseData.ResWorkGroupId){
-                    this.showPositionValue=true
-                    this.Msg=`责任班组不能为空`
-                    return
-                }
-                this.FeedingReworkData.PhotoList=this.arrayImage
-                if(this.FeedingReworkData.PhotoList==null || this.FeedingReworkData.PhotoList==''){
-                    this.FeedingReworkData.PhotoList=[]
-                }
-                console.log(this.FeedingReworkData);
-                this.submitReproduce(this.FeedingReworkData)
-                return
-            }
+            // if(this.FeedingReworkData.IsBatch==1){
+            //     this.makePostData()
+            //     if(!this.FeedingReworkData.CreateById){
+            //         this.showPositionValue=true
+            //         this.Msg='制单人不能为空'
+            //         return
+            //     }
+            //     if(!this.FeedingReworkData.ResponseData.DefectId){
+            //         this.showPositionValue=true
+            //         this.Msg=`缺陷代码不能为空`
+            //         return
+            //     }
+            //     if(!this.FeedingReworkData.ResponseData.ResWorkGroupId){
+            //         this.showPositionValue=true
+            //         this.Msg=`责任班组不能为空`
+            //         return
+            //     }
+            //     this.FeedingReworkData.PhotoList=this.arrayImage
+            //     if(this.FeedingReworkData.PhotoList==null || this.FeedingReworkData.PhotoList==''){
+            //         this.FeedingReworkData.PhotoList=[]
+            //     }
+            //     console.log(this.FeedingReworkData);
+            //     this.submitReproduce(this.FeedingReworkData)
+            //     return
+            // }
         },
         //当类型的值变化时，执行此方法
-        changeIsBatchFeeding(value){
-            console.log(value);
-            if(value=='是'){
-                this.FeedingReworkData.IsBatch=1
-            }else{
-                this.FeedingReworkData.IsBatch=0
-            }
-        },
+        // changeIsBatchFeeding(value){
+        //     console.log(value);
+        //     if(value=='是'){
+        //         this.FeedingReworkData.IsBatch=1
+        //     }else{
+        //         this.FeedingReworkData.IsBatch=0
+        //     }
+        // },
 
         //当是否加急的值变化时，执行此方法
         changeIsIntercept(value){
@@ -1056,7 +1047,7 @@ export default {
                     if(!this.MakerId){
                         this.getCurrentEmp()
                     }
-                    this.FeedingReworkData.IsBatch===1?this.IsBatchFeeding='是':this.IsBatchFeeding='否'
+                    // this.FeedingReworkData.IsBatch===1?this.IsBatchFeeding='是':this.IsBatchFeeding='否'
                     this.FeedingReworkData.EmergencyFlag===1?this.IsIntercept='是':this.IsIntercept='否'
                 }else{
                     this.showPositionValue=true
@@ -1073,12 +1064,33 @@ export default {
                 this.showThost=false
                 if(res.Success==true){
                     console.log(res);
+                    
+                    
+
+                    //12月5日，用于卡控，不同订单相同批次不允许加入
+                    console.log(res.Result.BatchNo);
+                    if(this.NowBatchNo!=null && res.Result.BatchNo!=this.NowBatchNo){
+                        console.log(res.Result.BatchNo);
+                        this.showPositionValue=true
+                        this.Msg='不同批次都不能添加'
+                        this.BarCode=null 
+                        return
+                    }
+                    if(this.saleOrderNo!=null && res.Result.Details[0].SaleOrderNo!=this.saleOrderNo){
+                        this.showPositionValue=true
+                        this.Msg='不同订单都不能添加'
+                        this.BarCode=null 
+                        return
+                    }
                     this.saleOrderNo=res.Result.Details[0].SaleOrderNo
+
+
                     if(this.FeedingReworkData.Details.length>0){
                         this.FeedingReworkData.Details.unshift(res.Result.Details[0])
                     }else{
                         this.FeedingReworkData=res.Result
                     }
+                    this.NowBatchNo=res.Result.BatchNo
                     this.BarCode=null 
                 }else{
                     this.showPositionValue=true
@@ -1169,8 +1181,8 @@ export default {
                     this.showPositionValue=true
                     this.Msg='删除成功'
                     if(that.FeedingReworkData.Details.length<=0){
-                        console.log(this.$route.params.data.Id==undefined);
-                        if(this.$route.params.data.Id===undefined){
+                        // console.log(this.$route.params.data.Id==undefined);
+                        if(!that.$route.params.data){
                             that.goFeedingReworkIndex()
                         }else{
                             that.deleteProduceTask(that.$route.params.data.Id)
@@ -1207,10 +1219,12 @@ export default {
             //为新增单，不进行查询
             this.getCurrentEmp()
         }
+        this.FeedingReworkData.IsBatch=this.PostIsBatch
     },
     mounted () {
         // console.log(this.$store.getters.getUserCode);
-        // console.log(this.$store.getters.getUserName);
+        console.log(this.$route.params);
+        console.log(this.$store.getters.keepAlive);
         this.$store.dispatch('addKeepAlive', 'AddFeedingRework')
         this.$refs.BarcodeInp.focus()
         

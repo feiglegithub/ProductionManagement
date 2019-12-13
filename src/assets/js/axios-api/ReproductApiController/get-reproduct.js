@@ -1,5 +1,7 @@
 /**
- * 获取未提交的补料返工单
+ * 获取获取补料返工单
+ * flag 0-新建（暂存）,1-待审核
+ * isBatch  0是否，1是是
  * @return  obj={"Success": true,
                  "Message": null,
                   "Result": [],
@@ -11,7 +13,7 @@
  */
 import Vue from 'vue';
 import Storage from '../../storage.js'
-export default function (flag,pageSize,pageNumber) {
+export default function (flag,pageSize,pageNumber,isBatch) {
     return Vue.axios.post(Storage.url(), {
         "ApiType": "ReproductApiController",
         "Parameters": [
@@ -23,6 +25,9 @@ export default function (flag,pageSize,pageNumber) {
           },
           {
             "Value": pageNumber
+          },
+          {
+            "Value": isBatch
           }
         ],
         "Method": "GetReproduct",

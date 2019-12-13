@@ -133,14 +133,15 @@
             </div>
         </div>
         <s-confirm 
-        v-model="ShowConfirm" 
-        content="提交成功" 
-        :showConfirmButton='false' 
-        :showCancelButton='false' 
-        :showSuccessButton='true'
-        :showDangerButton='false'
-        @on-cancel="onCancel" 
-        @on-confirm="onConfirm">
+            v-model="ShowConfirm" 
+            :content="ConfirmMsg" 
+            :showConfirmButton='false' 
+            :showCancelButton='false' 
+            :showSuccessButton='Successbtn'
+            :showDangerButton='Dangerbtn' 
+            :bad='BadColor'
+            @on-cancel="onCancel"
+            @on-confirm="onConfirm">
         </s-confirm>
         <toast width='12em' v-model="showPositionValue" type="text" :time="2500" :text="Msg" position="middle"></toast>
 
@@ -155,6 +156,10 @@ export default {
             showPositionValue:false,        //提示信息显隐
             Msg:'有问题',                         //提示信息
             ShowConfirm:false,      //控制提示弹窗的显隐
+            ConfirmMsg:'提交成功',
+            BadColor:false,
+            Successbtn:true,
+            Dangerbtn:true,
             SupportNumber:null,      //托号
             UPI:null,                //UPI
             DataList:[

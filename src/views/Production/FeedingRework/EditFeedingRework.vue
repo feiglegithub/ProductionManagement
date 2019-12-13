@@ -180,15 +180,28 @@ export default {
             //由于没有存在数据库，所以我们要把数据传递回去添加页面。
             this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetial')
             this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetialYes')
-            this.$router.push({name:'AddFeedingRework',params:{Details:this.DetailData,BtnType:'Save'}})
+            if(this.$store.getters.getAddTtype==0){
+                this.$router.push({name:'AddFeedingRework',params:{Details:this.DetailData,BtnType:'Save'}})
+            }
+            if(this.$store.getters.getAddTtype==1){
+                this.$router.push({name:'BatchAddFeedingRework',params:{Details:this.DetailData,BtnType:'Save'}})
+            }
+            
         },
         doCancel(){
 
             //当点击取消时，如果我们想重置数据，执行放开下面代码，我们要把之前修改的信息都重置回来
             // this.DetailData.ResponseData=this.DeepDetailData.ResponseData
 
-            this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetial')
-            this.$router.push({name:'AddFeedingRework'})
+            if(this.$store.getters.getAddTtype==0){
+                this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetial')
+                this.$router.push({name:'AddFeedingRework'})
+            }
+            if(this.$store.getters.getAddTtype==1){
+                this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetialYes')
+                this.$router.push({name:'BatchAddFeedingRework'})
+            }
+            
         },
         //选择封边的某一项
         changeSealing(val){
