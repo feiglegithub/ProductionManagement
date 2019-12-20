@@ -237,7 +237,8 @@ export default {
             Edge:4,                  //多少边
             GetData:null,               //扫描获取的数据
             inputValue:true,               //控制选择组件的状态
-            transformation:false         //用来控制输入排序
+            transformation:false,         //用来控制输入排序
+            ShowConfirmType:0,              //0是检验四边的问题，1是检验以封边两边的问题
         }
     },
     components: {
@@ -338,14 +339,40 @@ export default {
         // 点击确认信息的返回按钮
         onCancelSure(){
             console.log('点击了返回');
-            this.DataList.push(this.GetData)
-            this.inputValue=false
-            this.Edge=2
+            if(this.ShowConfirmType==0){
+                this.DataList.push(this.GetData)
+                this.inputValue=false
+                this.Edge=2
+            }
+            if(this.ShowConfirmType==1){
+                this.PanelNumber=null           //旧托号
+                this.NewSupportNumber=null      //新托号
+                if(this.transformation==true){
+                    this.$refs.RefPanelNumberSecond.focus()
+                }else{
+                    this.$refs.RefPanelNumber.focus()
+                }
+            }
+            
         },
         // 点击确认信息的确认按钮
         onConfirmSure(){
-            console.log('点击了确认');
-            this.DataList.push(this.GetData)
+            //无论ShowConfirmType等于什么，都表示可以添加
+            // console.log('点击了确认');
+            // this.DataList.push(this.GetData)
+            console.log(this.GetData)
+            if(this.ShowConfirmType==1){
+                if(this.GetData.ExceptionMsg!=null && this.Edge==4){
+                    this.ShowConfirmType=0
+                    this.ConfirmSureMsg=this.GetData.ExceptionMsg
+                    this.ShowSure=true
+                }else{
+                    this.DataList.push(this.GetData)
+                }
+            }
+            if(this.ShowConfirmType==0){
+                this.DataList.push(this.GetData)
+            }
         },
         //点击提交按钮
         doPost(){
@@ -378,15 +405,25 @@ export default {
             this.showThost=true
             this.$axiosApi.doSacnPlateOnIgnoreSourcePlateCodePda(OldPlateUpiCode,EndPlateCode,CurrentProcessId).then(res=>{
                 this.showThost=false
+                
                 if(res.Success==true){
-                    console.log(res);
+                    console.log(res)
                     this.GetData=res.Result
-                    if(res.Result.ExceptionMsg!=null && this.Edge==4){
-                        this.ConfirmSureMsg=res.Result.ExceptionMsg
+                    if(res.Result.Had_FB_Count==2){
+                        this.ShowConfirmType=1
+                        this.ConfirmSureMsg=`此托${this.PanelNumber}封边已过2边，是否继续过站`
                         this.ShowSure=true
-                    }else{
-                        this.DataList.push(res.Result)
+                        return
                     }
+                    this.DataList.push(res.Result)
+                    //12月19日修改
+                    // if(res.Result.ExceptionMsg!=null && this.Edge==4){
+                    //     this.ShowConfirmType=0
+                    //     this.ConfirmSureMsg=res.Result.ExceptionMsg
+                    //     this.ShowSure=true
+                    // }else{
+                    //     this.DataList.push(res.Result)
+                    // }
                 }else{
                     this.showPositionValue=true
                     this.Msg=res.Message
