@@ -138,6 +138,14 @@
                         </div>
                     </div>
                 </grid-item>
+                  <grid-item class="f-flexjscen" @click.native="$router.push({name:'WipTrace'})" v-if="showCheckWork">
+                    <div class="m-otherchoice">
+                        <div >
+                            <span class="iconfont icon-dianjian"></span>
+                            <p class="operationtitle">板件追逆</p>
+                        </div>
+                    </div>
+                </grid-item>
             </grid>
         </div>
         <div class="m-footers">

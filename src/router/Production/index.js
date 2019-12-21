@@ -48,6 +48,8 @@ import ReleasePlate from '../../views/Production/ReleasePlate/ReleasePlate.vue'
 // 考勤登录
 import CheckWorkCollection from '../../views/Production/CheckWorkAttendance/CheckWorkCollection.vue'
 import CheckWorkResourceSelection from '../../views/Production/CheckWorkAttendance/CheckWorkResourceSelection.vue'
+
+import WipTrace from '../../views/Production/WipTrace/WipTrace.vue'
 export default [
     
   {
@@ -213,5 +215,9 @@ export default [
     name: 'CheckWorkResourceSelection',
     component: CheckWorkResourceSelection,
   },
-
+  {
+    path: '/WipTrace',
+    name: 'WipTrace',
+    component: WipTrace,
+  },
 ]
