@@ -15,9 +15,9 @@
                     </span>
                 </div>
                 <div class="m-inp f-mtb5">
-                    <span class="laber100" style="width:35%">源托号</span>
+                    <span class="laber100" style="width:35%">UPI</span>
                     <span class="inp s-inpbg" style="width:65%">
-                        <input v-model="SourceNumber" ref="SourceNumberInp" placeholder="请扫描源托号" type="text" @keyup.enter="getSourceNumber()" class="s-inpbg">
+                        <input v-model="SourceNumber" ref="SourceNumberInp" placeholder="请扫描UPI" type="text" @keyup.enter="getSourceNumber()" class="s-inpbg">
                     </span>
                 </div>
 
@@ -52,10 +52,10 @@
                                     <span class="label">当前工序:</span>
                                     <span class="showmsg f-ml10">{{item.ProcessName}}</span>
                                 </div>
-                                <!-- <div class="showlistmsg">
-                                    <span class="label">新托号:</span>
-                                    <span class="showmsg f-ml10">{{SupportNumber}}</span>
-                                </div> -->
+                                <div class="showlistmsg">
+                                    <span class="label">源托号:</span>
+                                    <span class="showmsg f-ml10">{{item.PlateCode}}</span>
+                                </div>
                             </div>
                             
                         </div>
@@ -152,7 +152,7 @@ export default {
         getSourceNumber(){
             if(!!this.SourceNumber==false){
                 this.showPositionValue=true
-                this.Msg='源托号不能为空'
+                this.Msg='UPI不能为空'
                 return
             }
             if(!!this.SupportNumber && !!this.SourceNumber){
@@ -217,7 +217,7 @@ export default {
                 this.showThost=false
                 if(res.Result.Result==true){
                     console.log(res);
-                    this.SourceNumber=res.Result.Upis[0].PlateCode
+                    // this.SourceNumber=res.Result.Upis[0].PlateCode
                     this.PostSupportNumber=this.SupportNumber
                     this.PostSourceNumber=this.SourceNumber
                     this.DataList=res.Result.Upis
@@ -240,7 +240,7 @@ export default {
                 this.showThost=false
                 if(res.Result.Result==true){
                     console.log(res);
-                    this.SourceNumber=res.Result.Upis[0].PlateCode
+                    // this.SourceNumber=res.Result.Upis[0].PlateCode
                     this.PostSupportNumber=this.SupportNumber
                     this.PostSourceNumber=this.SourceNumber
                     this.DataList=res.Result.Upis
