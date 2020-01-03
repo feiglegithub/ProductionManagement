@@ -597,7 +597,7 @@ export default {
                     this.FeedingReworkData.PhotoList=[]
                 }
                 console.log(JSON.stringify(this.FeedingReworkData) );
-                // this.saveReproduce(this.FeedingReworkData)
+                this.saveReproduce(this.FeedingReworkData)
                 return
             }
             // if(this.FeedingReworkData.IsBatch==1){

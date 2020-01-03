@@ -2,7 +2,7 @@
     <div class="g-index">
         <!-- 头部 -->
         <x-header class="m-header" :left-options="{backText:''}" style="background-color:#22292C">
-            板件追逆
+            板件追溯
         </x-header>
         <div class="f-flexvw f-flexg1 f-pdlr5">
             <div class="g-inp" style="min-height:40px;">

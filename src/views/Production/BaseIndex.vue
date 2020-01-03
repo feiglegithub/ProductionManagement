@@ -138,11 +138,11 @@
                         </div>
                     </div>
                 </grid-item>
-                  <grid-item class="f-flexjscen" @click.native="$router.push({name:'WipTrace'})" v-if="showCheckWork">
+                  <grid-item class="f-flexjscen" @click.native="$router.push({name:'WipTrace'})" v-if="showWipTrace">
                     <div class="m-otherchoice">
                         <div >
                             <span class="iconfont icon-dianjian"></span>
-                            <p class="operationtitle">板件追逆</p>
+                            <p class="operationtitle">板件追溯</p>
                         </div>
                     </div>
                 </grid-item>
@@ -180,7 +180,8 @@ export default {
             showPanelIntegration:false,
             showAbnormalSealingCollection:false,
             showReleasePlate:false,
-            showCheckWork:false
+            showCheckWork:false,
+            showWipTrace:false
         }
     },
     components: {
@@ -253,6 +254,9 @@ export default {
                         }
                         if(element.code=='考勤登录'){
                             this.showCheckWork=true
+                        }
+                        if(element.code=='板件追溯'){
+                            this.showWipTrace=true
                         }
                     });
                 }
