@@ -7,8 +7,7 @@
             <a slot="right" @click="goCollection">下一步</a>
         </x-header>
         <div class="f-flexvw f-flexg1">
-            <div class="g-scrollbox">
-
+            <div class="g-scrollbox">          
                 <div class="m-inp f-mtb5">
                     <span class="laber">车间</span>
                     <!-- <span class="inp s-bgwhile" @click="ShowProcedure = true">{{choiceDepartments}}</span> -->
@@ -21,8 +20,7 @@
                         ></popup-picker>
                         <div>{{ChoiceWorkshop}}</div>
                     </div>    
-                </div>
-                
+                </div>   
                 <div class="m-inp f-mtb5">
                     <span class="laber">工序</span>
                     <!-- <span class="inp s-bgwhile" @click="ShowProcedure = true">{{choiceDepartments}}</span> -->
@@ -48,7 +46,28 @@
                         ></popup-picker>
                         <div>{{ChoiceResource}}</div>
                     </div>    
+                </div>   
+                <div class="m-inp f-mtb5">
+                    <span class="laber">日期</span>
+                    <div class="m-selector" @click="ShowWorkDate=true">
+                        <datetime  v-model="WorkerInfo.WorkShiftDate" 
+                               :show="ShowWorkDate"
+                               format="YYYY-MM-DD"
+                               @on-confirm="onWorkDate"
+                               @on-hide="ShowWorkDate=false">
+                        </datetime> 
+                    </div>     
                 </div>
+                <div class="m-inp f-mtb5">
+                    <span class="laber">主手</span>
+                    <span class="inp">
+                        <input v-model="WorkerInfo.StaffCode"  type="text">
+                        <div @click="searchStaff">
+                            <icon type="search"></icon>
+                        </div>
+                        
+                    </span>                                
+                </div>     
             </div>
         </div>
 
@@ -58,6 +77,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+import nowDate from '../../../assets/js/nowDate.js'
+import storage from '../../../assets/js/storage.js'
 export default {
     name: 'PackResourceSelection',
     data() {
@@ -86,6 +107,9 @@ export default {
             ChoiceResourceId:null,      //选择的资源id
             ResourceList:[[' ']],       //显示的资源列表
             GetResource:null,           //接口获取资源的数据
+            WorkDate:null,
+            ShowWorkDate:false,
+            WorkerInfo:{},
         }   
     },
     components: {
@@ -99,6 +123,10 @@ export default {
         },
         //点击提示弹窗的确认按钮
         onConfirm(){},
+        onWorkDate(){
+            storage.refreshWorkerInfo(this.WorkerInfo);
+        },
+        
         //点击提交按钮
         goCollection(){
             if(this.ChoiceWorkshopId=='' || this.ChoiceWorkshopId==null){
@@ -145,6 +173,9 @@ export default {
             this.ChoiceResourceId=value[0]
             localStorage.setItem('PackResourceKey',this.ChoiceResourceId)
             this.ChoiceResource = this.GetResource.find(item=>item.Id == id).Name
+        },
+        changeWorkDate(value){
+           sessionStorage.setItem('PackWorkDateKey',this.WorkDate)   
         },
         //接口：查找考勤情况
         packageCheckAttendance(workshopId,processId,resourceId){
@@ -262,6 +293,20 @@ export default {
                 }
             }
         },
+       
+
+           //获取存在本地的资源，并且判断之前存储的值是否在当前工序列表中存在，存在才赋值
+        async judgeWorkerInfo(){
+
+            this.WorkerInfo=storage.WorkerInfo();
+            if(this.WorkerInfo.WorkShiftDate==null
+            ||this.WorkerInfo.WorkShiftDate==''){
+               var date=nowDate(new Date());
+               this.WorkerInfo.WorkShiftDate=date;
+               storage.refreshWorkerInfo(this.WorkerInfo);
+            }
+        },
+
         doShowResource(){
             if(this.ChoiceWorkshopId=='' || this.ChoiceWorkshopId==null){
                 this.Msg='请先选择车间'
@@ -276,14 +321,35 @@ export default {
             this.ShowResource=true
             this.getCollectResources(this.ChoiceWorkshopId,this.ChoiceProcessId)
         },
+       
         async controlExecutionOrder(){
             await this.judgeWorkshop()
             await this.judgeProcess()
+            await this.judgeWorkerInfo()
             // console.log(!!this.ChoiceWorkshopId && !!this.ChoiceProcessId);
             if(!!this.ChoiceWorkshopId && !!this.ChoiceProcessId){
                 this.judgeResources()
             }
-        }
+        },
+       async searchStaff(){
+            if(this.WorkerInfo.StaffCode==null
+              ||this.WorkerInfo.StaffCode==''){
+                this.Msg="请输入主手工号"
+                this.showPositionValue=true;
+                return;
+            }
+            this.loadingtitle='加载中';
+             await this.$axiosApi.searchWorkerInfo(this.StaffCode).then(res=>{
+                this.showThost=false
+                if(res.Success==true){
+                    console.log(res);
+                   
+                }else{
+                    this.showPositionValue=true
+                    this.Msg=res.Message
+                }
+            }) 
+        },
     },
     created(){
         this.controlExecutionOrder()
@@ -293,7 +359,6 @@ export default {
     }
 }
 </script>
-
 <style lang="less">
 
 

@@ -28,6 +28,53 @@ export default {
       })
     }
   },
+  //计件工资用户信息
+  refreshWorkerInfo:function(obj){
+    Vue.prototype.$vue.$store.dispatch('changeInfo',{
+      attr:'StaffCode',
+      val:obj.StaffCode,
+    });
+    Vue.prototype.$vue.$store.dispatch('changeInfo',{
+      attr:'StaffName',
+      val:obj.StaffName,
+    });
+    Vue.prototype.$vue.$store.dispatch('changeInfo',{
+      attr:'WorkShiftDate',
+      val:obj.WorkShiftDate,
+    });
+    Vue.prototype.$vue.$store.dispatch('changeInfo',{
+      attr:'ProducProcessCode',
+      val:obj.ProducProcessCode,
+    });
+    Vue.prototype.$vue.$store.dispatch('changeInfo',{
+      attr:'ProcessName',
+      val:obj.ProcessName,
+    });
+    Vue.prototype.$vue.$store.dispatch('changeInfo',{
+      attr:'WorkShiftId',
+      val:obj.WorkShiftId,
+    });
+    Vue.prototype.$vue.$store.dispatch('changeInfo',{
+      attr:'WorkShiftName',
+      val:obj.WorkShiftName,
+    });
+    Vue.prototype.$vue.$store.dispatch('changeInfo',{
+      attr:'MachineCode',
+      val:obj.MachineCode,
+    });
+  },
+  WorkerInfo:function(){
+    return { 
+      StaffCode: Vue.prototype.$vue.$store.getters.getStaffCode,
+      StaffName: Vue.prototype.$vue.$store.getters.getStaffName,
+      WorkShiftDate: Vue.prototype.$vue.$store.getters.getWorkShiftDate,
+      ProducProcessCode: Vue.prototype.$vue.$store.getters.getProducProcessCode,
+      ProcessName: Vue.prototype.$vue.$store.getters.getProcessName,
+      WorkShiftId: Vue.prototype.$vue.$store.getters.getWorkShiftId,
+      WorkShiftName: Vue.prototype.$vue.$store.getters.getWorkShiftName,
+      MachineCode: Vue.prototype.$vue.$store.getters.getMachineCode,
+    }
+  },
   orgid: function () {
     return Vue.prototype.$vue.$store.getters.getOrgId
   },

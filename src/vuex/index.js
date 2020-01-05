@@ -9,6 +9,7 @@ import keepAlive from './modules/keepalive';
 import exception from './modules/exception';
 import filter from './modules/filter';
 import defectSelected from './modules/defect-selected';
+import WorkerInfo from './modules/worker-info';
 Vue.use(Vuex)
 const store = new Vuex.Store({
   // strict:true,
@@ -24,7 +25,8 @@ const store = new Vuex.Store({
     keepAlive,
     exception,
     filter,
-    defectSelected
+    defectSelected,
+    workerInfo:WorkerInfo,
   }
 })
 export default store

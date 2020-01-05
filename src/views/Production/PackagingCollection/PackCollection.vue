@@ -8,6 +8,7 @@
         </x-header>
         <div class="f-flexvw f-flexg1 f-pdlr5">
             <div class="g-inp" style="min-height:60px;">
+              
                 <div class="m-inp f-mtb5">
                     <span class="laber">条码</span>
                     <span class="inp s-inpbg">
@@ -88,6 +89,17 @@ export default {
             loadingtitle:'提交中',                //圈圈文字
             BarCode:null,      //托号
             PostCode:[],             //提交的包装条码集合
+
+            //---计件系统班别信息------
+            WorkInfor:{
+                'EmpCode':'',
+                'EmpName':'',
+                'WorkstationCode':'',
+                'WorkstationName':'',
+                'Production':'',
+                'WorkDate':'',
+            },
+            
             DataList:[
                 // {
                 //     "ProductBatch":"c64s9194",
@@ -109,6 +121,18 @@ export default {
     components: {
     },
     methods: {
+        getWorkInfor(){
+           if(this.WorkInfor!=null){
+            return this.WorkInfor.EmpName+' '+this.WorkInfor.WorkstationName+' '+this.WorkInfor.Production;
+           }
+           return "";
+        },
+        getWorkDate(){
+             if(this.WorkInfor!=null){
+              return this.WorkInfor.WorkDate;
+             }
+           return "";
+        },
         //获取条码
         getSupportNumber(){
             console.log(this.BarCode);

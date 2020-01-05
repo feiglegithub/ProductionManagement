@@ -59,6 +59,7 @@ import {
   SwipeoutItem,
   SwipeoutButton,
   Toast,
+  Icon,
 } from 'vux'
 Vue.component('check-icon', CheckIcon)
 Vue.component('alert', Alert)
@@ -115,7 +116,7 @@ Vue.component('swipeout',Swipeout),
 Vue.component('swipeout-item',SwipeoutItem),
 Vue.component('swipeout-button',SwipeoutButton),
 Vue.component('toast', Toast)
-
+Vue.component('icon', Icon)
 Vue.use(AlertPlugin)
 Vue.use(ToastPlugin)
 Vue.use(LoadingPlugin)
