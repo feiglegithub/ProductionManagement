@@ -50,7 +50,7 @@
                 <div class="m-inp f-mtb5">
                     <span class="laber">日期</span>
                     <div class="m-selector" @click="ShowWorkDate=true">
-                        <datetime  v-model="WorkerInfo.WorkShiftDate" 
+                        <datetime  v-model="WorkShiftDate" 
                                :show="ShowWorkDate"
                                format="YYYY-MM-DD"
                                @on-confirm="onWorkDate"
@@ -59,15 +59,27 @@
                     </div>     
                 </div>
                 <div class="m-inp f-mtb5">
-                    <span class="laber">主手</span>
+                    <span class="laber">工号</span>
                     <span class="inp">
-                        <input v-model="WorkerInfo.StaffCode"  type="text">
+                        <input v-model="StaffCode"  type="text">
                         <div @click="searchStaff">
                             <icon type="search"></icon>
                         </div>
-                        
-                    </span>                                
+                         
+                    </span>        
+                    <popup-picker 
+                        :show.sync="ShowWorkInfo" 
+                        :data="WorkInfoList" 
+                        @on-change="changeWorkInfo"
+                        value-text-align='left'
+                    ></popup-picker>                       
                 </div>     
+                <div class="m-inp f-mtb5">
+                    <span class="laber">主手</span>
+                    <span class="inp">
+                        <input disabled v-model="ChoiceStaffName" type="text">
+                    </span>                                
+                </div>
             </div>
         </div>
 
@@ -107,9 +119,19 @@ export default {
             ChoiceResourceId:null,      //选择的资源id
             ResourceList:[[' ']],       //显示的资源列表
             GetResource:null,           //接口获取资源的数据
+
+            ShowWorkInfo:false,         //控制主手弹窗的显隐
+            ChoiceWorkInfo:null,        //选择的主手
+            ChoiceWorkInfoId:null,      //选择的主手id
+            WorkInfoList:[[' ']],       //显示的主手列表
+            GetWorkInfo:null,           //接口获取主手的数据
+            ChoiceStaffName:null,       //选择主手名称
+
             WorkDate:null,
             ShowWorkDate:false,
             WorkerInfo:{},
+            WorkShiftDate:null,         //选择的班次时间
+            StaffCode:null,             //输入的主手编码
         }   
     },
     components: {
@@ -124,7 +146,9 @@ export default {
         //点击提示弹窗的确认按钮
         onConfirm(){},
         onWorkDate(){
-            storage.refreshWorkerInfo(this.WorkerInfo);
+            console.log(this.WorkShiftDate);
+            // storage.refreshWorkerInfo(this.WorkerInfo);
+            this.$store.dispatch('changeUserInfo',{attr:"WorkShiftDate",val:this.WorkShiftDate}); 
         },
         
         //点击提交按钮
@@ -141,6 +165,11 @@ export default {
             }
             if(this.ChoiceResourceId=='' || this.ChoiceResourceId==null){
                 this.Msg='请先选择资源'
+                this.showPositionValue=true
+                return
+            }
+            if(this.ChoiceStaffName=='' || this.ChoiceStaffName==null){
+                this.Msg='请先选择主手'
                 this.showPositionValue=true
                 return
             }
@@ -176,6 +205,15 @@ export default {
         },
         changeWorkDate(value){
            sessionStorage.setItem('PackWorkDateKey',this.WorkDate)   
+        },
+        //选择某一项主手
+        changeWorkInfo(value){
+            let id = value[0]
+            this.ChoiceWorkInfoId=value[0]
+            this.ChoiceStaffName = this.GetWorkInfo.find(item=>item.Id == id).StaffName
+            this.ChoiceWorkInfo = this.GetWorkInfo.find(item=>item.Id == id)
+            console.log(this.ChoiceWorkInfo);
+            this.$store.dispatch('changeUserInfo',{attr:"PackWorkInfo",val:this.ChoiceWorkInfo}); 
         },
         //接口：查找考勤情况
         packageCheckAttendance(workshopId,processId,resourceId){
@@ -331,19 +369,39 @@ export default {
                 this.judgeResources()
             }
         },
-       async searchStaff(){
-            if(this.WorkerInfo.StaffCode==null
-              ||this.WorkerInfo.StaffCode==''){
+        //获取主手信息，
+        async searchStaff(){
+           if(this.WorkShiftDate==null
+              ||this.WorkShiftDate==''){
+                this.Msg="请输入日期"
+                this.showPositionValue=true;
+                return;
+            }
+            if(this.StaffCode==null
+              ||this.StaffCode==''){
                 this.Msg="请输入主手工号"
                 this.showPositionValue=true;
                 return;
             }
             this.loadingtitle='加载中';
-             await this.$axiosApi.searchWorkerInfo(this.StaffCode).then(res=>{
+            this.showThost=true
+            await this.$axiosApi.getWorkerInfo(this.WorkShiftDate,this.StaffCode).then(res=>{
                 this.showThost=false
                 if(res.Success==true){
                     console.log(res);
-                   
+                    this.GetWorkInfo=res.Result.Data
+                    this.WorkInfoList=[[]]
+                    console.log(this.GetWorkInfo);
+                    this.WorkInfoList = [this.GetWorkInfo.map(item=>{
+                       return {name:item.StaffName,value:item.Id}
+                    })]
+                    if(res.Result.Data.length>0){
+                        this.ShowWorkInfo=true
+                    }else{
+                        this.showPositionValue=true
+                        this.Msg='无数据'
+                    }
+                    
                 }else{
                     this.showPositionValue=true
                     this.Msg=res.Message
@@ -355,7 +413,15 @@ export default {
         this.controlExecutionOrder()
     },
     mounted () {
-       
+        if(this.$store.getters.getWorkShiftDates!=null || this.$store.getters.getWorkShiftDates!=''){
+            this.WorkShiftDate=this.$store.getters.getWorkShiftDates
+        }
+        console.log(this.$store.getters.getPackWorkInfo);
+        if (this.$store.getters.getPackWorkInfo!=undefined && Object.keys(this.$store.getters.getPackWorkInfo).length > 0) {
+            this.ChoiceWorkInfo=this.$store.getters.getPackWorkInfo
+            this.ChoiceStaffName=this.$store.getters.getPackWorkInfo.StaffName
+        }
+        
     }
 }
 </script>

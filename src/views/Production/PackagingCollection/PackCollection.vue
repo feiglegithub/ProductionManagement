@@ -193,14 +193,15 @@ export default {
                 this.showPositionValue=true
                 return
             }
-            // console.log(JSON.stringify(`this.DataList+
-            // ${this.$route.params.WorkshopId}+
-            // ${this.$route.params.ProcessId}+
-            // ${this.$route.params.ResourceId}`) );
+            console.log(JSON.stringify(`${this.DataList}+
+            ${this.$store.getters.getPackWorkInfo}+
+            ${this.$route.params.WorkshopId}+
+            ${this.$route.params.ProcessId}+
+            ${this.$route.params.ResourceId}`) );
             let PostWorkShopId = this.$route.params.WorkshopId,
                 PostProcessId= this.$route.params.ProcessId,
                 PostResourceId = this.$route.params.ResourceId
-            this.subPackageCollect(this.DataList,PostWorkShopId,PostProcessId,PostResourceId)
+            this.subPackageWageCollect(this.DataList,this.$store.getters.getPackWorkInfo,PostWorkShopId,PostProcessId,PostResourceId)
         },
         //接口：扫描包装条码
         scanPackageCollectPa(pa,scanedDatas){
@@ -225,10 +226,10 @@ export default {
             }) 
         },
         //接口：提交包装采集
-        subPackageCollect(packageCollectDatas,workshopId,processId,resourceId){
+        subPackageWageCollect(packageCollectDatas,worker,workshopId,processId,resourceId){
             this.loadingtitle='提交中'
             this.showThost=true
-            this.$axiosApi.subPackageCollect(packageCollectDatas,workshopId,processId,resourceId).then(res=>{
+            this.$axiosApi.subPackageWageCollect(packageCollectDatas,worker,workshopId,processId,resourceId).then(res=>{
                 this.showThost=false
                 if(res.Success==true){
                     console.log(res);

@@ -14,6 +14,8 @@ export default {
    isbatchfeeding:"",
    choiceindex:0,
    addtype:null,        //用于区分是批次还是非批次（补料）
+   WorkShiftDate:'',    //包装采集用到的时间
+   PackWorkInfo:{},         //包装采集，用于保存选择的主手信息
    },
    mutations:{
        changeUserInfo(state,{attr,val}){
@@ -63,6 +65,12 @@ export default {
     getAddTtype(state){
         return state.addtype
     },
+    getWorkShiftDates(state){
+        return state.WorkShiftDate
+    },
+    getPackWorkInfo(state){
+        return state.PackWorkInfo
+    }
    },
    actions:{
     changeUserInfo(context,{attr,val}){
