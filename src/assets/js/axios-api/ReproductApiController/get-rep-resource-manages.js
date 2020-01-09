@@ -11,10 +11,14 @@
  */
 import Vue from 'vue';
 import Storage from '../../storage.js'
-export default function () {
+export default function (DeptId) {
     return Vue.axios.post(Storage.url(), {
         "ApiType": "ReproductApiController",
-        "Parameters": [],
+        "Parameters": [
+          {
+            "Value": DeptId
+          }
+        ],
         "Method": "GetRepResourceManages",
         "Context": {
             "Ticket": Storage.ticket(),

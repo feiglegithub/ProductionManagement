@@ -331,6 +331,7 @@ export default {
             DeepDetailData:{            //用于保存原数据源
             },
             DefectDescription:null,     //出错描述
+            DeptId:null,                //部门id
 
         }
     },
@@ -585,7 +586,7 @@ export default {
         //点击设备
         clickEquipment(){
             this.ShowEquipment=true
-            this.$axiosApi.getRepResourceManages().then(res=>{
+            this.$axiosApi.getRepResourceManages(this.DeptId).then(res=>{
                 if(res.Success==true){
                     console.log(res);
                     this.GetEquipment=res.Result
@@ -647,7 +648,7 @@ export default {
         //点击责任班组
         clickGroup(){
             this.ShowGroup=true
-            this.$axiosApi.getRepWorkGroups().then(res=>{
+            this.$axiosApi.getRepWorkGroups(this.DeptId).then(res=>{
                 if(res.Success==true){
                     console.log(res);
                     this.GetGroup=res.Result
@@ -789,6 +790,7 @@ export default {
     },
     created(){
         console.log(JSON.stringify(this.$route.params.Details));
+        this.DeptId=this.$route.params.DeptId
         if(this.$route.params.Details){
             this.DetailData=this.$route.params.Details
             this.DeepDetailData=this.deepClone(this.$route.params.Details)
@@ -831,6 +833,7 @@ export default {
         console.log("BillNo:"+localStorage.getItem('BillNo'));
         console.log('333'+this.$store.getters.getIsBatchFeeding);
         // this.IsBatchFeeding=this.$store.getters.getIsBatchFeeding
+        console.log(this.$route);
     }
 }
 </script>

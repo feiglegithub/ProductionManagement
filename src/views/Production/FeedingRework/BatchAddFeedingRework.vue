@@ -832,7 +832,7 @@ export default {
         //点击设备
         clickEquipment(){
             this.ShowEquipment=true
-            this.$axiosApi.getRepResourceManages().then(res=>{
+            this.$axiosApi.getRepResourceManages(this.FeedingReworkData.DeptId).then(res=>{
                 if(res.Success==true){
                     console.log(res);
                     this.GetEquipment=res.Result
@@ -894,7 +894,7 @@ export default {
         //点击责任班组
         clickGroup(){
             this.ShowGroup=true
-            this.$axiosApi.getRepWorkGroups().then(res=>{
+            this.$axiosApi.getRepWorkGroups(this.FeedingReworkData.DeptId).then(res=>{
                 if(res.Success==true){
                     console.log(res);
                     this.GetGroup=res.Result

@@ -8,7 +8,12 @@
         </x-header>
         <div class="f-flexvw f-flexg1 f-pdlr5">
             <div class="g-inp" style="min-height:60px;">
-              
+                <div class="m-inp f-mtb5">
+                    <span class="laber">主手</span>
+                    <span class="inp">
+                        <input disabled v-model="ChoiceStaffName" type="text">
+                    </span>
+                </div>
                 <div class="m-inp f-mtb5">
                     <span class="laber">条码</span>
                     <span class="inp s-inpbg">
@@ -18,14 +23,14 @@
             </div>
             <div class="g-scrollbox">
                 <div class="f-auto">
-                    <s-messageheader class="f-mt10" messagetitle="条码信息" v-show="DataList.length>=1"></s-messageheader>
+                    <!--<s-messageheader class="f-mt10" messagetitle="条码信息" v-show="DataList.length>=1"></s-messageheader>-->
                     <swipeout :class="{'s-border':DataList.length>=1}">
                         <swipeout-item v-for="(item,index) in DataList" :key="index" @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow">
                             <div slot="right-menu" style="padding:5px 0;">
                             <swipeout-button @click.native="onButtonClick(index,item)" type="warn">删除</swipeout-button>
                             </div>
-                            <div slot="content" class="f-pd5 vux-1px-t">
-                                <div class="m-listbox">
+                            <div slot="content" class="vux-1px-t" style="padding:2px;">
+                                <div class="m-listbox" style="padding:0;">
                                     <div class="num">
                                         {{index+1}}
                                     </div>
@@ -35,12 +40,12 @@
                                             <span class="showmsg f-ml10">{{item.PackageBarcode}}</span>
                                         </div>
                                         <div class="showlistmsg">
-                                            <span class="label">包号:</span>
-                                            <span class="showmsg f-ml10">{{item.PackageNumber}}</span>
-                                        </div>
-                                        <div class="showlistmsg">
                                             <span class="label">板件数:</span>
                                             <span class="showmsg f-ml10">{{item.Qty}}</span>
+                                        </div>
+                                        <div class="showlistmsg">
+                                            <span class="label">包号:</span>
+                                            <span class="showmsg f-ml10">{{item.PackageNumber}}</span>
                                         </div>
                                         <div class="showlistmsg">
                                             <span class="label">订单:</span>
@@ -115,7 +120,8 @@ export default {
                 //     "CurrentProduct":"3358942687",
                 //     "PanelNumber":"6949582463",
                 // },
-            ]
+            ],
+            ChoiceStaffName:null,       //显示主手信息
         }
     },
     components: {
@@ -139,6 +145,12 @@ export default {
             if(!!this.BarCode==false){
                 this.showPositionValue=true
                 this.Msg='包装条码不能为空'
+                return
+            }
+            //空值条码数不能超过30条
+            if(this.PostCode.length>=30){
+                this.showPositionValue=true
+                this.Msg='包装条码不能超过30条'
                 return
             }
             if(this.PostCode.indexOf(this.BarCode)>=0){
@@ -247,6 +259,9 @@ export default {
                     this.BadColor=true
                     this.Successbtn=false
                     this.Dangerbtn=true
+                    this.PostCode=[]
+                    this.BarCode=null
+                    this.DataList=[]
                 }
             }) 
         },
@@ -257,8 +272,13 @@ export default {
     mounted () {
         console.log(this.$route.params);
         this.$refs.BarcodeInp.focus()
-        console.log(document.URL);
-        console.log(window.history);
+        // console.log(document.URL);
+        // console.log(window.history);
+        if (this.$store.getters.getPackWorkInfo!=undefined && Object.keys(this.$store.getters.getPackWorkInfo).length > 0) {
+            // this.ChoiceWorkInfo=this.$store.getters.getPackWorkInfo
+            let mystore=this.$store.getters.getPackWorkInfo
+            this.ChoiceStaffName=`${mystore.StaffName} ${mystore.WorkShiftName} ${mystore.ProcessName} ${mystore.MachineCode}`
+        }
     },
     // created(){
     //     if(window.history && window.history.pushState){

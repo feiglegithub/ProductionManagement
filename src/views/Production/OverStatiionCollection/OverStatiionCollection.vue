@@ -17,7 +17,7 @@
                 <div class="m-inp f-mtb5">
                     <span class="laber100">UPI/清单号</span>
                     <span class="inp s-inpbg">
-                        <input v-model="SupportNumber" placeholder="请扫描UPI/清单号" type="text" @keyup.enter="getSupportNumber()" class="s-inpbg" @focus="getFocus()" @blur="getBlur()">
+                        <input ref="BarcodeInp" v-model="SupportNumber" placeholder="请扫描UPI/清单号" type="text" @keyup.enter="getSupportNumber()" class="s-inpbg" @focus="getFocus()" @blur="getBlur()">
                     </span>
                 </div>
                 <div class="m-inp f-mtb5">
@@ -306,10 +306,12 @@ export default {
         },
         //点击提示弹窗的删除按钮
         onCancel(){
-
+            this.$refs.BarcodeInp.focus()
         },
         //点击提示弹窗的确认按钮
-        onConfirm(){},
+        onConfirm(){
+            this.$refs.BarcodeInp.focus()
+        },
         //点击提交按钮
         doPost(){
             // this.ShowConfirm=true
@@ -376,12 +378,15 @@ export default {
 
                     this.SupportNumber=null
                     // this.SubBatch=null
+                    this.$refs.BarcodeInp.focus()
                 }else{
                     this.showPositionValue=true
                     this.Msg=res.Message
                     this.SupportNumber=null
                     this.SubBatch=null
+                    this.$refs.BarcodeInp.focus()
                 }
+                
             }) 
         },
 
@@ -421,6 +426,7 @@ export default {
         }
     },
     mounted () {
+        this.$refs.BarcodeInp.focus()
         console.log(this.$route.params);
     }
 }

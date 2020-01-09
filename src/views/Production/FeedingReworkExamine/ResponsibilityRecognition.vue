@@ -37,6 +37,12 @@
                             <span class="label100" >制单人:</span>
                             <span class="text">{{FeedingReworkData.CreateBy}}</span>
                         </div>
+                        <div class="m-baserowbox">
+                            <span class="label100">附件:</span>
+
+                            <show-upload-img :imgData="arrayImage"/>
+
+                        </div>
                     </div>
                     <s-messageheader class="f-mt10" messagetitle="单据明细" v-show='FeedingReworkData.Details.length>0'></s-messageheader>
                     <div class="f-pd5 s-border" v-show='FeedingReworkData.Details.length>0'>
@@ -60,6 +66,10 @@
                                 <div class="m-baserowbox">
                                     <span class="label80">物料名称:</span>
                                     <span class="text">{{item.ItemName}}</span>
+                                </div>
+                                <div class="m-baserowbox">
+                                    <span class="label80">缺陷:</span>
+                                    <span class="text">{{item.ResponseData.DefectCategory}}_{{item.ResponseData.Defect}}</span>
                                 </div>
                                 <div class="m-baserowbox">
                                     <span class="label80">规格:</span>
@@ -158,6 +168,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+import showuploadImg from '../../../components/components/showuploadImg'
 export default {
     name: 'ResponsibilityRecognition',
     data() {
@@ -223,9 +234,15 @@ export default {
             RelationExamineList:[[' ','已考核','未考核']],  //控制连带考核情况的显隐
             JonitEmpAssessment:null,       //控制连带考核情况的显隐
             RelationExamineName:null,       //控制连带考核情况的显隐
+            //上传图片的参数配置开始
+
+            arrayImage: [
+            ],
+            //上传图片的参数配置结束
         }
     },
     components: {
+        'show-upload-img':showuploadImg
     },
 
     methods: {
@@ -318,7 +335,7 @@ export default {
         //点击责任班组
         clickGroup(){
             this.ShowGroup=true
-            this.$axiosApi.getRepWorkGroups().then(res=>{
+            this.$axiosApi.getRepWorkGroups(this.FeedingReworkData.DeptId).then(res=>{
                 if(res.Success==true){
                     console.log(res);
                     this.GetGroup=res.Result
@@ -420,6 +437,7 @@ export default {
                 if(res.Success==true){
                     console.log(res);
                     this.FeedingReworkData=res.Result
+                    this.arrayImage=this.FeedingReworkData.PhotoList
                     this.FeedingReworkData.IsBatch===1?this.IsBatchFeeding='是':this.IsBatchFeeding='否'
                     this.FeedingReworkData.EmergencyFlag===1?this.IsIntercept='是':this.IsIntercept='否'
                     console.log(this.FeedingReworkData.Details[0].ResponseData);

@@ -418,7 +418,10 @@ export default {
         goDetial(item){
             console.log(item);
             this.Details=item
-            this.$router.push({name:'FeedingReworkDetial',params:{Details:this.Details,PostProduceTaskId:this.FeedingReworkData.ProduceTaskId}})
+            this.$router.push({name:'FeedingReworkDetial',params:{Details:this.Details,
+            PostProduceTaskId:this.FeedingReworkData.ProduceTaskId,
+            DeptId:this.FeedingReworkData.DeptId
+            }})
             this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetial')
 
             // if(this.IsBatchFeeding=='否'){
@@ -1199,6 +1202,7 @@ export default {
         //接口：获取当前登陆人
         getCurrentEmp(){
             this.$axiosApi.getCurrentEmp().then(res=>{
+                console.log(res);
                 if(res.Success==true){
                     this.Maker=res.Result.Name
                     this.MakerId=res.Result.Id

@@ -210,7 +210,7 @@ export default {
         changeWorkInfo(value){
             let id = value[0]
             this.ChoiceWorkInfoId=value[0]
-            this.ChoiceStaffName = this.GetWorkInfo.find(item=>item.Id == id).StaffName
+            this.ChoiceStaffName = `${this.GetWorkInfo.find(item=>item.Id == id).StaffName} ${this.GetWorkInfo.find(item=>item.Id == id).WorkShiftName} ${this.GetWorkInfo.find(item=>item.Id == id).ProcessName} ${this.GetWorkInfo.find(item=>item.Id == id).MachineCode}`
             this.ChoiceWorkInfo = this.GetWorkInfo.find(item=>item.Id == id)
             console.log(this.ChoiceWorkInfo);
             this.$store.dispatch('changeUserInfo',{attr:"PackWorkInfo",val:this.ChoiceWorkInfo}); 
@@ -416,10 +416,11 @@ export default {
         if(this.$store.getters.getWorkShiftDates!=null || this.$store.getters.getWorkShiftDates!=''){
             this.WorkShiftDate=this.$store.getters.getWorkShiftDates
         }
-        console.log(this.$store.getters.getPackWorkInfo);
+        // console.log(this.$store.getters.getPackWorkInfo);
         if (this.$store.getters.getPackWorkInfo!=undefined && Object.keys(this.$store.getters.getPackWorkInfo).length > 0) {
             this.ChoiceWorkInfo=this.$store.getters.getPackWorkInfo
-            this.ChoiceStaffName=this.$store.getters.getPackWorkInfo.StaffName
+            let mystore=this.$store.getters.getPackWorkInfo
+            this.ChoiceStaffName=`${mystore.StaffName} ${mystore.WorkShiftName} ${mystore.ProcessName} ${mystore.MachineCode}`
         }
         
     }
