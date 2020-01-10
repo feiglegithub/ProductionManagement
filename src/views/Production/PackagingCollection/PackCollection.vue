@@ -32,7 +32,7 @@
                             <div slot="content" class="vux-1px-t" style="padding:2px;">
                                 <div class="m-listbox" style="padding:0;">
                                     <div class="num">
-                                        {{index+1}}
+                                        {{DataList.length-index}}
                                     </div>
                                     <div class="showbox">
                                         <div class="showlistmsg">
