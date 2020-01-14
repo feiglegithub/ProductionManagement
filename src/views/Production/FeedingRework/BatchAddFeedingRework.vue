@@ -377,7 +377,9 @@ export default {
 
             FeedingId:null,                 //单ID
             NowBatchNo:null,                //当前批次
-            PostIsBatch:1                   //非批次补料传1
+            PostIsBatch:1,                  //非批次补料传1
+            HasMessage:0,                   //判断upi条码是否已经补料过。0为没有，1为有
+            TempFeedingReworkData:null      //存放临时获得的扫描数据
         }
     },
     components: {
@@ -479,6 +481,10 @@ export default {
         },
         //点击提示弹窗的删除按钮
         onCancel(){
+            if(this.HasMessage==1){
+                this.BarCode=null
+                this.$refs.BarcodeInp.focus()
+            }
             this.BadColor=false
             this.Successbtn=false
             this.Dangerbtn=false
@@ -490,9 +496,23 @@ export default {
             this.Successbtn=false
             this.Dangerbtn=false
             this.ShowPostConfirm=false
-            this.getReproduceDetails(this.FeedingId)
-            if(this.IsPost==1){
-                this.$router.push({name:'FeedingReworkIndex'})
+            
+            if(this.HasMessage==0){
+                this.getReproduceDetails(this.FeedingId)
+                if(this.IsPost==1){
+                    this.$router.push({name:'FeedingReworkIndex'})
+                }
+            }
+            if(this.HasMessage==1){
+                console.log(this.TempFeedingReworkData);
+                this.saleOrderNo=this.TempFeedingReworkData.Details[0].SaleOrderNo
+                if(this.FeedingReworkData.Details.length>0){
+                    this.FeedingReworkData.Details.unshift(this.TempFeedingReworkData.Details[0])
+                }else{
+                    this.FeedingReworkData=this.TempFeedingReworkData
+                }
+                this.NowBatchNo=this.TempFeedingReworkData.BatchNo
+                this.BarCode=null 
             }
         },
         //构造暂存和提交的数据
@@ -1076,14 +1096,23 @@ export default {
                         return
                     }
 
-
-                    if(this.FeedingReworkData.Details.length>0){
-                        this.FeedingReworkData.Details.unshift(res.Result.Details[0])
+                    if(res.Result.Message!=null){
+                        this.HasMessage=1
+                        this.TempFeedingReworkData=res.Result
+                        this.ConfirmMsg=res.Result.Message
+                        this.BadColor=false
+                        this.Successbtn=true
+                        this.Dangerbtn=true
+                        this.ShowPostConfirm=true
                     }else{
-                        this.FeedingReworkData=res.Result
+                        if(this.FeedingReworkData.Details.length>0){
+                            this.FeedingReworkData.Details.unshift(res.Result.Details[0])
+                        }else{
+                            this.FeedingReworkData=res.Result
+                        }
+                        this.NowBatchNo=res.Result.BatchNo
+                        this.BarCode=null 
                     }
-                    this.NowBatchNo=res.Result.BatchNo
-                    this.BarCode=null 
                 }else{
                     this.showPositionValue=true
                     this.Msg=res.Message
@@ -1099,6 +1128,7 @@ export default {
                 this.IsPost=0
                 this.showThost=false
                 console.log(res);
+                this.HasMessage=0
                 if(res.Success==true){
                     this.FeedingId=res.Result
                     this.ConfirmMsg='暂存成功'
@@ -1124,6 +1154,7 @@ export default {
             this.$axiosApi.submitReproduce(data).then(res=>{
                 this.showThost=false
                 this.IsPost=1
+                this.HasMessage=0
                 if(res.Success==true){
                     console.log(res);
                     this.ConfirmMsg='提交成功'
