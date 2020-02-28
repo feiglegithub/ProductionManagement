@@ -146,6 +146,14 @@
                         </div>
                     </div>
                 </grid-item>
+                <grid-item class="f-flexjscen" @click.native="$router.push({name:'SecondaryProcess'})" v-if="showSecondaryProcess">
+                    <div class="m-otherchoice">
+                        <div >
+                            <span class="iconfont icon-dianjian"></span>
+                            <p class="operationtitle">二次加工单</p>
+                        </div>
+                    </div>
+                </grid-item>
             </grid>
         </div>
         <div class="m-footers">
@@ -181,7 +189,8 @@ export default {
             showAbnormalSealingCollection:false,
             showReleasePlate:false,
             showCheckWork:false,
-            showWipTrace:false
+            showWipTrace:false,
+            showSecondaryProcess:false
         }
     },
     components: {
@@ -257,6 +266,9 @@ export default {
                         }
                         if(element.code=='板件追溯'){
                             this.showWipTrace=true
+                        }
+                        if(element.code=='二次加工单'){
+                            this.showSecondaryProcess=true;
                         }
                     });
                 }

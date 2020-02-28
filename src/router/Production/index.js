@@ -50,6 +50,9 @@ import CheckWorkCollection from '../../views/Production/CheckWorkAttendance/Chec
 import CheckWorkResourceSelection from '../../views/Production/CheckWorkAttendance/CheckWorkResourceSelection.vue'
 
 import WipTrace from '../../views/Production/WipTrace/WipTrace.vue'
+
+// 二次加工单
+import SecondaryProcess from '../../views/Production/SecondaryProcess/SecondaryProcess.vue'
 export default [
     
   {
@@ -219,5 +222,12 @@ export default [
     path: '/WipTrace',
     name: 'WipTrace',
     component: WipTrace,
+  },
+
+  // 二次加工单
+  {
+    path: '/SecondaryProcess',
+    name: 'SecondaryProcess',
+    component: SecondaryProcess,
   },
 ]

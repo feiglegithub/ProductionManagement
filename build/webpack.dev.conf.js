@@ -33,6 +33,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     proxy:{
       '/api/*':{
          target:'http://10.10.18.46:910/Server.svc/',
+        // target:'http://localhost:880/Server.svc/',
         host:'http://10.10.18.46:888',
         changeOrigin:true,
       }
