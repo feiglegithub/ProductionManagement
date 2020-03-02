@@ -38,8 +38,8 @@
                                             <span class="showmsg f-ml10">{{item.SubBatchNo}}</span>
                                         </div>
                                         <div class="showlistmsg">
-                                            <span class="label">当前工序:</span>
-                                            <span class="showmsg f-ml10">{{item.CurrentProcessName}}</span>
+                                            <span class="label">下一工序:</span>
+                                            <span class="showmsg f-ml10">{{item.NextProcessName}}</span>
                                         </div>
                                     </div>
                                     
