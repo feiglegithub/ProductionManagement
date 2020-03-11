@@ -154,6 +154,14 @@
                         </div>
                     </div>
                 </grid-item>
+                <grid-item class="f-flexjscen" @click.native="$router.push({name:'WarehouseRawMaterial'})" v-if="showWarehouseRawMaterial">
+                    <div class="m-otherchoice">
+                        <div >
+                            <span class="iconfont icon-dianjian"></span>
+                            <p class="operationtitle">仓库原材料接收</p>
+                        </div>
+                    </div>
+                </grid-item>
             </grid>
         </div>
         <div class="m-footers">
@@ -190,7 +198,8 @@ export default {
             showReleasePlate:false,
             showCheckWork:false,
             showWipTrace:false,
-            showSecondaryProcess:false
+            showSecondaryProcess:false,
+            showWarehouseRawMaterial:false
         }
     },
     components: {
@@ -269,6 +278,9 @@ export default {
                         }
                         if(element.code=='二次加工单'){
                             this.showSecondaryProcess=true;
+                        }
+                        if(element.code=='仓库原材料接收'){
+                            this.showWarehouseRawMaterial=true;
                         }
                     });
                 }
