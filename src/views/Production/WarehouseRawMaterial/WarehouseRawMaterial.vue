@@ -103,7 +103,17 @@ export default {
                 return
             }
 
-            this.getWarehouseMaterialData(this.BoardLabel)
+            var boardLabel = this.BoardLabel
+            var idxChar = boardLabel.lastIndexOf('_')
+
+            if(idxChar > 0){
+                // 条形码的任务号为英文括号，而后台任务号为中文括号
+                var left = boardLabel.substring(0, idxChar)
+                var right = boardLabel.substr(idxChar + 1).replace('(', '（').replace(')', '）')
+                boardLabel = `${left}_${right}`
+            }
+
+            this.getWarehouseMaterialData(boardLabel)
             console.log(this.BoardLabel);
         },
         //触发单项左右滑动
