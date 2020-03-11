@@ -393,7 +393,7 @@ export default {
                     this.WorkInfoList=[[]]
                     console.log(this.GetWorkInfo);
                     this.WorkInfoList = [this.GetWorkInfo.map(item=>{
-                       return {name:item.StaffName,value:item.Id}
+                       return {name:`${item.StaffName} ${item.WorkShiftName} ${item.ProcessName} ${item.MachineCode}`,value:item.Id}
                     })]
                     if(res.Result.Data.length>0){
                         this.ShowWorkInfo=true
