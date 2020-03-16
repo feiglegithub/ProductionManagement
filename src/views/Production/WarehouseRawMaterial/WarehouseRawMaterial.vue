@@ -9,9 +9,9 @@
         <div class="f-flexvw f-flexg1 f-pdlr5">
             <div class="g-inp" style="min-height:40px;">
                 <div class="m-inp f-mtb5">
-                    <span class="laber100" style="width:35%">大板标签</span>
+                    <span class="laber100" style="width:35%">大板标签/批次</span>
                     <span class="inp s-inpbg" style="width:65%">
-                        <input v-model="BoardLabel" ref="BoardLabelInp" placeholder="请扫描大板标签" type="text" @keyup.enter="getBoardLabel()" class="s-inpbg">
+                        <input v-model="BoardLabel" ref="BoardLabelInp" placeholder="请扫描大板标签或输入批次" type="text" @keyup.enter="getBoardLabel()" class="s-inpbg">
                     </span>
                 </div>
             </div>
@@ -99,21 +99,11 @@ export default {
         getBoardLabel(){
             if(!this.BoardLabel){
                 this.showPositionValue=true
-                this.Msg='大板标签不能为空'
+                this.Msg='大板标签/批次不能为空'
                 return
             }
 
-            var boardLabel = this.BoardLabel
-            var idxChar = boardLabel.lastIndexOf('_')
-
-            if(idxChar > 0){
-                // 条形码的任务号为英文括号，而后台任务号为中文括号
-                var left = boardLabel.substring(0, idxChar)
-                var right = boardLabel.substr(idxChar + 1).replace('(', '（').replace(')', '）')
-                boardLabel = `${left}_${right}`
-            }
-
-            this.getWarehouseMaterialData(boardLabel)
+            this.getWarehouseMaterialData(this.BoardLabel)
             console.log(this.BoardLabel);
         },
         //触发单项左右滑动
