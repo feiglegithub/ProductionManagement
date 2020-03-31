@@ -9,7 +9,9 @@ import Collection from '../../views/Production/ProcessHandover/Collection.vue'
 //过站采集
 import OverCollection from '../../views/Production/OverStatiionCollection/OverStatiionCollection.vue'
 import OverResourceSelection from '../../views/Production/OverStatiionCollection/OverStatiionResourceSelection.vue'
-
+// 异形板采集
+import SpecialPanelCollection from '../../views/Production/SpecialPanelCollection/SpecialPanelCollection.vue'
+import SpecialPanelResourceSelection from '../../views/Production/SpecialPanelCollection/SpecialPanelResourceSelection.vue'
 //补料返工单
 import FeedingReworkIndex from '../../views/Production/FeedingRework/FeedingReworkIndex.vue'
 import AddFeedingRework from '../../views/Production/FeedingRework/AddFeedingRework.vue'
@@ -96,6 +98,17 @@ export default [
     path: '/OverResourceSelection',
     name: 'OverResourceSelection',
     component: OverResourceSelection,
+  },
+  //异形板采集
+  {
+    path: '/SpecialPanelCollection',
+    name: 'SpecialPanelCollection',
+    component: SpecialPanelCollection,
+  },
+  {
+    path: '/SpecialPanelResourceSelection',
+    name: 'SpecialPanelResourceSelection',
+    component: SpecialPanelResourceSelection,
   },
   //补料返工单
   {

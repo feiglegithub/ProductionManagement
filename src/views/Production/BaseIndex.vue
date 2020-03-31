@@ -37,7 +37,15 @@
                     <div class="m-otherchoice">
                         <div >
                             <span class="iconfont icon-dianjian"></span>
-                            <p class="operationtitle">过站采集(异型与小板件)</p>
+                            <p class="operationtitle">小板件过站采集</p>
+                        </div>
+                    </div>
+                </grid-item>
+                <grid-item class="f-flexjscen" @click.native="$router.push({name:'SpecialPanelResourceSelection'})" v-if="showSpecialPanelCollection">
+                    <div class="m-otherchoice">
+                        <div >
+                            <span class="iconfont icon-dianjian"></span>
+                            <p class="operationtitle">异形板采集</p>
                         </div>
                     </div>
                 </grid-item>
@@ -185,6 +193,7 @@ export default {
             showUntying:false,
             showProcessHandover:false,
             showOverStatiionCollection:false,
+            showSpecialPanelCollection:false,
             showFeedingReworkIndex:false,
             showBatchFeeding:false,
             showFeedingReworkedList:false,
@@ -236,6 +245,9 @@ export default {
                         // }
                         if(element.code=='过站采集'){
                             this.showOverStatiionCollection=true
+                        }
+                        if(element.code=="异形板采集"){
+                            this.showSpecialPanelCollection=true
                         }
                         if(element.code=='补料创建'){
                             this.showFeedingReworkIndex=true
