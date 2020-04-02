@@ -154,7 +154,7 @@
                         </div>
                     </div>
                 </grid-item>
-                <grid-item class="f-flexjscen" @click.native="$router.push({name:'SecondaryProcess'})" v-if="showSecondaryProcess">
+                <grid-item class="f-flexjscen" @click.native="$router.push({name:'SecondaryProcessResourceSelection'})" v-if="showSecondaryProcess">
                     <div class="m-otherchoice">
                         <div >
                             <span class="iconfont icon-dianjian"></span>

@@ -55,6 +55,7 @@ import WipTrace from '../../views/Production/WipTrace/WipTrace.vue'
 
 // 二次加工单
 import SecondaryProcess from '../../views/Production/SecondaryProcess/SecondaryProcess.vue'
+import SecondaryProcessResourceSelection from '../../views/Production/SecondaryProcess/SecondaryProcessResourceSelection.vue'
 
 // 仓库原材料接收
 import WarehouseRawMaterial from '../../views/Production/WarehouseRawMaterial/WarehouseRawMaterial.vue'
@@ -245,6 +246,11 @@ export default [
     path: '/SecondaryProcess',
     name: 'SecondaryProcess',
     component: SecondaryProcess,
+  },
+  {
+    path: '/SecondaryProcessResourceSelection',
+    name: 'SecondaryProcessResourceSelection',
+    component: SecondaryProcessResourceSelection,
   },
 
   // 仓库原材料接收
