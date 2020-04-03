@@ -7,8 +7,8 @@
         <div class="f-flexvw f-flexg1 f-pdlr5">
             <div class="g-inp" style="min-height:40px;">
                 <div class="m-inp f-mtb5">
-                    <span class="laber100" style="width:35%">UPI</span>
-                    <span class="inp s-inpbg" style="width:65%">
+                    <span class="laber100">UPI</span>
+                    <span class="inp s-inpbg">
                         <input v-model="UPI" ref="UPIInp" placeholder="请扫描UPI条码" type="text" @keyup.enter="getUPI()" class="s-inpbg">
                     </span>
                 </div>
@@ -38,7 +38,7 @@
                                             <span class="showmsg f-ml10">{{item.ResourceName}}</span>
                                         </div>
                                         <div class="showlistmsg">
-                                            <span class="label">时间:</span>
+                                            <span class="label">采集时间:</span>
                                             <span class="showmsg f-ml10">{{item.WorkTime}}</span>
                                         </div>
                                         <div class="showlistmsg">
@@ -52,6 +52,10 @@
                                         <div class="showlistmsg">
                                             <span class="label">过站方式:</span>
                                             <span class="showmsg f-ml10">{{item.Direction}}</span>
+                                        </div>
+                                        <div class="showlistmsg" v-if="item.CurrentWork == '开料'">
+                                            <span class="label">满托时间:</span>
+                                            <span class="showmsg f-ml10">{{item.ConfirmFullTime}}</span>
                                         </div>
                                     </div>
                                     
