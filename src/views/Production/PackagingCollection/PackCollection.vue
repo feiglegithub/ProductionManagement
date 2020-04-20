@@ -160,21 +160,17 @@ export default {
                 return
             }
             console.log(JSON.stringify(this.DataList));
-            this.scanPackageCollectPa(this.BarCode,this.DataList)
+            this.scanPackageCollect(this.$store.getters.getPackWorkInfo,this.BarCode,this.DataList)
         },
         //触发单项左右滑动
         handleEvents(type){
             console.log(type);
         },
         //点击删除按钮，删除当前项
-        onButtonClick(index,item){
+        onButtonClick(index, item){
             console.log(index);
             console.log(item);
-            this.DataList.splice(index,1)
-            this.PostCode=this.PostCode.filter((PackageBarcode)=>{
-                return PackageBarcode!=item.PackageBarcode
-            });  
-            console.log(this.PostCode);
+            this.deletePackageCollect(this.$store.getters.getPackWorkInfo, index, item)
         },
         //失去焦点事件
         getBlur(){
@@ -215,11 +211,43 @@ export default {
                 PostResourceId = this.$route.params.ResourceId
             this.subPackageWageCollect(this.DataList,this.$store.getters.getPackWorkInfo,PostWorkShopId,PostProcessId,PostResourceId)
         },
+        //接口：获取已扫描包装条码
+        getScannedPackageCollectData(worker){
+            this.loadingtitle = '加载中'
+            this.showThost = true
+            this.$axiosApi.getScannedPackageCollectData(worker).then(res => {
+                this.showThost = false
+
+                if (res.Success) {
+                    if (!!res.Result) {
+                        if (res.Result.HasMessage && !!res.Result.Message) {
+                            this.ShowConfirm = true
+                            this.ConfirmMsg = res.Result.Message
+                            this.BadColor = true
+                            this.Successbtn = false
+                            this.Dangerbtn = true
+                        }
+
+                        if (!!res.Result.Data) {
+                            this.PostCode = []
+                            this.DataList = []
+                            res.Result.Data.forEach(item => {
+                                this.PostCode.push(item.PackageBarcode)
+                                this.DataList.push(item)
+                            });
+                        }
+                    }
+                } else {
+                    this.showPositionValue = true
+                    this.Msg = res.Message
+                }
+            })
+        },
         //接口：扫描包装条码
-        scanPackageCollectPa(pa,scanedDatas){
+        scanPackageCollect(worker,pa,scanedDatas){
             this.loadingtitle='加载中'
             this.showThost=true
-            this.$axiosApi.scanPackageCollectPa(pa,scanedDatas).then(res=>{
+            this.$axiosApi.scanPackageCollect(worker,pa,scanedDatas).then(res=>{
                 this.showThost=false
                 if(res.Success==true){
                     console.log(res);
@@ -236,6 +264,25 @@ export default {
                     this.BarCode=null
                 }
             }) 
+        },
+        //接口：删除包装条码
+        deletePackageCollect(worker, index, paaItem){
+            this.loadingtitle = '加载中'
+            this.showThost = true
+            this.$axiosApi.deletePackageCollect(worker, paaItem.PackageBarcode).then(res => {
+                this.showThost = false
+                if (res.Success) {
+                    console.log(res);
+                    this.DataList.splice(index, 1)
+                    this.PostCode = this.PostCode.filter(packageBarcode => {
+                        return packageBarcode != paaItem.PackageBarcode
+                    });
+                    console.log(this.PostCode);
+                } else {
+                    this.showPositionValue = true
+                    this.Msg = res.Message
+                }
+            })
         },
         //接口：提交包装采集
         subPackageWageCollect(packageCollectDatas,worker,workshopId,processId,resourceId){
@@ -279,6 +326,7 @@ export default {
             let mystore=this.$store.getters.getPackWorkInfo
             this.ChoiceStaffName=`${mystore.StaffName} ${mystore.WorkShiftName} ${mystore.ProcessName} ${mystore.MachineCode}`
         }
+        this.getScannedPackageCollectData(this.$store.getters.getPackWorkInfo)
     },
     // created(){
     //     if(window.history && window.history.pushState){
