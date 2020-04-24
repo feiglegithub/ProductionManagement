@@ -234,7 +234,7 @@ export default {
                             res.Result.Data.forEach(item => {
                                 this.PostCode.push(item.PackageBarcode)
                                 this.DataList.push(item)
-                            });
+                            })
                         }
                     }
                 } else {
@@ -244,24 +244,40 @@ export default {
             })
         },
         //接口：扫描包装条码
-        scanPackageCollect(worker,pa,scanedDatas){
-            this.loadingtitle='加载中'
-            this.showThost=true
-            this.$axiosApi.scanPackageCollect(worker,pa,scanedDatas).then(res=>{
-                this.showThost=false
-                if(res.Success==true){
+        scanPackageCollect(worker, pa, scanedDatas){
+            this.loadingtitle = '加载中'
+            this.showThost = true
+            this.$axiosApi.scanPackageCollect(worker, pa, scanedDatas).then(res => {
+                this.showThost = false
+
+                if (res.Success) {
                     console.log(res);
-                    if(res.Result.HasMessage===true){
-                        this.Msg=res.Result.Message
-                        this.showPositionValue=true
+
+                    if (res.Result.HasMessage) {
+                        if (res.Result.IsConfirmMsg) {
+                            this.ShowConfirm = true
+                            this.ConfirmMsg = res.Result.Message.substr(0, 200)
+                            this.BadColor = true
+                            this.Successbtn = false
+                            this.Dangerbtn = true
+                        } else {
+                            this.Msg = res.Result.Message
+                            this.showPositionValue = true
+                        }
                     }
-                    this.PostCode.unshift(this.BarCode)
-                    this.DataList.unshift(res.Result.Data)
-                    this.BarCode=null
-                }else{
-                    this.showPositionValue=true
-                    this.Msg=res.Message
-                    this.BarCode=null
+
+                    if (!!res.Result.Data) {
+                        res.Result.Data.forEach(item => {
+                            this.PostCode.push(item.PackageBarcode)
+                            this.DataList.push(item)
+                        })
+                    }
+
+                    this.BarCode = null
+                } else {
+                    this.showPositionValue = true
+                    this.Msg = res.Message
+                    this.BarCode = null
                 }
             }) 
         },
