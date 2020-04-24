@@ -286,6 +286,21 @@ export default {
         makePostData(){
             //构造提交的数据
             this.ChoiceResponseData={}
+
+            // 补充原填写数据
+            if (!!this.FeedingReworkData.Details && !!this.FeedingReworkData.Details[0].ResponseData)
+            {
+                this.ChoiceResponseData.EquipId = this.FeedingReworkData.Details[0].ResponseData.EquipId
+                this.ChoiceResponseData.MachineAndTypeName = this.FeedingReworkData.Details[0].ResponseData.MachineAndTypeName
+                this.ChoiceResponseData.DefectCategoryId = this.FeedingReworkData.Details[0].ResponseData.DefectCategoryId
+                this.ChoiceResponseData.DefectCategory = this.FeedingReworkData.Details[0].ResponseData.DefectCategory
+                this.ChoiceResponseData.DefectId = this.FeedingReworkData.Details[0].ResponseData.DefectId
+                this.ChoiceResponseData.Defect = this.FeedingReworkData.Details[0].ResponseData.Defect
+                this.ChoiceResponseData.DefectDescription = this.FeedingReworkData.Details[0].ResponseData.DefectDescription
+                this.ChoiceResponseData.QualityInspectionId = this.FeedingReworkData.Details[0].ResponseData.QualityInspectionId
+                this.ChoiceResponseData.QualityInspection = this.FeedingReworkData.Details[0].ResponseData.QualityInspection
+            }
+
             this.ChoiceResponseData.ResWorkGroupId=this.GroupId
             this.ChoiceResponseData.ResWorkGroup=this.Group
             this.ChoiceResponseData.ResEmployeeId=this.PersonLiableId
