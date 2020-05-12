@@ -2,7 +2,7 @@
     <div class="m-header">
         <div class="logo">
             <span class="logotitle">索菲亞</span>
-            <span class="logodesc">懂空间 会生活</span>
+            <span class="logodesc">柜类定制专家</span>
         </div>
         <div class="title">生产管理</div>
         <div class="back" @click="closeApp">退出</div>
