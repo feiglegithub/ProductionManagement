@@ -170,6 +170,14 @@
                         </div>
                     </div>
                 </grid-item>
+                <grid-item class="f-flexjscen" @click.native="$router.push({name:'ReturnRepairResourceSelection'})" v-if="showReturnRepair">
+                    <div class="m-otherchoice">
+                        <div >
+                            <span class="iconfont icon-dianjian"></span>
+                            <p class="operationtitle">发起返修</p>
+                        </div>
+                    </div>
+                </grid-item>
             </grid>
         </div>
         <div class="m-footers">
@@ -208,7 +216,8 @@ export default {
             showCheckWork:false,
             showWipTrace:false,
             showSecondaryProcess:false,
-            showWarehouseRawMaterial:false
+            showWarehouseRawMaterial:false,
+            showReturnRepair:false,
         }
     },
     components: {
@@ -293,6 +302,9 @@ export default {
                         }
                         if(element.code=='仓库原材料接收'){
                             this.showWarehouseRawMaterial=true;
+                        }
+                        if (element.code == '发起返修') {
+                            this.showReturnRepair = true
                         }
                     });
                 }

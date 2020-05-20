@@ -59,6 +59,13 @@ import SecondaryProcessResourceSelection from '../../views/Production/SecondaryP
 
 // 仓库原材料接收
 import WarehouseRawMaterial from '../../views/Production/WarehouseRawMaterial/WarehouseRawMaterial.vue'
+
+// 发起返修
+import ReturnRepairResourceSelection from '../../views/Production/ReturnRepairs/ReturnRepairResourceSelection.vue'
+import ReturnRepairUpi from '../../views/Production/ReturnRepairs/ReturnRepairUpi.vue'
+import ReturnRepairBatch from '../../views/Production/ReturnRepairs/ReturnRepairBatch.vue'
+import ReturnRepairBatchDetail from '../../views/Production/ReturnRepairs/ReturnRepairBatchDetail.vue'
+import ReturnRepairProcessSelection from '../../views/Production/ReturnRepairs/ReturnRepairProcessSelection.vue'
 export default [
     
   {
@@ -258,5 +265,32 @@ export default [
     path: '/WarehouseRawMaterial',
     name: 'WarehouseRawMaterial',
     component: WarehouseRawMaterial,
+  },
+
+  // 发起返修
+  {
+    path: '/ReturnRepairResourceSelection',
+    name: 'ReturnRepairResourceSelection',
+    component: ReturnRepairResourceSelection,
+  },
+  {
+    path: '/ReturnRepairUpi',
+    name: 'ReturnRepairUpi',
+    component: ReturnRepairUpi,
+  },
+  {
+    path: '/ReturnRepairBatch',
+    name: 'ReturnRepairBatch',
+    component: ReturnRepairBatch,
+  },
+  {
+    path: '/ReturnRepairBatchDetail',
+    name: 'ReturnRepairBatchDetail',
+    component: ReturnRepairBatchDetail,
+  },
+  {
+    path: '/ReturnRepairProcessSelection',
+    name: 'ReturnRepairProcessSelection',
+    component: ReturnRepairProcessSelection,
   },
 ]
