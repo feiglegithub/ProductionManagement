@@ -14,6 +14,11 @@
                     </div>
                 </div>
             </div>
+            <div class="m-rowbutton">
+                <div class="rbutton" v-for="(item, index) in ShiftList" :key="index" @click="doChoiceShift(item)" :style="{ 'background-color': item == ChoiceShift ? '#0066CC' : 'transparent' }">
+                    <span :class="item == ChoiceShift ? 'choicelabel' : 'emptylabel'">{{item}}</span>
+                </div>
+            </div>
             <div class="g-scrollbox">
                 <div style="overflow-y: auto;">
                     <s-messageheader class="f-mt10" messagetitle="选择返修批次"></s-messageheader>
@@ -22,7 +27,6 @@
                             <div class="num">{{index + 1}}</div>
                             <div class="showbox">
                                 <div class="showlistmsg">
-                                    <span class="label">子批次:</span>
                                     <span class="showmsg f-ml10">{{item.SubBatchCode}}</span>
                                 </div>
                             </div>
@@ -51,6 +55,8 @@ export default {
             ChoiceProductDate: null,    //选择的日期
             ShowProductDate: false,     //控制日期弹窗的显隐
 
+            ShiftList: [],              //班次列表
+            ChoiceShift: null,          //选择的班次
             BatchData: [],              //批次数据
             ShowBatchData: [],          //显示批次数据
         }
@@ -67,6 +73,12 @@ export default {
             }
 
             this.getTaskPlatformSubBatchInfo(this.$route.params.WorkshopId, this.$route.params.ProcessId)
+        },
+        //点击班次
+        doChoiceShift(item) {
+            this.ChoiceShift = item
+            this.ShowBatchData = item == '全部' ? this.BatchData : this.BatchData.filter(data => data.ShiftCodeNo == item)
+            this.ShowBatchData.sort(this.compareBatch)
         },
         //点击返修批次
         doReturnRepair(batchInfo) {
@@ -85,6 +97,7 @@ export default {
         getTaskPlatformSubBatchInfo(departmentId, processId) {
             this.LoadingTitle = '加载中'
             this.ShowThost = true
+            this.ShiftList = []
             this.BatchData = []
             this.ShowBatchData = []
 
@@ -95,13 +108,56 @@ export default {
                     // console.log(res);
                     if (!!res.Result) {
                         this.BatchData = res.Result
-                        this.ShowBatchData = res.Result
+
+                        this.BatchData.forEach(item => {
+                            let shiftCodeNo = item.SubBatchCode.substr(0, item.SubBatchCode.indexOf('-')).substr(8)
+                            item.ShiftCodeNo = shiftCodeNo
+
+                            if (this.ShiftList.indexOf(shiftCodeNo) < 0) {
+                                this.ShiftList.push(shiftCodeNo)
+                            }
+                        })
+                        this.ShowBatchData = this.BatchData
+                        this.ShowBatchData.sort(this.compareBatch)
+                        
+                        //对班次排序
+                        if (this.ShiftList.length > 0) {
+                            this.ShiftList.sort((shift1, shift2) => {
+                                let num1 = Number(shift1.substr(1))
+                                let num2 = Number(shift2.substr(1))
+
+                                return num1 < num2 ? -1 : 1
+                            })
+                            this.ShiftList.unshift('全部')
+                            this.ChoiceShift = '全部'
+                        }
                     }
                 } else {
                     this.ShowPositionValue = true
                     this.Msg = res.Message
                 }
             })
+        },
+        //批次数据排序
+        compareBatch(item1, item2) {
+            let batchCode1 = item1.SubBatchCode.substr(0, item1.SubBatchCode.indexOf('-'))
+            let batchCode2 = item2.SubBatchCode.substr(0, item2.SubBatchCode.indexOf('-'))
+            let batchNum1 = Number(item1.SubBatchCode.substr(item1.SubBatchCode.indexOf('-') + 1, item1.SubBatchCode.indexOf('(') - item1.SubBatchCode.indexOf('-') - 1))
+            let batchNum2 = Number(item2.SubBatchCode.substr(item2.SubBatchCode.indexOf('-') + 1, item2.SubBatchCode.indexOf('(') - item2.SubBatchCode.indexOf('-') - 1))
+
+            if (batchCode1 < batchCode2) {
+                return -1;
+            } else if (batchCode1 > batchCode2) {
+                return 1;
+            } else {
+                if (batchNum1 < batchNum2) {
+                    return -1;
+                } else if (batchNum1 > batchNum2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
         }
     },
     mounted () {
