@@ -322,9 +322,9 @@ export default {
                     this.BadColor=true
                     this.Successbtn=false
                     this.Dangerbtn=true
-                    this.PostCode=[]
-                    this.BarCode=null
-                    this.DataList=[]
+                    // this.PostCode=[]
+                    // this.BarCode=null
+                    // this.DataList=[]
                 }
             }) 
         },
