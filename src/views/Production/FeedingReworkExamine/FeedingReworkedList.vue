@@ -11,11 +11,19 @@
                 {{ExamieTitle}}
         </x-header>
         <div class="f-flexvw f-flexg1 f-pdlr5">
+
+            <div class="m-rowbutton">
+                
+                <div class="rbutton" v-for="(item, index) in WorkGroupList" :key="index" @click="doChoiceWorkGroup(item)" :style="{ 'background-color': item == ChoiceWorkGroup ? '#0066CC' : 'transparent' }" style="width:auto;padding:4px">
+                    <span :class="item == ChoiceWorkGroup ? 'choicelabel' : 'emptylabel'">{{item}}</span>
+                </div>
+            </div>
+
             <div class="g-scrollbox">
                 <div class="f-auto">
                     <s-messageheader class="f-mt10" messagetitle="单据概要信息"></s-messageheader>
                     <div class="f-pd5 s-border">
-                        <div class="m-listbox f-mtb5" v-for="(item,index) in DataList" :key="index" @click="doSure(item)">
+                        <div class="m-listbox f-mtb5" v-for="(item,index) in ShowFeedingList" :key="index" @click="doSure(item)">
                             <div class="num">
                                 {{index+1}}
                             </div>
@@ -71,6 +79,9 @@ export default {
             ShowConfirm:false,      //控制提示弹窗的显隐
             SupportNumber:null,      //托号
             UPI:null,                //UPI
+            ChoiceWorkGroup:null,
+            WorkGroupList: [],              //制单班组
+            ShowFeedingList: [],              //制单班组
             DataList:[
                 // {
                 //     "RepairNumber":"c64s9194",
@@ -137,6 +148,12 @@ export default {
                 this.$router.push({name:"CriticismResponsibilityRecognition",params:{data:item}})
             }
         },
+        doChoiceWorkGroup(item) {
+            this.ChoiceWorkGroup = item
+            console.log(item);
+            this.ShowFeedingList = item == '全部' ? this.DataList : this.DataList.filter(data => data.WorkGroup == item)
+            //this.ShowBatchData.sort(this.CreateDate)
+        },
         //接口：获取暂存单据信息
         getReproduct(AddType){
             this.loadingtitle='加载中'
@@ -146,6 +163,15 @@ export default {
                 this.showThost=false
                 if(res.Success==true){
                     this.DataList=res.Result.Datas
+                    this.WorkGroupList.push("全部");
+                    this.DataList.forEach(item => {
+                        if (this.WorkGroupList.indexOf(item.WorkGroup) < 0) {
+                            this.WorkGroupList.push(item.WorkGroup)
+                        }
+                        
+                    })
+                    this.ChoiceWorkGroup="全部";
+                    this.ShowFeedingList=this.DataList;
                     console.log(res);
                 }else{
                     this.showPositionValue=true
