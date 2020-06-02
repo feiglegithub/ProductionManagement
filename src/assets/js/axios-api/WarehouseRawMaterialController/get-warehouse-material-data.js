@@ -1,9 +1,12 @@
 import Vue from 'vue';
 import Storage from '../../storage.js'
-export default function (boardLabel) {
+export default function (departmentId, boardLabel) {
     return Vue.axios.post(Storage.url(), {
         "ApiType": "WarehouseRawMaterialController",
         "Parameters": [
+          {
+            "Value": departmentId
+          },
           {
             "Value": boardLabel
           }

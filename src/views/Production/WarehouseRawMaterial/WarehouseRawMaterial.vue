@@ -7,10 +7,17 @@
             <a slot="right" @click="doPost" :class="{'f-noclick':showThost}">提交</a>
         </x-header>
         <div class="f-flexvw f-flexg1 f-pdlr5">
-            <div class="g-inp" style="min-height:40px;">
+            <div class="g-inp" style="min-height:80px;">
                 <div class="m-inp f-mtb5">
-                    <span class="laber100" style="width:35%">大板标签/批次</span>
-                    <span class="inp s-inpbg" style="width:65%">
+                    <span class="laber100" style="width: 30%;">车间</span>
+                    <div @click="ShowWorkshop = true" class="m-selector" style="width: 70%;">
+                        <popup-picker :show.sync="ShowWorkshop" :data="WorkshopList" @on-change="changeWorkshop" value-text-align='left'></popup-picker>
+                        <div>{{ChoiceWorkshop}}</div>
+                    </div>
+                </div>
+                <div class="m-inp f-mtb5">
+                    <span class="laber100" style="width: 30%;">大板标签/批次</span>
+                    <span class="inp s-inpbg" style="width: 70%;">
                         <input v-model="BoardLabel" ref="BoardLabelInp" placeholder="请扫描大板标签或输入批次" type="text" @keyup.enter="getBoardLabel()" class="s-inpbg">
                     </span>
                 </div>
@@ -79,31 +86,54 @@ export default {
     name: '',
     data() {
         return {
+            ConfigWorkshopStorageKey:'WarehouseMaterialWorkshopKey',  //配置存储键
             ShowConfirm:false,       //控制提示弹窗的显隐
             ConfirmMsg:'提交成功',
             BadColor:false,
             Successbtn:true,
             Dangerbtn:true,
             showPositionValue:false,  //提示信息显隐
-            Msg:'有问题',             //提示信息
+            Msg:'有问题',              //提示信息
             showThost:false,          //圈圈的显隐
-            loadingtitle:'提交中',    //圈圈文字
+            loadingtitle:'提交中',     //圈圈文字
+
+            ShowWorkshop: false,      //控制车间弹窗的显隐
+            ChoiceWorkshop: null,     //选择的车间名称
+            ChoiceWorkshopId: null,   //选择的车间id
+            WorkshopList: [[' ']],    //显示的车间列表
+            GetWorkshop: null,        //接口获取车间的数据
+
             BoardLabel:null,          //大板标签
-            DataList:[],             //显示的数据
+            DataList:[],              //显示的数据
         }
     },
     components: {
     },
     methods: {
+        //选择某一项车间
+        changeWorkshop(value) {
+            let id = value[0]
+            this.ChoiceWorkshopId = value[0]
+            localStorage.setItem(this.ConfigWorkshopStorageKey, this.ChoiceWorkshopId)
+            this.ChoiceWorkshop = this.GetWorkshop.find(item => item.Id == id).Code
+            this.ChoiceResourceId = null
+            this.ChoiceResource = null
+        },
         //获取大板标签对应的数据
         getBoardLabel(){
+            if (this.ChoiceWorkshopId == '' || this.ChoiceWorkshopId == null) {
+                this.Msg = '请先选择车间'
+                this.showPositionValue = true
+                return
+            }
+
             if(!this.BoardLabel){
                 this.showPositionValue=true
                 this.Msg='大板标签/批次不能为空'
                 return
             }
 
-            this.getWarehouseMaterialData(this.BoardLabel)
+            this.getWarehouseMaterialData(this.ChoiceWorkshopId, this.BoardLabel)
             console.log(this.BoardLabel);
         },
         //触发单项左右滑动
@@ -134,6 +164,12 @@ export default {
         },
         //点击提交按钮
         doPost(){
+            if (this.ChoiceWorkshopId == '' || this.ChoiceWorkshopId == null) {
+                this.Msg = '请先选择车间'
+                this.showPositionValue = true
+                return
+            }
+
             if(!this.DataList || this.DataList.length <= 0){
                 this.Msg='提交数据不能为空'
                 this.showPositionValue=true
@@ -143,12 +179,29 @@ export default {
             console.log(`${this.DataList}`);
             this.confirmWarehouseMaterialDetail(this.DataList)
         },
+        //接口：获取车间数据接口
+        async getCollectWorkshops() {
+            this.loadingtitle = '加载中'
+            this.showThost = true
+            await this.$axiosApi.getCollectWorkshops('', 0, 1).then(res => {
+                this.showThost = false
+
+                if (res.Success) {
+                    // console.log(res);
+                    this.GetWorkshop = res.Result.Datas
+                    this.WorkshopList = [this.GetWorkshop.map(item => { return { name: item.Code, value: item.Id } })]
+                } else {
+                    this.showPositionValue = true
+                    this.Msg = res.Message
+                }
+            })
+        },
         //接口：获取仓库材料数据
-        getWarehouseMaterialData(boardLabel){
+        getWarehouseMaterialData(departmentId, boardLabel){
             this.loadingtitle='加载中'
             this.showThost=true
 
-            this.$axiosApi.getWarehouseMaterialData(boardLabel).then(res=>{
+            this.$axiosApi.getWarehouseMaterialData(departmentId, boardLabel).then(res=>{
                 this.showThost=false
 
                 if(res.Success){
@@ -196,9 +249,30 @@ export default {
                     this.Dangerbtn=true
                 }
             })
+        },
+        //获取存在本地的车间，并且判断之前存储的值是否在当前车间列表中存在，存在才赋值
+        async judgeWorkshop() {
+            await this.getCollectWorkshops()
+
+            if (localStorage.getItem(this.ConfigWorkshopStorageKey)) {
+                let newArr = this.GetWorkshop.filter(item => {
+                    return item.Id == localStorage.getItem(this.ConfigWorkshopStorageKey)
+                })
+
+                if (newArr.length > 0) {
+                    this.ChoiceWorkshopId = localStorage.getItem(this.ConfigWorkshopStorageKey)
+                    this.ChoiceWorkshop = newArr[0].Code
+                }
+            }
+        },
+        async controlExecutionOrder() {
+            await this.judgeWorkshop()
         }
     },
-    mounted () {
+    created() {
+        this.controlExecutionOrder()
+    },
+    mounted() {
         this.$refs.BoardLabelInp.focus()
     }
 }
