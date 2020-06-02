@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="m-rowbutton">
-                <div class="rbutton" v-for="(item, index) in ShiftList" :key="index" @click="doChoiceShift(item)" :style="{ 'background-color': item == ChoiceShift ? '#0066CC' : 'transparent' }">
+                <div class="rbutton" v-for="(item, index) in ShiftList" :key="index" @click="doChoiceShift(item)" :style="{ 'background-color': item == ChoiceShift ? '#0066CC' : 'transparent' }" style="width:80px">
                     <span :class="item == ChoiceShift ? 'choicelabel' : 'emptylabel'">{{item}}</span>
                 </div>
             </div>
