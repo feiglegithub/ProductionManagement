@@ -12,9 +12,9 @@
         </x-header>
         <div class="f-flexvw f-flexg1 f-pdlr5">
 
-            <div class="m-rowbutton">
+            <div class="m-rowbutton" style="padding-bottom:9px">
                 
-                <div class="rbutton" v-for="(item, index) in WorkGroupList" :key="index" @click="doChoiceWorkGroup(item)" :style="{ 'background-color': item == ChoiceWorkGroup ? '#0066CC' : 'transparent' }" style="width:auto;padding:4px">
+                <div class="rbutton" v-for="(item, index) in WorkGroupList" :key="index" @click="doChoiceWorkGroup(item)" :style="{ 'background-color': item == ChoiceWorkGroup ? '#0066CC' : 'transparent' }" style="width:auto;padding:1px 5px 0 5px">
                     <span :class="item == ChoiceWorkGroup ? 'choicelabel' : 'emptylabel'">{{item}}</span>
                 </div>
             </div>
