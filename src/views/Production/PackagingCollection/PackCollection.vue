@@ -7,7 +7,7 @@
             <a slot="right" @click="doPost">提交</a>
         </x-header>
         <div class="f-flexvw f-flexg1 f-pdlr5">
-            <div class="g-inp" style="min-height:60px;">
+            <div class="g-inp" style="min-height:90px;">
                 <div class="m-inp f-mtb5">
                     <span class="laber">主手</span>
                     <span class="inp">
@@ -247,7 +247,8 @@ export default {
         scanPackageCollect(worker, pa, scanedDatas){
             this.loadingtitle = '加载中'
             this.showThost = true
-            this.$axiosApi.scanPackageCollect(worker, pa, scanedDatas).then(res => {
+            var workshopId = this.$route.params.WorkshopId;
+            this.$axiosApi.scanPackageCollect(workshopId, worker, pa, scanedDatas).then(res => {
                 this.showThost = false
 
                 if (res.Success) {
