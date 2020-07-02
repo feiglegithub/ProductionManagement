@@ -93,8 +93,8 @@ export default {
             showThost:false,                //圈圈的显隐
             loadingtitle:'提交中',                //圈圈文字
             BarCode:null,      //托号
+            workshopId:null,
             PostCode:[],             //提交的包装条码集合
-
             //---计件系统班别信息------
             WorkInfor:{
                 'EmpCode':'',
@@ -247,8 +247,8 @@ export default {
         scanPackageCollect(worker, pa, scanedDatas){
             this.loadingtitle = '加载中'
             this.showThost = true
-            var workshopId = this.$route.params.WorkshopId;
-            this.$axiosApi.scanPackageCollect(workshopId, worker, pa, scanedDatas).then(res => {
+            this.workshopId = this.$route.params.WorkshopId;
+            this.$axiosApi.scanPackageCollect(this.workshopId, worker, pa, scanedDatas).then(res => {
                 this.showThost = false
 
                 if (res.Success) {

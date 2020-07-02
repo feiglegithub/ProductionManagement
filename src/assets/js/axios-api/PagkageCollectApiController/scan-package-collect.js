@@ -13,10 +13,13 @@
  */
 import Vue from 'vue';
 import Storage from '../../storage.js'
-export default function (worker,pa,scanedDatas) {
+export default function (workshopId,worker,pa,scanedDatas) {
     return Vue.axios.post(Storage.url(), {
         "ApiType": "PagkageCollectApiController",
         "Parameters": [
+          {
+            "Value": workshopId
+          },
           {
             "Value": worker
           },
