@@ -305,11 +305,19 @@ export default {
             DefectCode:null,                //选择的缺陷代码
             DefectCodeId:null,            //选择的缺陷代码
 
+            ResTeam:null, //责任类别
+
             ShowGroup:false,        //控制班组弹窗的显隐
             GetGroup:null,             //接口获取到的班组的数据
             GroupList:[[' ']],     //班组的列表
             Group:null,                //选择的班组
             GroupId:null,            //选择的班组
+
+            ShowUnProduceGroup:false,        //控制班组弹窗的显隐
+            GetUnProduceGroup:null,             //接口获取到的班组的数据
+            UnProduceGroupList:[[' ']],     //班组的列表
+            UnProduceGroup:null,                //选择的班组
+            UnProduceGroupId:null,            //选择的班组
 
             ShowQualityTest:false,      //控制定责质检的显隐
             GetQualityTest:null,           //接口获取到定责质检的数据
@@ -373,6 +381,8 @@ export default {
                 "DefectDescription":null,   //缺陷描述
                 "ResWorkGroupId":null,      //责任班组id
                 "ResWorkGroup":null,        //责任班组名称
+                "UnResWorkGroupId":null,      //责任班组id
+                "UnResWorkGroup":null,        //责任班组名称
                 "ResEmployeeId":null,       //责任人id
                 "ResEmployee":null,         //责任人名称
                 "QualityInspectionId":null, //定责质检id
@@ -539,6 +549,8 @@ export default {
             this.ChoiceResponseData.DefectDescription=this.DefectDescription
             this.ChoiceResponseData.ResWorkGroupId=this.GroupId
             this.ChoiceResponseData.ResWorkGroup=this.Group
+            this.ChoiceResponseData.UnResWorkGroup = this.UnProduceGroup
+            this.ChoiceResponseData.UnResWorkGroupId = this.UnProduceGroupId
             this.ChoiceResponseData.ResEmployeeId=this.PersonLiableId
             this.ChoiceResponseData.ResEmployee=this.PersonLiable
             this.ChoiceResponseData.QualityInspectionId=this.QualityTestId
@@ -577,6 +589,8 @@ export default {
             this.DefectDescription=getDetails.DefectDescription
             this.GroupId=getDetails.ResWorkGroupId
             this.Group=getDetails.ResWorkGroup
+            this.UnProduceGroupId=getDetails.UnResWorkGroupId
+            this.UnProduceGroup=getDetails.UnResWorkGroup
             this.PersonLiableId=getDetails.ResEmployeeId
             this.PersonLiable=getDetails.ResEmployee
             this.QualityTestId=getDetails.QualityInspectionId
@@ -667,9 +681,9 @@ export default {
                             this.Msg=`明细${item.UPI}缺陷代码不能为空`
                             return
                         }
-                        if(!item.ResponseData.ResWorkGroupId){
+                        if(!item.ResponseData.ResWorkGroupId && !item.ResponseData.UnResWorkGroupId){
                             this.showPositionValue=true
-                            this.Msg=`明细${item.UPI}责任班组不能为空`
+                            this.Msg=`明细${item.UPI}责任班组 或 非生产责任班组 不能为空`
                             return
                         }
                     }

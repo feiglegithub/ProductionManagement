@@ -88,6 +88,12 @@
                                     </div>
                                 </div>
                                 <div class="m-baserowbox">
+                                    <span class="label80" >非生产责任班组:</span>
+                                    <div class="select s-bgwhile"  @click="clickUnProduceGroup">
+                                        <div>{{item.ResponseData.UnResWorkGroup}}</div>
+                                    </div>
+                                </div>
+                                <div class="m-baserowbox">
                                     <span class="label80" >考核情况:</span>
                                     <div class="select s-bgwhile"  @click="clickLiableExamine">
                                         
@@ -117,6 +123,13 @@
                             :show.sync="ShowGroup" 
                             :data="GroupList" 
                             @on-change="changeGroup"
+                            value-text-align='left'
+                        ></popup-picker>
+                        <!-- 责任班组 -->
+                        <popup-picker 
+                            :show.sync="ShowUnProduceGroup" 
+                            :data="UnProduceGroupList" 
+                            @on-change="changeUnProduceGroup"
                             value-text-align='left'
                         ></popup-picker>
                         <!-- 责任人 -->
@@ -211,6 +224,12 @@ export default {
             ResWorkGroup:null,                //选择的班组
             ResWorkGroupId:null,            //选择的班组
 
+            ShowUnProduceGroup:false,        //控制班组弹窗的显隐
+            GetUnProduceGroup:null,             //接口获取到的班组的数据
+            UnProduceGroupList:[[' ']],     //班组的列表
+            UnProduceGroup:null,                //选择的班组
+            UnProduceGroupId:null,            //选择的班组
+
             ShowPersonLiable:false,     //控制责任人的显隐
             GetPersonLiable:null,       //接口获取到责任人数据
             PersonLiableList:[[' ']],  //责任人列表
@@ -280,9 +299,32 @@ export default {
                 this.DataList[myindex].ResponseData.JointEmp=null
             }
             let id = val[0]
+            this.DataList[myindex].ResponseData.UnResWorkGroupId=null
+            this.DataList[myindex].ResponseData.UnResWorkGroup =null
             this.DataList[myindex].ResponseData.ResWorkGroupId=val[0]
             this.DataList[myindex].ResponseData.ResWorkGroup = this.GetGroup.find(item=>item.Id == id).Name
         },
+        //选择非生产责任班组
+        changeUnProduceGroup(val){
+            console.log(val[0]);
+            console.log(val[0]);
+            let myindex = this.$store.getters.getChoiceIndex
+            if(this.DataList[myindex].ResponseData.UnResWorkGroupId!=val[0]){
+                this.DataList[myindex].ResponseData.ResEmployeeId=null
+                this.DataList[myindex].ResponseData.ResEmployee=null
+                this.DataList[myindex].ResponseData.JointEmpId=null
+                this.DataList[myindex].ResponseData.JointEmp=null
+            }
+            let id = val[0]
+             
+            this.DataList[myindex].ResponseData.ResWorkGroupId=null
+            this.DataList[myindex].ResponseData.ResWorkGroup=null
+            this.DataList[myindex].ResponseData.ResEmployeeId=null
+            this.DataList[myindex].ResponseData.ResEmployee=null
+            this.DataList[myindex].ResponseData.UnResWorkGroupId=val[0]
+            this.DataList[myindex].ResponseData.UnResWorkGroup = this.GetUnProduceGroup.find(item=>item.Id == id).Name
+        },
+        
         //选择的责任人
         changePersonLiable(val){
             let myindex = this.$store.getters.getChoiceIndex
@@ -383,7 +425,24 @@ export default {
                 }
             })
         },
-
+        //点击非生产责任班组
+        clickUnProduceGroup(){
+            this.ShowUnProduceGroup=true
+            this.$axiosApi.getUnRepWorkGroups(this.FeedingReworkData.DeptId).then(res=>{
+                if(res.Success==true){
+                    console.log(res);
+                    this.GetUnProduceGroup=res.Result
+                    this.UnProduceGroupList=[[{name:'',value:''}]]
+                    let UnProduceGroupListData = [this.GetUnProduceGroup.map(item=>{
+                       return {name:item.Name,value:item.Id}
+                    })]
+                    this.UnProduceGroupList[0].push(...UnProduceGroupListData[0])
+                }else{
+                    this.showPositionValue=true
+                    this.Msg=res.Message
+                }
+            })
+        },
         //点击考核情况
         clickLiableExamine(){
             this.ShowLiableExamine=true
@@ -396,9 +455,10 @@ export default {
             let myindex = this.$store.getters.getChoiceIndex
             console.log(this.DataList[myindex].ResponseData.ResWorkGroupId);
             //再执行接口调取
-            if(this.DataList[myindex].ResponseData.ResWorkGroupId===null || this.DataList[myindex].ResponseData.ResWorkGroupId===''){
+            if((this.DataList[myindex].ResponseData.ResWorkGroupId===null || this.DataList[myindex].ResponseData.ResWorkGroupId==='')
+             (this.DataList[myindex].ResponseData.UnResWorkGroupId===null || this.DataList[myindex].ResponseData.UnResWorkGroupId==='')){
                 this.showPositionValue=true
-                this.Msg='请先选择责任班组'
+                this.Msg='请先选择责任班组 或 非生产责任班组'
                 return
             }
             this.ShowRelationPerson=true

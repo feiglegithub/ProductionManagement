@@ -68,6 +68,18 @@
                             </div>
                         </div>
                         <div class="m-baserowbox">
+                            <span class="label80" >非生产责任班组:</span>
+                            <div class="select s-bgwhile"  @click="clickUnProduceGroup">
+                                <popup-picker 
+                                    :show.sync="ShowUnProduceGroup" 
+                                    :data="UnProduceGroupList" 
+                                    @on-change="changeUnProduceGroup"
+                                    value-text-align='left'
+                                ></popup-picker>
+                                <div>{{UnProduceGroup}}</div>
+                            </div>
+                        </div>
+                        <div class="m-baserowbox">
                             <span class="label80" >考核情况:</span>
                             <div class="select s-bgwhile"  @click="clickLiableExamine">
                                 <popup-picker 
@@ -229,6 +241,13 @@ export default {
             Group:null,                //选择的班组
             GroupId:null,            //选择的班组
 
+            ShowUnProduceGroup:false,        //控制班组弹窗的显隐
+            GetUnProduceGroup:null,             //接口获取到的班组的数据
+            UnProduceGroupList:[[' ']],     //班组的列表
+            UnProduceGroup:null,                //选择的班组
+            UnProduceGroupId:null,            //选择的班组
+
+
             ShowPersonLiable:false,     //控制责任人的显隐
             GetPersonLiable:null,       //接口获取到责任人数据
             PersonLiableList:[[' ']],  //责任人列表
@@ -305,6 +324,10 @@ export default {
             this.ChoiceResponseData.ResWorkGroup=this.Group
             this.ChoiceResponseData.ResEmployeeId=this.PersonLiableId
             this.ChoiceResponseData.ResEmployee=this.PersonLiable
+            this.ChoiceResponseData.UnResWorkGroupId=this.UnProduceGroupId
+            this.ChoiceResponseData.UnResWorkGroup=this.UnProduceGroup
+
+            this.ChoiceResponseData.unr
             if(this.LiableExamine=='已考核'){
                 this.ChoiceResponseData.ResEmpAssessment=1
             }
@@ -328,6 +351,8 @@ export default {
             this.Group=getDetails.ResWorkGroup
             this.PersonLiableId=getDetails.ResEmployeeId
             this.PersonLiable=getDetails.ResEmployee
+            this.UnProduceGroupId = getDetails.UnResWorkGroupId
+            this.UnProduceGroup = getDetails.UnResWorkGroup
             if(getDetails.ResEmpAssessment==1){
                 this.LiableExamine='已考核'
             }
@@ -364,11 +389,35 @@ export default {
                 this.RelationPerson=null
             }
             this.GroupId=val[0]
+            this.UnProduceGroupId=null
+            this.UnProduceGroup=null
             if(!!this.GroupId){
                 this.Group = this.GetGroup.find(item=>item.Id == id).Name
             }else{
                 this.GroupId=null
                 this.Group=null
+            }
+        },
+        //选择非生产责任班组
+        changeUnProduceGroup(val){
+            let id = val[0]
+            //重置与班组关联的查询信息
+            if(this.UnProduceGroupId!=val[0]){
+                this.PersonLiableId=null
+                this.PersonLiable=null
+                this.RelationPersonId=null
+                this.RelationPerson=null
+            }
+            this.UnProduceGroupId=val[0]
+            this.GroupId=null
+            this.Group=null
+            this.PersonLiableId=null
+            this.PersonLiable=null
+            if(!!this.UnProduceGroupId){
+                this.UnProduceGroup = this.GetUnProduceGroup.find(item=>item.Id == id).Name
+            }else{
+                this.UnProduceGroupId=null
+                this.UnProduceGroup=null
             }
         },
         //选择的责任人
@@ -451,7 +500,23 @@ export default {
                 }
             })
         },
-
+        //点击非生产责任班组
+        clickUnProduceGroup(){
+            this.ShowUnProduceGroup=true
+            this.$axiosApi.getUnRepWorkGroups(this.FeedingReworkData.DeptId).then(res=>{
+                if(res.Success==true){
+                    console.log(res);
+                    this.GetUnProduceGroup=res.Result
+                    this.UnProduceGroupList=[[]]
+                    this.UnProduceGroupList = [this.GetUnProduceGroup.map(item=>{
+                       return {name:item.Name,value:item.Id}
+                    })]
+                }else{
+                    this.showPositionValue=true
+                    this.Msg=res.Message
+                }
+            })
+        },
         //点击考核情况
         clickLiableExamine(){
             this.ShowLiableExamine=true
