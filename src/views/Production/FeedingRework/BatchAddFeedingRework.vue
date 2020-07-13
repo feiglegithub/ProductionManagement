@@ -126,18 +126,6 @@
                                 </div>
                             </div>
                             <div class="m-baserowbox">
-                                <span class="label80" >非生产责任班组:</span>
-                                <div class="select s-bgwhile"  @click="clickUnProduceGroup">
-                                    <popup-picker 
-                                        :show.sync="ShowUnProduceGroup" 
-                                        :data="UnProduceGroupList"
-                                        @on-change="changeUnProduceGroup"
-                                        value-text-align='left'
-                                    ></popup-picker>
-                                    <div class="select-text">{{UnProduceGroup}}</div>
-                                </div>
-                            </div>
-                            <div class="m-baserowbox">
                                 <span class="label80" >定责质检:</span>
                                 <div class="select s-bgwhile"  @click="clickQualityTest">
                                     <popup-picker 
@@ -314,13 +302,6 @@ export default {
             GroupId:null,            //选择的班组
             GroupIsProduct:null,        //选择的班组是否为生产班组
 
-            ShowUnProduceGroup:false,        //控制班组弹窗的显隐
-            GetUnProduceGroup:null,             //接口获取到的班组的数据
-            UnProduceGroupList:[[' ']],     //班组的列表
-            UnProduceGroup:null,                //选择的班组
-            UnProduceGroupId:null,            //选择的班组
-
-
             ShowQualityTest:false,      //控制定责质检的显隐
             GetQualityTest:null,           //接口获取到定责质检的数据
             QualityTestList:[[{name:'',value:''}]],  //定责质检的列表
@@ -385,10 +366,6 @@ export default {
                 "ResWorkGroup":null,        //责任班组名称
                 "ResEmployeeId":null,       //责任人id
                 "ResEmployee":null,         //责任人名称
-                "UnResWorkGroupId":null,      //责任班组id
-                "UnResWorkGroup":null,        //责任班组名称
-                "UnResWorkGroupId":null,    //非生产责任班组id
-                "UnResWorkGroup":null,      //非生产责任班组
                 "QualityInspectionId":null, //定责质检id
                 "QualityInspection":null,   //定责质检名称
                 "ResEmpAssessment":null,    //（责任人的）1已考核，0未考核
@@ -553,8 +530,6 @@ export default {
             this.ChoiceResponseData.ResWorkGroupIsProduct=this.GroupIsProduct
             this.ChoiceResponseData.ResEmployeeId=this.PersonLiableId
             this.ChoiceResponseData.ResEmployee=this.PersonLiable
-            this.ChoiceResponseData.UnResWorkGroup=this.UnProduceGroup
-            this.ChoiceResponseData.UnResWorkGroupId =this.UnProduceGroupId
             this.ChoiceResponseData.QualityInspectionId=this.QualityTestId
             this.ChoiceResponseData.QualityInspection=this.QualityTest
             if(this.LiableExamine=='已考核'){
@@ -578,11 +553,6 @@ export default {
             this.FeedingReworkData.CreateById=this.MakerId
             this.FeedingReworkData.CreateBy=this.Maker
             this.FeedingReworkData.ResponseData=this.ChoiceResponseData
-            for(let item of this.FeedingReworkData.Details){
-                item.ResponseData = this.ChoiceResponseData    
-            }
-
-            
         },
         //用于获取接口数据后，显示弹窗的信息
         makeGetData(){
@@ -597,8 +567,6 @@ export default {
             this.GroupId=getDetails.ResWorkGroupId
             this.Group=getDetails.ResWorkGroup
             this.GroupIsProduct=getDetails.ResWorkGroupIsProduct
-            this.UnProduceGroupId=getDetails.UnResWorkGroupId
-            this.UnProduceGroup=getDetails.UnResWorkGroup
             this.PersonLiableId=getDetails.ResEmployeeId
             this.PersonLiable=getDetails.ResEmployee
             this.QualityTestId=getDetails.QualityInspectionId
@@ -718,21 +686,16 @@ export default {
                     this.Msg=`缺陷代码不能为空`
                     return
                 }
-                if(!this.FeedingReworkData.ResponseData.ResWorkGroupId && !this.FeedingReworkData.ResponseData.UnResWorkGroupId){
+                if(!this.FeedingReworkData.ResponseData.ResWorkGroupId){
                     this.showPositionValue=true
-                    this.Msg=`生产责任班组与非生产责任班组不能同时为空`
+                    this.Msg=`责任班组不能为空`
                     return
                 }
-                // if(this.FeedingReworkData.ResponseData.ResWorkGroupIsProduct==0 && this.FeedingReworkData.ResponseData.QualityInspection==null){
-                //     this.Msg='责任班组为非生产班组，定责质检必填'
-                //     this.showPositionValue=true
-                //     return
-                // }
-                if(this.FeedingReworkData.ResponseData.UnResWorkGroupId && this.FeedingReworkData.ResponseData.QualityInspection==null){
-                    this.Msg='选择了非生产班组，定责质检必填'
+                if(this.FeedingReworkData.ResponseData.ResWorkGroupIsProduct==0 && this.FeedingReworkData.ResponseData.QualityInspection==null){
+                    this.Msg='责任班组为非生产班组，定责质检必填'
                     this.showPositionValue=true
                     return
-                 }
+                }
                 this.FeedingReworkData.PhotoList=this.arrayImage
                 if(this.FeedingReworkData.PhotoList==null || this.FeedingReworkData.PhotoList==''){
                     this.FeedingReworkData.PhotoList=[]
@@ -825,10 +788,6 @@ export default {
                 this.RelationPerson=null
             }
             this.GroupId=val[0]
-
-            this.UnProduceGroupId=null
-            this.UnProduceGroup=null
-
             if(!!this.GroupId){
                 this.Group = this.GetGroup.find(item=>item.Id == id).Name
                 this.GroupIsProduct=this.GetGroup.find(item=>item.Id == id).IsProduct
@@ -837,32 +796,7 @@ export default {
                 this.Group=null
             }
         },
-        //选择非生产班组
-        changeUnProduceGroup(val){
-            let id = val[0]
-            //重置与班组关联的查询信息
-            if(this.UnProduceGroupId!=val[0]){
-                this.PersonLiableId=null
-                this.PersonLiable=null
-                this.QualityTestId=null
-                this.QualityTest=null
-                this.RelationPersonId=null
-                this.RelationPerson=null
-            }
-            this.GroupId=null
-            this.Group=null
-            this.PersonLiableId=null
-            this.PersonLiable=null
-
-            this.UnProduceGroupId=val[0]
-            if(!!this.UnProduceGroupId){
-                this.UnProduceGroup = this.GetUnProduceGroup.find(item=>item.Id == id).Name
-                this.UnProduceGroupIsProduct=this.GetUnProduceGroup.find(item=>item.Id == id).IsProduct
-            }else{
-                this.UnProduceGroupId=null
-                this.UnProduceGroup=null
-            }
-        },
+        
         //选择的责任人
         changePersonLiable(val){
             let id = val[0]
@@ -1022,24 +956,6 @@ export default {
                     this.showPositionValue=true
                     this.Msg='此班组没有责任人'
                     return
-                }
-            })
-        },
-        //点击非生产责任班组
-        clickUnProduceGroup(){
-            this.ShowUnProduceGroup=true
-            this.$axiosApi.getUnRepWorkGroups(this.FeedingReworkData.DeptId).then(res=>{
-                if(res.Success==true){
-                    console.log(res);
-                    this.GetUnProduceGroup=res.Result
-                    this.UnProduceGroupList=[[{name:'',value:''}]]
-                    let UnProduceGroupListData = [this.GetUnProduceGroup.map(item=>{
-                       return {name:item.Name,value:item.Id}
-                    })]
-                    this.UnProduceGroupList[0].push(...UnProduceGroupListData[0])
-                }else{
-                    this.showPositionValue=true
-                    this.Msg=res.Message
                 }
             })
         },

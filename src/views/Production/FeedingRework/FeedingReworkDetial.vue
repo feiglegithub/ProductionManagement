@@ -122,19 +122,6 @@
                                 </div>
                             </div>
                             <div class="m-baserowbox">
-                                <span class="label80" >非生产责任班组:</span>
-                                <div class="select s-bgwhile"  @click="clickUnProduceGroup">
-                                    <popup-picker 
-                                        :show.sync="ShowUnProduceGroup" 
-                                        :data="UnProduceGroupList"
-                                        @on-change="changeUnProduceGroup"
-                                        value-text-align='left'
-                                    ></popup-picker>
-                                    <div class="select-text">{{UnProduceGroup}}</div>
-                                </div>
-                            </div>
-
-                            <div class="m-baserowbox">
                                 <span class="label80" >定责质检:</span>
                                 <div class="select s-bgwhile"  @click="clickQualityTest">
                                     <popup-picker 
@@ -274,13 +261,6 @@ export default {
             GroupId:null,            //选择的班组
             GroupIsProduct:null,        //选择的班组是否为生产班组
 
-            ShowUnProduceGroup:false,        //控制班组弹窗的显隐
-            GetUnProduceGroup:null,             //接口获取到的班组的数据
-            UnProduceGroupList:[[' ']],     //班组的列表
-            UnProduceGroup:null,                //选择的班组
-            UnProduceGroupId:null,            //选择的班组
-
-
             ShowQualityTest:false,      //控制定责质检的显隐
             GetQualityTest:null,           //接口获取到定责质检的数据
             QualityTestList:[[{name:'',value:''}]],  //定责质检的列表
@@ -340,10 +320,6 @@ export default {
                     "ResWorkGroupIsProduct":null,   //责任班组是否生产班组
                     "ResEmployeeId":null,       //责任人id
                     "ResEmployee":null,         //责任人名称
-                    "UnResWorkGroupId":null,      //责任班组id
-                    "UnResWorkGroup":null,        //责任班组名称
-                    "UnResWorkGroupId":null,    //非生产责任班组id
-                    "UnResWorkGroup":null,      //非生产责任班组
                     "QualityInspectionId":null, //定责质检id
                     "QualityInspection":null,   //定责质检名称
                     "ResEmpAssessment":null,    //（责任人的）1已考核，0未考核
@@ -366,10 +342,10 @@ export default {
 
         //点击修改按钮
         doEdit(){
-            if(this.UnProduceGroupId && this.QualityTest==null){
-                    this.Msg='选择了非生产班组，定责质检必填'
-                    this.showPositionValue=true
-                    return
+            if(this.GroupIsProduct==0 && this.QualityTest==null){
+                this.Msg='责任班组为非生产班组，定责质检必填'
+                this.showPositionValue=true
+                return
             }
             // console.log(this.EquipmentId);
             this.DetailData.ResponseData={}
@@ -385,8 +361,6 @@ export default {
             this.DetailData.ResponseData.ResWorkGroupIsProduct=this.GroupIsProduct
             this.DetailData.ResponseData.ResEmployeeId=this.PersonLiableId
             this.DetailData.ResponseData.ResEmployee=this.PersonLiable
-            this.DetailData.ResponseData.UnResWorkGroup=this.UnProduceGroup
-            this.DetailData.ResponseData.UnResWorkGroupId =this.UnProduceGroupId
             this.DetailData.ResponseData.QualityInspectionId=this.QualityTestId
             this.DetailData.ResponseData.QualityInspection=this.QualityTest
             if(this.LiableExamine=='已考核'){
@@ -449,17 +423,11 @@ export default {
         //点击提交按钮
         doPost(){
             // console.log(this.GroupIsProduct);
-            // if(this.GroupIsProduct==0 && this.QualityTest==null){
-            //     this.Msg='责任班组为非生产班组，定责质检必填'
-            //     this.showPositionValue=true
-            //     return
-            // }
-            if(this.UnProduceGroupId && this.QualityTest==null){
-                    this.Msg='选择了非生产班组，定责质检必填'
-                    this.showPositionValue=true
-                    return
+            if(this.GroupIsProduct==0 && this.QualityTest==null){
+                this.Msg='责任班组为非生产班组，定责质检必填'
+                this.showPositionValue=true
+                return
             }
-
             this.DetailData.ResponseData={}
             console.log(this.DetailData.ResponseData);
             this.DetailData.ResponseData.EquipId=this.EquipmentId
@@ -471,8 +439,6 @@ export default {
             this.DetailData.ResponseData.DefectDescription=this.DefectDescription
             this.DetailData.ResponseData.ResWorkGroupId=this.GroupId
             this.DetailData.ResponseData.ResWorkGroup=this.Group
-            this.DetailData.ResponseData.UnResWorkGroupId=this.UnProduceGroupId
-            this.DetailData.ResponseData.UnResWorkGroup=this.UnProduceGroup
             this.DetailData.ResponseData.ResWorkGroupIsProduct=this.GroupIsProduct
             this.DetailData.ResponseData.ResEmployeeId=this.PersonLiableId
             this.DetailData.ResponseData.ResEmployee=this.PersonLiable
@@ -555,8 +521,6 @@ export default {
                 this.RelationPerson=null
             }
             this.GroupId=val[0]
-            this.UnProduceGroup=null
-            this.UnProduceGroupId=null
             if(!!this.GroupId){
                 this.Group = this.GetGroup.find(item=>item.Id == id).Name
                 this.GroupIsProduct=this.GetGroup.find(item=>item.Id == id).IsProduct
@@ -576,32 +540,6 @@ export default {
             }else{
                 this.PersonLiableId=null
                 this.PersonLiable=null
-            }
-        },
-        //选择非生产班组
-        changeUnProduceGroup(val){
-            let id = val[0]
-            //重置与班组关联的查询信息
-            if(this.UnProduceGroupId!=val[0]){
-                this.PersonLiableId=null
-                this.PersonLiable=null
-                this.QualityTestId=null
-                this.QualityTest=null
-                this.RelationPersonId=null
-                this.RelationPerson=null
-            }
-            this.GroupId=null
-            this.Group=null
-            this.PersonLiableId=null
-            this.PersonLiable=null
-
-            this.UnProduceGroupId=val[0]
-            if(!!this.UnProduceGroupId){
-                this.UnProduceGroup = this.GetUnProduceGroup.find(item=>item.Id == id).Name
-                this.UnProduceGroupIsProduct=this.GetUnProduceGroup.find(item=>item.Id == id).IsProduct
-            }else{
-                this.UnProduceGroupId=null
-                this.UnProduceGroup=null
             }
         },
         //选择定责质检
@@ -755,24 +693,6 @@ export default {
                 }
             })
         },
-         //点击非生产责任班组
-        clickUnProduceGroup(){
-            this.ShowUnProduceGroup=true
-            this.$axiosApi.getUnRepWorkGroups(this.DeptId).then(res=>{
-                if(res.Success==true){
-                    console.log(res);
-                    this.GetUnProduceGroup=res.Result
-                    this.UnProduceGroupList=[[{name:'',value:''}]]
-                    let UnProduceGroupListData = [this.GetUnProduceGroup.map(item=>{
-                       return {name:item.Name,value:item.Id}
-                    })]
-                    this.UnProduceGroupList[0].push(...UnProduceGroupListData[0])
-                }else{
-                    this.showPositionValue=true
-                    this.Msg=res.Message
-                }
-            })
-        },
         //点击定责质检
         clickQualityTest(){
             // if(!this.GroupId){
@@ -885,8 +805,6 @@ export default {
                 this.GroupId=this.DetailData.ResponseData.ResWorkGroupId
                 this.Group=this.DetailData.ResponseData.ResWorkGroup
                 this.GroupIsProduct=this.DetailData.ResponseData.ResWorkGroupIsProduct
-                this.UnProduceGroupId = this.DetailData.ResponseData.UnResWorkGroupId
-                this.UnProduceGroup = this.DetailData.ResponseData.UnResWorkGroup
                 this.PersonLiableId=this.DetailData.ResponseData.ResEmployeeId
                 this.PersonLiable=this.DetailData.ResponseData.ResEmployee
                 this.QualityTestId=this.DetailData.ResponseData.QualityInspectionId
