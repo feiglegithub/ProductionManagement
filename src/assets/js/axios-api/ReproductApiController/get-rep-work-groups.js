@@ -11,12 +11,15 @@
  */
 import Vue from 'vue';
 import Storage from '../../storage.js'
-export default function (DeptId) {
+export default function (DeptId,resTeam) {
     return Vue.axios.post(Storage.url(), {
         "ApiType": "ReproductApiController",
         "Parameters": [
           {
             "Value":DeptId
+          },
+          {
+            "Value":resTeam
           }
         ],
         "Method": "GetRepWorkGroups",

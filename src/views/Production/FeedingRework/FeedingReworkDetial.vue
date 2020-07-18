@@ -98,6 +98,18 @@
                                 <input class="inp" type="text" v-model="DefectDescription" name="" id="" style="border: 1px solid #666666;">
                             </div>
                             <div class="m-baserowbox">
+                                <span class="label80" >班组类别:</span>
+                                <div class="select s-bgwhile"  @click="clickGroupType">
+                                    <popup-picker 
+                                        :show.sync="ShowGroupType" 
+                                        :data="GroupTypeList"
+                                        @on-change="changeGroupType"
+                                        value-text-align='left'
+                                    ></popup-picker>
+                                    <div class="select-text">{{GroupType}}</div>
+                                </div>
+                            </div>
+                            <div class="m-baserowbox">
                                 <span class="label80" >责任班组:</span>
                                 <div class="select s-bgwhile"  @click="clickGroup">
                                     <popup-picker 
@@ -261,6 +273,12 @@ export default {
             GroupId:null,            //选择的班组
             GroupIsProduct:null,        //选择的班组是否为生产班组
 
+
+            GetGroupType:null,                //获取的班组类别
+            ShowGroupType:false,        //控制班组班组类别弹窗的显隐
+            GroupTypeList:null,     //班组类别的列表
+            GroupType:null,                //选择的班组类别
+
             ShowQualityTest:false,      //控制定责质检的显隐
             GetQualityTest:null,           //接口获取到定责质检的数据
             QualityTestList:[[{name:'',value:''}]],  //定责质检的列表
@@ -315,6 +333,7 @@ export default {
                     "DefectId":null,            //缺陷代码id
                     "Defect":null,              //缺陷代码名称
                     "DefectDescription":null,   //缺陷描述
+                    "ResRemark":null,           //责任班组类别
                     "ResWorkGroupId":null,      //责任班组id
                     "ResWorkGroup":null,        //责任班组名称
                     "ResWorkGroupIsProduct":null,   //责任班组是否生产班组
@@ -342,7 +361,7 @@ export default {
 
         //点击修改按钮
         doEdit(){
-            if(this.GroupIsProduct==0 && this.QualityTest==null){
+            if(this.GroupType=="非生产性责任班组" && this.QualityTest==null){
                 this.Msg='责任班组为非生产班组，定责质检必填'
                 this.showPositionValue=true
                 return
@@ -356,6 +375,7 @@ export default {
             this.DetailData.ResponseData.DefectId=this.DefectCodeId
             this.DetailData.ResponseData.Defect=this.DefectCode
             this.DetailData.ResponseData.DefectDescription=this.DefectDescription
+            this.DetailData.ResponseData.ResRemark=this.GroupType
             this.DetailData.ResponseData.ResWorkGroupId=this.GroupId
             this.DetailData.ResponseData.ResWorkGroup=this.Group
             this.DetailData.ResponseData.ResWorkGroupIsProduct=this.GroupIsProduct
@@ -423,7 +443,7 @@ export default {
         //点击提交按钮
         doPost(){
             // console.log(this.GroupIsProduct);
-            if(this.GroupIsProduct==0 && this.QualityTest==null){
+            if(this.GroupType=="非生产性责任班组" && this.QualityTest==null){
                 this.Msg='责任班组为非生产班组，定责质检必填'
                 this.showPositionValue=true
                 return
@@ -437,6 +457,7 @@ export default {
             this.DetailData.ResponseData.DefectId=this.DefectCodeId
             this.DetailData.ResponseData.Defect=this.DefectCode
             this.DetailData.ResponseData.DefectDescription=this.DefectDescription
+            this.DetailData.ResponseData.ResRemark=this.GroupType
             this.DetailData.ResponseData.ResWorkGroupId=this.GroupId
             this.DetailData.ResponseData.ResWorkGroup=this.Group
             this.DetailData.ResponseData.ResWorkGroupIsProduct=this.GroupIsProduct
@@ -506,6 +527,22 @@ export default {
             }else{
                 this.DefectCodeId=null
                 this.DefectCode=null
+            }
+        },
+        //选择班组类别
+        changeGroupType(val){
+            //只要切换班组类别 就重新设置
+            if(this.GroupType!=val[0])
+            {
+                this.PersonLiableId=null
+                this.PersonLiable=null
+                this.QualityTestId=null
+                this.QualityTest=null
+                this.RelationPersonId=null
+                this.RelationPerson=null
+                this.Group=null
+                this.GroupId=null
+                this.GroupType=val[0]
             }
         },
         //选择班组
@@ -645,10 +682,36 @@ export default {
                 }
             })
         },
+        //点击责任班组类别
+        clickGroupType(){
+            this.ShowGroupType=true
+            
+            this.$axiosApi.getRepWorkGroupType().then(res=>{
+                if(res.Success==true){
+                    console.log(res);
+                    this.GetGroupType =  res.Result
+                    this.GroupTypeList=[[{name:'',value :''}]]
+                     let GroupTypeListData = [this.GetGroupType.map(item=>{
+                       return {name:item,value:item}
+                    })]
+                    this.GroupTypeList[0].push(...GroupTypeListData[0])
+                }else{
+                    this.showPositionValue=true
+                    this.Msg=res.Message
+                    return
+                }
+            })
+
+        },
         //点击责任班组
         clickGroup(){
             this.ShowGroup=true
-            this.$axiosApi.getRepWorkGroups(this.DeptId).then(res=>{
+            if(!this.GroupType){
+                this.showPositionValue=true
+                this.Msg='请先选择责任班组类别'
+                return
+            }
+            this.$axiosApi.getRepWorkGroups(this.DeptId,this.GroupType).then(res=>{
                 if(res.Success==true){
                     console.log(res);
                     this.GetGroup=res.Result
@@ -660,6 +723,7 @@ export default {
                 }else{
                     this.showPositionValue=true
                     this.Msg=res.Message
+                    return
                 }
             })
         },
@@ -671,6 +735,7 @@ export default {
                 this.Msg='请先选择责任班组'
                 return
             }
+            
             this.ShowPersonLiable=true
             // 0-选择责任人，1-选择连带责任人，2-选择定责质检
             this.$axiosApi.getRepEmps(0,this.GroupId).then(res=>{
@@ -802,6 +867,7 @@ export default {
                 this.DefectCodeId=this.DetailData.ResponseData.DefectId
                 this.DefectCode=this.DetailData.ResponseData.Defect
                 this.DefectDescription=this.DetailData.ResponseData.DefectDescription
+                this.GroupType=this.DetailData.ResponseData.ResRemark
                 this.GroupId=this.DetailData.ResponseData.ResWorkGroupId
                 this.Group=this.DetailData.ResponseData.ResWorkGroup
                 this.GroupIsProduct=this.DetailData.ResponseData.ResWorkGroupIsProduct

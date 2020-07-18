@@ -101,6 +101,18 @@
                                 <span class="label80" >出错描述:</span>
                                 <input class="inp" v-model="DefectDescription" type="text" name="" id="" style="border: 1px solid #666666;">
                             </div>
+                             <div class="m-baserowbox">
+                                <span class="label80" >班组类别:</span>
+                                <div class="select s-bgwhile"  @click="clickGroupType">
+                                    <popup-picker 
+                                        :show.sync="ShowGroupType" 
+                                        :data="GroupTypeList"
+                                        @on-change="changeGroupType"
+                                        value-text-align='left'
+                                    ></popup-picker>
+                                    <div class="select-text">{{GroupType}}</div>
+                                </div>
+                            </div>
                             <div class="m-baserowbox">
                                 <span class="label80" >责任班组:</span>
                                 <div class="select s-bgwhile"  @click="clickGroup">
@@ -302,6 +314,11 @@ export default {
             GroupId:null,            //选择的班组
             GroupIsProduct:null,        //选择的班组是否为生产班组
 
+            GetGroupType:null,                //获取的班组类别
+            ShowGroupType:false,        //控制班组班组类别弹窗的显隐
+            GroupTypeList:null,     //班组类别的列表
+            GroupType:null,                //选择的班组类别
+
             ShowQualityTest:false,      //控制定责质检的显隐
             GetQualityTest:null,           //接口获取到定责质检的数据
             QualityTestList:[[{name:'',value:''}]],  //定责质检的列表
@@ -362,6 +379,7 @@ export default {
                 "DefectId":null,            //缺陷代码id
                 "Defect":null,              //缺陷代码名称
                 "DefectDescription":null,   //缺陷描述
+                "ResRemark":null,           //责任班组类别
                 "ResWorkGroupId":null,      //责任班组id
                 "ResWorkGroup":null,        //责任班组名称
                 "ResEmployeeId":null,       //责任人id
@@ -525,6 +543,7 @@ export default {
             this.ChoiceResponseData.DefectId=this.DefectCodeId
             this.ChoiceResponseData.Defect=this.MiddleError
             this.ChoiceResponseData.DefectDescription=this.DefectDescription
+            this.ChoiceResponseData.ResRemark=this.GroupType
             this.ChoiceResponseData.ResWorkGroupId=this.GroupId
             this.ChoiceResponseData.ResWorkGroup=this.Group
             this.ChoiceResponseData.ResWorkGroupIsProduct=this.GroupIsProduct
@@ -564,6 +583,8 @@ export default {
             this.DefectCode=getDetails.Defect
             this.DefectCodeId=getDetails.DefectId
             this.DefectDescription=getDetails.DefectDescription
+            this.GroupType=getDetails.ResRemark
+            this.GroupType=getDetails.ResRemark
             this.GroupId=getDetails.ResWorkGroupId
             this.Group=getDetails.ResWorkGroup
             this.GroupIsProduct=getDetails.ResWorkGroupIsProduct
@@ -686,12 +707,17 @@ export default {
                     this.Msg=`缺陷代码不能为空`
                     return
                 }
+                if(!this.FeedingReworkData.ResponseData.ResRemark){
+                    this.showPositionValue=true
+                    this.Msg=`责任班组不能为空`
+                    return
+                }
                 if(!this.FeedingReworkData.ResponseData.ResWorkGroupId){
                     this.showPositionValue=true
                     this.Msg=`责任班组不能为空`
                     return
                 }
-                if(this.FeedingReworkData.ResponseData.ResWorkGroupIsProduct==0 && this.FeedingReworkData.ResponseData.QualityInspection==null){
+                if(this.FeedingReworkData.ResponseData.ResRemark=="非生产性责任班组" && this.FeedingReworkData.ResponseData.QualityInspection==null){
                     this.Msg='责任班组为非生产班组，定责质检必填'
                     this.showPositionValue=true
                     return
@@ -700,7 +726,9 @@ export default {
                 if(this.FeedingReworkData.PhotoList==null || this.FeedingReworkData.PhotoList==''){
                     this.FeedingReworkData.PhotoList=[]
                 }
-                
+                this.FeedingReworkData.Details.forEach(element => {
+                   element.ResponseData =  this.FeedingReworkData.ResponseData
+                });
                 this.submitReproduce(this.FeedingReworkData)
                 return
             }
@@ -775,6 +803,23 @@ export default {
                 this.DefectCode=null
             }
         },
+        //选择班组类别
+        changeGroupType(val){
+            //只要切换班组类别 就重新设置
+            if(this.GroupType!=val[0])
+            {
+                this.PersonLiableId=null
+                this.PersonLiable=null
+                this.QualityTestId=null
+                this.QualityTest=null
+                this.RelationPersonId=null
+                this.RelationPerson=null
+                this.Group=null
+                this.GroupId=null
+                this.GroupType=val[0]
+            }
+        },
+        
         //选择班组
         changeGroup(val){
             let id = val[0]
@@ -911,10 +956,36 @@ export default {
                 }
             })
         },
+        //点击责任班组类别
+        clickGroupType(){
+            this.ShowGroupType=true
+            
+            this.$axiosApi.getRepWorkGroupType().then(res=>{
+                if(res.Success==true){
+                    console.log(res);
+                    this.GetGroupType =  res.Result
+                    this.GroupTypeList=[[{name:'',value :''}]]
+                     let GroupTypeListData = [this.GetGroupType.map(item=>{
+                       return {name:item,value:item}
+                    })]
+                    this.GroupTypeList[0].push(...GroupTypeListData[0])
+                }else{
+                    this.showPositionValue=true
+                    this.Msg=res.Message
+                    return
+                }
+            })
+
+        },
         //点击责任班组
         clickGroup(){
             this.ShowGroup=true
-            this.$axiosApi.getRepWorkGroups(this.FeedingReworkData.DeptId).then(res=>{
+             if(!this.GroupType){
+                this.showPositionValue=true
+                this.Msg='请先选择责任班组类别'
+                return
+            }
+            this.$axiosApi.getRepWorkGroups(this.FeedingReworkData.DeptId,this.GroupType).then(res=>{
                 if(res.Success==true){
                     console.log(res);
                     this.GetGroup=res.Result
@@ -926,6 +997,7 @@ export default {
                 }else{
                     this.showPositionValue=true
                     this.Msg=res.Message
+                    return
                 }
             })
         },

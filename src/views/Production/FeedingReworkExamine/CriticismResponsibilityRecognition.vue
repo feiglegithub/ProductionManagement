@@ -44,6 +44,18 @@
 
                         </div>
                         <div class="m-baserowbox">
+                                <span class="label80" >班组类别:</span>
+                                <div class="select s-bgwhile"  @click="clickGroupType">
+                                    <popup-picker 
+                                        :show.sync="ShowGroupType" 
+                                        :data="GroupTypeList"
+                                        @on-change="changeGroupType"
+                                        value-text-align='left'
+                                    ></popup-picker>
+                                    <div class="select-text">{{GroupType}}</div>
+                                </div>
+                        </div>
+                        <div class="m-baserowbox">
                             <span class="label80" >责任班组:</span>
                             <div class="select s-bgwhile"  @click="clickGroup">
                                 <popup-picker 
@@ -229,6 +241,11 @@ export default {
             Group:null,                //选择的班组
             GroupId:null,            //选择的班组
 
+            GetGroupType:null,                //获取的班组类别
+            ShowGroupType:false,        //控制班组班组类别弹窗的显隐
+            GroupTypeList:null,     //班组类别的列表
+            GroupType:null,                //选择的班组类别
+
             ShowPersonLiable:false,     //控制责任人的显隐
             GetPersonLiable:null,       //接口获取到责任人数据
             PersonLiableList:[[' ']],  //责任人列表
@@ -300,7 +317,7 @@ export default {
                 this.ChoiceResponseData.QualityInspectionId = this.FeedingReworkData.Details[0].ResponseData.QualityInspectionId
                 this.ChoiceResponseData.QualityInspection = this.FeedingReworkData.Details[0].ResponseData.QualityInspection
             }
-
+            this.ChoiceResponseData.ResRemark=this.GroupType
             this.ChoiceResponseData.ResWorkGroupId=this.GroupId
             this.ChoiceResponseData.ResWorkGroup=this.Group
             this.ChoiceResponseData.ResEmployeeId=this.PersonLiableId
@@ -324,6 +341,7 @@ export default {
         //用于获取接口数据后，显示弹窗的信息
         makeGetData(){
             let getDetails=this.FeedingReworkData.Details[0].ResponseData
+            this.GroupType =getDetails.ResRemark
             this.GroupId=getDetails.ResWorkGroupId
             this.Group=getDetails.ResWorkGroup
             this.PersonLiableId=getDetails.ResEmployeeId
@@ -351,8 +369,20 @@ export default {
 
             }
         },
-
-
+        //选择班组类别
+        changeGroupType(val){
+            //只要切换班组类别 就重新设置
+            if(this.GroupType!=val[0])
+            {
+                this.PersonLiableId=null
+                this.PersonLiable=null
+                this.RelationPersonId=null
+                this.RelationPerson=null
+                this.Group=null
+                this.GroupId=null
+                this.GroupType=val[0]
+            }
+        },
         //选择班组
         changeGroup(val){
             let id = val[0]
@@ -402,10 +432,35 @@ export default {
         changeRelationExamine(val){
             this.RelationExamine = val[0]
         },
+        //点击责任班组类别
+        clickGroupType(){
+            this.ShowGroupType=true
+            
+            this.$axiosApi.getRepWorkGroupType().then(res=>{
+                if(res.Success==true){
+                    console.log(res);
+                    this.GetGroupType =  res.Result
+                    this.GroupTypeList=[[{name:'',value :''}]]
+                     let GroupTypeListData = [this.GetGroupType.map(item=>{
+                       return {name:item,value:item}
+                    })]
+                    this.GroupTypeList[0].push(...GroupTypeListData[0])
+                }else{
+                    this.showPositionValue=true
+                    this.Msg=res.Message
+                    return
+                }
+            })
 
+        },
         //点击责任班组
         clickGroup(){
             this.ShowGroup=true
+            if(!this.GroupType){
+                this.showPositionValue=true
+                this.Msg='请先选择责任班组类别'
+                return
+            }
             this.$axiosApi.getRepWorkGroups(this.FeedingReworkData.DeptId).then(res=>{
                 if(res.Success==true){
                     console.log(res);

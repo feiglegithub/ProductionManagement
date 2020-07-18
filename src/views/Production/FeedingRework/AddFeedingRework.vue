@@ -311,6 +311,12 @@ export default {
             Group:null,                //选择的班组
             GroupId:null,            //选择的班组
 
+
+            GetGroupType:null,                //获取的班组类别
+            ShowGroupType:false,        //控制班组班组类别弹窗的显隐
+            GroupTypeList:null,     //班组类别的列表
+            GroupType:null,                //选择的班组类别
+
             ShowQualityTest:false,      //控制定责质检的显隐
             GetQualityTest:null,           //接口获取到定责质检的数据
             QualityTestList:[[{name:'',value:''}]],  //定责质检的列表
@@ -371,6 +377,7 @@ export default {
                 "DefectId":null,            //缺陷代码id
                 "Defect":null,              //缺陷代码名称
                 "DefectDescription":null,   //缺陷描述
+                "ResRemark":null,           //责任班组类别
                 "ResWorkGroupId":null,      //责任班组id
                 "ResWorkGroup":null,        //责任班组名称
                 "ResEmployeeId":null,       //责任人id
@@ -537,6 +544,7 @@ export default {
             this.ChoiceResponseData.DefectId=this.DefectCodeId
             this.ChoiceResponseData.Defect=this.MiddleError
             this.ChoiceResponseData.DefectDescription=this.DefectDescription
+            this.ChoiceResponseData.ResRemark=this.GroupType
             this.ChoiceResponseData.ResWorkGroupId=this.GroupId
             this.ChoiceResponseData.ResWorkGroup=this.Group
             this.ChoiceResponseData.ResEmployeeId=this.PersonLiableId
@@ -575,6 +583,7 @@ export default {
             this.DefectCode=getDetails.Defect
             this.DefectCodeId=getDetails.DefectId
             this.DefectDescription=getDetails.DefectDescription
+            this.GroupType=getDetails.ResRemark
             this.GroupId=getDetails.ResWorkGroupId
             this.Group=getDetails.ResWorkGroup
             this.PersonLiableId=getDetails.ResEmployeeId
@@ -665,6 +674,11 @@ export default {
                         if(!item.ResponseData.DefectId){
                             this.showPositionValue=true
                             this.Msg=`明细${item.UPI}缺陷代码不能为空`
+                            return
+                        }
+                        if(!item.ResponseData.ResRemark){
+                            this.showPositionValue=true
+                            this.Msg=`明细${item.UPI}责任班组类别不能为空`
                             return
                         }
                         if(!item.ResponseData.ResWorkGroupId){

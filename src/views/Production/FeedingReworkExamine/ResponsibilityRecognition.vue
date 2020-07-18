@@ -76,6 +76,12 @@
                                     <span class="text">{{item.Specifacation}}</span>
                                 </div>
                                 <div class="m-baserowbox">
+                                    <span class="label80" >责任班组类别:</span>
+                                    <div class="select s-bgwhile"  @click="clickGroupType">
+                                        <div>{{item.ResponseData.ResRemark}}</div>
+                                    </div>
+                                </div>
+                                <div class="m-baserowbox">
                                     <span class="label80" >责任班组:</span>
                                     <div class="select s-bgwhile"  @click="clickGroup">
                                         <div>{{item.ResponseData.ResWorkGroup}}</div>
@@ -112,6 +118,13 @@
                         </div>
                     </div>
                     <div style="overflow-x: hidden;">
+                        <!-- 责任班组类别 -->
+                        <popup-picker 
+                            :show.sync="ShowGroupType" 
+                            :data="GroupTypeList" 
+                            @on-change="changeGroupType"
+                            value-text-align='left'
+                        ></popup-picker>
                         <!-- 责任班组 -->
                         <popup-picker 
                             :show.sync="ShowGroup" 
@@ -211,6 +224,12 @@ export default {
             ResWorkGroup:null,                //选择的班组
             ResWorkGroupId:null,            //选择的班组
 
+            GetGroupType:null,                //获取的班组类别
+            ShowGroupType:false,        //控制班组班组类别弹窗的显隐
+            GroupTypeList:null,     //班组类别的列表
+            GroupType:null,                //选择的班组类别
+
+
             ShowPersonLiable:false,     //控制责任人的显隐
             GetPersonLiable:null,       //接口获取到责任人数据
             PersonLiableList:[[' ']],  //责任人列表
@@ -267,6 +286,21 @@ export default {
         clickChoice(item,index){
             console.log(index);
             this.$store.dispatch('changeUserInfo',{attr:"choiceindex",val:index}); 
+        },
+        //选择班组类别
+        changeGroupType(val){
+            let myindex = this.$store.getters.getChoiceIndex
+            //只要切换班组类别 就重新设置
+            if(this.GroupType!=val[0])
+            {
+                this.DataList[myindex].ResponseData.ResWorkGroupId=null
+                this.DataList[myindex].ResponseData.ResWorkGroup = null
+                this.DataList[myindex].ResponseData.ResEmployeeId=null
+                this.DataList[myindex].ResponseData.ResEmployee=null
+                this.DataList[myindex].ResponseData.JointEmpId=null
+                this.DataList[myindex].ResponseData.JointEmp=null
+                this.DataList[myindex].ResponseData.ResRemark=val[0]
+            }
         },
         //选择班组
         changeGroup(val){
@@ -331,11 +365,37 @@ export default {
                 this.DataList[myindex].ResponseData.JonitEmpAssessment=0
             }
         },
+        //点击责任班组类别
+        clickGroupType(){
+            this.ShowGroupType=true
+            
+            this.$axiosApi.getRepWorkGroupType().then(res=>{
+                if(res.Success==true){
+                    console.log(res);
+                    this.GetGroupType =  res.Result
+                    this.GroupTypeList=[[{name:'',value :''}]]
+                     let GroupTypeListData = [this.GetGroupType.map(item=>{
+                       return {name:item,value:item}
+                    })]
+                    this.GroupTypeList[0].push(...GroupTypeListData[0])
+                }else{
+                    this.showPositionValue=true
+                    this.Msg=res.Message
+                    return
+                }
+            })
 
+        },
         //点击责任班组
         clickGroup(){
             this.ShowGroup=true
-            this.$axiosApi.getRepWorkGroups(this.FeedingReworkData.DeptId).then(res=>{
+            let myindex = this.$store.getters.getChoiceIndex
+            if(!this.DataList[myindex].ResponseData.ResRemark){
+                this.showPositionValue=true
+                this.Msg='请先选择责任班组类别'
+                return
+            }
+            this.$axiosApi.getRepWorkGroups(this.FeedingReworkData.DeptId,this.DataList[myindex].ResponseData.ResRemark).then(res=>{
                 if(res.Success==true){
                     console.log(res);
                     this.GetGroup=res.Result
@@ -346,9 +406,11 @@ export default {
                 }else{
                     this.showPositionValue=true
                     this.Msg=res.Message
+                    return
                 }
             })
         },
+        
         //点击责任人
         clickPersonLiable(item,index){
             //这里需要先执行当前点击单的保存
