@@ -10,12 +10,15 @@
             </a>
                 {{ExamieTitle}}
         </x-header>
-        <div class="m-rowbutton" style="width:100%;padding-bottom:5px">
-                <div class="rbutton" v-for="(item, index) in WorkGroupList" :key="index" @click="doChoiceWorkGroup(item)" :style="{ 'background-color': item == ChoiceWorkGroup ? '#0066CC' : 'transparent' }" style="padding:3px 5px 5px 5px">
+        <div class="m-rowbutton" style="width:100%;">
+                <div class="rbutton" v-for="(item, index) in WorkGroupList" :key="index" @click="doChoiceWorkGroup(item)" :style="{ 'background-color': item == ChoiceWorkGroup ? '#0066CC' : 'transparent' }" style="padding:3px 5px 5px 5px;">
                     <span :class="item == ChoiceWorkGroup ? 'choicelabel' : 'emptylabel'">{{item}}</span>
                 </div>
-        </div>
-        <div class="f-flexvw f-flexg1">
+            </div>
+        <div class="f-flexvw f-flexg1 f-pdlr5">
+
+            
+            
             <div class="g-scrollbox">
                     <div class="f-auto">
                     <s-messageheader class="f-mt10" messagetitle="单据概要信息"></s-messageheader>
@@ -163,6 +166,7 @@ export default {
                     this.WorkGroupList.push("全部");
                     this.DataList.forEach(item => {
                         if (this.WorkGroupList.indexOf(item.WorkGroup) < 0) {
+                            this.WorkGroupList.push(item.WorkGroup)
                             this.WorkGroupList.push(item.WorkGroup)
                         }
                         
