@@ -155,6 +155,12 @@ export default {
                 this.Msg='UPI不能为空'
                 return
             }
+            if(this.UPI.length != 13){
+                this.showPositionValue=true
+                this.Msg=`UPI：【${this.UPI}】只能为13位,当前位数：${this.UPI.length}`
+                this.UPI=null
+                return
+            }
             if(this.PostUPI.indexOf(this.UPI)>=0){
                 this.showPositionValue=true
                 this.Msg=`UPI：${this.UPI}已存在`
@@ -177,7 +183,7 @@ export default {
         //点击删除按钮，删除当前项
         onButtonClick(index,item){
             console.log(index);
-            console.log(item);
+            console.log(item);w
             this.DataList.splice(index,1)
             this.PostUPI=this.PostUPI.filter((upidata)=>{
                 return upidata!=item.UpiCpode
@@ -213,7 +219,8 @@ export default {
         //接口：检查Upi能否合托
         checkWorkPlateRepairMixablePda(TargetBasePlateNo,NeedChangeUpis){
             this.loadingtitle='加载中'
-            this.showThost=true
+            this.showThost=true  
+
             this.$axiosApi.checkWorkPlateRepairMixablePda(TargetBasePlateNo,NeedChangeUpis).then(res=>{
                 this.showThost=false
                 if(res.Result.Result==true){
