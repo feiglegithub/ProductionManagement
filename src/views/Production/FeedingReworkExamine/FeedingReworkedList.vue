@@ -10,14 +10,12 @@
             </a>
                 {{ExamieTitle}}
         </x-header>
-        <div class="f-flexvw f-flexg1 f-pdlr5">
-
-            <div class="m-rowbutton" style="min-height:40px">
+        <div class="m-rowbutton" style="width:100%;padding-bottom:5px">
                 <div class="rbutton" v-for="(item, index) in WorkGroupList" :key="index" @click="doChoiceWorkGroup(item)" :style="{ 'background-color': item == ChoiceWorkGroup ? '#0066CC' : 'transparent' }" style="padding:3px 5px 5px 5px">
                     <span :class="item == ChoiceWorkGroup ? 'choicelabel' : 'emptylabel'">{{item}}</span>
                 </div>
-            </div>
-
+        </div>
+        <div class="f-flexvw f-flexg1">
             <div class="g-scrollbox">
                     <div class="f-auto">
                     <s-messageheader class="f-mt10" messagetitle="单据概要信息"></s-messageheader>
