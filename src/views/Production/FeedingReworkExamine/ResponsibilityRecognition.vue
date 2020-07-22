@@ -87,7 +87,7 @@
                                         <div>{{item.ResponseData.ResWorkGroup}}</div>
                                     </div>
                                 </div>
-                                <div class="m-baserowbox">
+                                <div class="m-baserowbox"  v-if="item.ResponseData.ResRemark != '非生产性责任班组'">
                                     <span class="label80" >责任人:</span>
                                     <div class="select s-bgwhile"  @click="clickPersonLiable(item,index)">
                                         <div>{{item.ResponseData.ResEmployee}}</div>
