@@ -143,9 +143,9 @@ export default {
             console.log(item);
             // this.$router.push({name:"ResponsibilityRecognition",params:{data:item}})
             if(item.IsBatchReproduce==0){
-                this.$router.push({name:"ResponsibilityRecognition",params:{data:item}})
+                this.$router.push({name:"ResponsibilityRecognition",params:{data:item,ChoiceWorkGroup:this.ChoiceWorkGroup}})
             }else{
-                this.$router.push({name:"CriticismResponsibilityRecognition",params:{data:item}})
+                this.$router.push({name:"CriticismResponsibilityRecognition",params:{data:item,ChoiceWorkGroup:this.ChoiceWorkGroup}})
             }
         },
         doChoiceWorkGroup(item) {
@@ -167,12 +167,22 @@ export default {
                     this.DataList.forEach(item => {
                         if (this.WorkGroupList.indexOf(item.WorkGroup) < 0) {
                             this.WorkGroupList.push(item.WorkGroup)
-                            this.WorkGroupList.push(item.WorkGroup)
                         }
                         
                     })
-                    this.ChoiceWorkGroup="全部";
-                    this.ShowFeedingList=this.DataList;
+                    if(this.$route.params.ChoiceWorkGroup && this.WorkGroupList.findIndex(item => item == this.$route.params.ChoiceWorkGroup)>0)
+                    {
+                        this.ChoiceWorkGroup= this.$route.params.ChoiceWorkGroup
+                        this.ShowFeedingList=this.DataList.filter(data => data.WorkGroup == this.$route.params.ChoiceWorkGroup)
+                    } 
+                    else
+                    {
+                        this.ShowFeedingList=this.DataList;
+                        this.ChoiceWorkGroup="全部";
+                    }    
+                       
+                
+                   
                     console.log(res);
                 }else{
                     this.showPositionValue=true

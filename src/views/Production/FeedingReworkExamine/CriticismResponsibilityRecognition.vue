@@ -283,7 +283,7 @@ export default {
 
     methods: {
         goBaseIndex(){
-            this.$router.push({name:'FeedingReworkedList'})
+            this.$router.push({name:'FeedingReworkedList',params:{ChoiceWorkGroup:this.$route.params.ChoiceWorkGroup}})
         },
         //点击提示弹窗的删除按钮
         onCancel(){
@@ -291,7 +291,7 @@ export default {
         },
         //点击提示弹窗的确认按钮
         onConfirm(){
-            this.$router.push({name:'FeedingReworkedList'})
+            this.$router.push({name:'FeedingReworkedList',params:{ChoiceWorkGroup:this.$route.params.ChoiceWorkGroup}})
         },
         //点击提交按钮
         doPost(){

@@ -192,6 +192,7 @@ export default {
             Successbtn:true,
             Dangerbtn:true,
 
+
             showPositionValue:false,        //提示信息显隐
             Msg:'有问题',                         //提示信息
 
@@ -229,7 +230,6 @@ export default {
             GroupTypeList:null,     //班组类别的列表
             GroupType:null,                //选择的班组类别
 
-
             ShowPersonLiable:false,     //控制责任人的显隐
             GetPersonLiable:null,       //接口获取到责任人数据
             PersonLiableList:[[' ']],  //责任人列表
@@ -266,7 +266,7 @@ export default {
 
     methods: {
         goBaseIndex(){
-            this.$router.push({name:'FeedingReworkedList'})
+            this.$router.push({name:'FeedingReworkedList',params:{ChoiceWorkGroup:this.$route.params.ChoiceWorkGroup}})
         },
         //点击提示弹窗的删除按钮
         onCancel(){
@@ -274,7 +274,7 @@ export default {
         },
         //点击提示弹窗的确认按钮
         onConfirm(){
-            this.$router.push({name:'FeedingReworkedList'})
+            this.$router.push({name:'FeedingReworkedList',params:{ChoiceWorkGroup:this.$route.params.ChoiceWorkGroup}})
         },
         //点击提交按钮
         doPost(){
