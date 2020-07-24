@@ -183,7 +183,7 @@ export default {
         //点击删除按钮，删除当前项
         onButtonClick(index,item){
             console.log(index);
-            console.log(item);w
+            console.log(item);
             this.DataList.splice(index,1)
             this.PostUPI=this.PostUPI.filter((upidata)=>{
                 return upidata!=item.UpiCpode
