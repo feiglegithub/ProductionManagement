@@ -49,13 +49,8 @@
                 </div>   
                 <div class="m-inp f-mtb5">
                     <span class="laber">日期</span>
-                    <div class="m-selector" @click="ShowWorkDate=true">
-                        <datetime  v-model="WorkShiftDate" 
-                               :show="ShowWorkDate"
-                               format="YYYY-MM-DD"
-                               @on-confirm="onWorkDate"
-                               @on-hide="ShowWorkDate=false">
-                        </datetime> 
+                    <div class="m-selector" @click="onShowDate">
+                       <div>{{WorkShiftDate}}</div>
                     </div>     
                 </div>
                 <div class="m-inp f-mtb5">
@@ -91,6 +86,7 @@
 <script type="text/ecmascript-6">
 import nowDate from '../../../assets/js/nowDate.js'
 import storage from '../../../assets/js/storage.js'
+import { Datetime, Group, XButton } from 'vux'
 export default {
     name: 'PackResourceSelection',
     data() {
@@ -128,7 +124,7 @@ export default {
             ChoiceStaffName:null,       //选择主手名称
 
             WorkDate:null,
-            ShowWorkDate:false,
+
             WorkerInfo:{},
             WorkShiftDate:null,         //选择的班次时间
             StaffCode:null,             //输入的主手编码
@@ -145,6 +141,53 @@ export default {
         },
         //点击提示弹窗的确认按钮
         onConfirm(){},
+        onShowDate(){
+             var view = this;
+            var date =new Date();
+            var limitDate =new Date();
+            limitDate.setHours(7);
+            limitDate.setMinutes(30);
+            limitDate.setSeconds(0);
+
+            if(date.getTime()<limitDate.getTime())
+            {
+                //当前天的毫秒数
+                var time=date.getTime();
+                //计算一天的毫秒数
+                var oneDay=1000*60*60*24;
+                var before=time-oneDay;
+                //获取前一天
+                date.setTime(before); 
+
+            }
+               
+            var year=date.getFullYear();
+            var month=((date.getMonth()+1)+"").length<2 ? '0'+ (date.getMonth()+1) : (date.getMonth()+1) ;
+            var day=date.getDate();
+            //拼接默认时间
+            var curDate=year+"-"+month+"-"+day;
+            
+            this.$vux.datetime.show({
+                cancelText: '取消',
+                confirmText: '确定',
+                format: 'YYYY-MM-DD',
+                value: curDate,
+                view:view,
+                onConfirm (val) {
+                    view.WorkShiftDate = val;
+                    view.onWorkDate(); //存储选择的日期
+                    console.log('选择的日期', val)
+                },
+                onShow () {
+                    //console.log('plugin show')
+                },
+                onHide () {
+                    //console.log('plugin hide')
+                }
+            })
+
+            
+        },
         onWorkDate(){
             console.log(this.WorkShiftDate);
             // storage.refreshWorkerInfo(this.WorkerInfo);
