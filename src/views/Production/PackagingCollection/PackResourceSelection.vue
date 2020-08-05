@@ -87,6 +87,7 @@
 import nowDate from '../../../assets/js/nowDate.js'
 import storage from '../../../assets/js/storage.js'
 import { Datetime, Group, XButton } from 'vux'
+import { dateFormat } from 'vux'
 export default {
     name: 'PackResourceSelection',
     data() {
@@ -156,17 +157,14 @@ export default {
                 //计算一天的毫秒数
                 var oneDay=1000*60*60*24;
                 var before=time-oneDay;
+                
                 //获取前一天
                 date.setTime(before); 
 
             }
-               
-            var year=date.getFullYear();
-            var month=((date.getMonth()+1)+"").length<2 ? '0'+ (date.getMonth()+1) : (date.getMonth()+1) ;
-            var day=date.getDate();
-            //拼接默认时间
-            var curDate=year+"-"+month+"-"+day;
             
+            var curDate = dateFormat(date, 'YYYY-MM-DD')
+
             this.$vux.datetime.show({
                 cancelText: '取消',
                 confirmText: '确定',
