@@ -52,10 +52,16 @@
                                             <span class="label">任务花色:</span>
                                             <span class="showmsg f-ml10">{{item.TaskColor}}</span>
                                         </div>
-                                        <div class="showlistmsg">
+                                         <div class="showlistmsg">
+                                            <span class="inp .s-bgE7E7E7">
+                                                <span class="label">大板数量:</span>
+                                                <input class="inp" type="text" name="" id="" v-model="item.BoardQty">
+                                            </span> 
+                                        </div>            
+                                        <!--<div class="showlistmsg">
                                             <span class="label">大板数量:</span>
                                             <span class="showmsg f-ml10">{{item.BoardQty}}</span>
-                                        </div>
+                                        </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -229,7 +235,7 @@ export default {
                 detailIds.push(item.DetailId)
             })
 
-            this.$axiosApi.confirmWarehouseMaterialDetail(detailIds).then(res=>{
+            this.$axiosApi.confirmWarehouseMaterialDetail(this.DataList).then(res=>{
                 this.showThost=false
 
                 if(res.Success){

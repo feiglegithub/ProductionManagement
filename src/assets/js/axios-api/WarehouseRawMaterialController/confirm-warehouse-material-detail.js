@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import Storage from '../../storage.js'
-export default function (detailIds) {
+export default function (DataList) {
     return Vue.axios.post(Storage.url(), {
         "ApiType": "WarehouseRawMaterialController",
         "Parameters": [
           {
-            "Value": detailIds
+            "Value": DataList
           }
         ],
         "Method": "ConfirmWarehouseMaterialDetail",
