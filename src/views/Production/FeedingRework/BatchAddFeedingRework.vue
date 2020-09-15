@@ -541,7 +541,7 @@ export default {
             this.ChoiceResponseData.DefectCategoryId=this.MiddleErrorId
             this.ChoiceResponseData.DefectCategory=this.MiddleError
             this.ChoiceResponseData.DefectId=this.DefectCodeId
-            this.ChoiceResponseData.Defect=this.MiddleError
+            this.ChoiceResponseData.Defect=this.DefectCode
             this.ChoiceResponseData.DefectDescription=this.DefectDescription
             this.ChoiceResponseData.ResRemark=this.GroupType
             this.ChoiceResponseData.ResWorkGroupId=this.GroupId
