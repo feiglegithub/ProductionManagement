@@ -48,16 +48,19 @@
                                             <span class="label">任务号:</span>
                                             <span class="showmsg f-ml10">{{item.TaskNumber}}</span>
                                         </div>
-                                        <div class="showlistmsg">
-                                            <span class="label">任务花色:</span>
-                                            <span class="showmsg f-ml10">{{item.TaskColor}}</span>
-                                        </div>
-                                         <div class="showlistmsg">
-                                            <span class="inp .s-bgE7E7E7">
-                                                <span class="label">大板数量:</span>
-                                                <input class="inp" type="text" name="" id="" v-model="item.BoardQty">
-                                            </span> 
-                                        </div>            
+                                        <div v-for="(item2,index2) in item.LstPanelInfo" :key="index2">
+                                            <div class="showlistmsg">
+                                                <span class="label">任务花色:</span>
+                                                <span class="showmsg f-ml10">{{item2.TaskColor}}</span>
+                                            </div>
+                                            <div class="showlistmsg">
+                                                <span class="inp .s-bgE7E7E7">
+                                                    <span class="label">总大板数量:{{item2.TotalPanelNum}}</span>
+                                                    <span class="label">可接收大板数量:</span>
+                                                    <input class="inp" type="text" name="" id="" v-model="item2.PdaReceivedPanelNum">
+                                                </span> 
+                                            </div>
+                                        </div>        
                                         <!--<div class="showlistmsg">
                                             <span class="label">大板数量:</span>
                                             <span class="showmsg f-ml10">{{item.BoardQty}}</span>
