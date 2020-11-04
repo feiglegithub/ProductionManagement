@@ -95,10 +95,11 @@ export default {
         },
         //点击工序
         choiceProcess(item, index) {
+            item.ProcessModelingType = item.ProcessModelingType == 1 ? 2 : 1
             // 第一道工序和最后一道工序不能改变
-            if (index != 0 && index < this.ProcessModelList.length - 1) {
-                item.ProcessModelingType = item.ProcessModelingType == 1 ? 2 : 1
-            }
+            // if (index != 0 && index < this.ProcessModelList.length - 1) {
+            //     item.ProcessModelingType = item.ProcessModelingType == 1 ? 2 : 1
+            // }
         },
         //接口：获取工艺建模列表
         getProcessModeling(departmentId, processId, stockFlowId, palletCategoryCode) {
@@ -113,7 +114,8 @@ export default {
                     // console.log(res);
                     this.ProcessModelList = res.Result
                     this.ProcessModelList.forEach((item, index) => {
-                        item.ProcessModelingType = index == 0 || index == this.ProcessModelList.length - 1 ? 1 : 2  // 1-需要返修的工序，2-不需要返修的工序，前后两道工序固定返修
+                        item.ProcessModelingType = 1 
+                        //item.ProcessModelingType = index == 0 || index == this.ProcessModelList.length - 1 ? 1 : 2  // 1-需要返修的工序，2-不需要返修的工序，前后两道工序固定返修
                     })
                 } else {
                     this.ShowPositionValue = true
