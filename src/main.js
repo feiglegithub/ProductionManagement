@@ -16,14 +16,15 @@ import './assets/plugins/axios-api.js'
 // import './assets/js/vconsole.min.js'
 import './assets/js/compatibleFind.js'
 import store from './vuex'
-
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 // import KeyboardBus from "@/assets/js/keyboard-bus.js"
 
 FastClick.attach(document.body)
 Vue.config.productionTip = false
 // Vue.prototype.$keyboard=KeyboardBus;
 /* eslint-disable no-new */
-
+Vue.use(ElementUI);
 function newVue(){ 
   const VueObject=new Vue({
     router,

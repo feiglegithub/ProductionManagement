@@ -302,6 +302,7 @@ export default {
         //构造暂存和提交的数据
         makePostData(){
             //构造提交的数据
+            debugger
             this.ChoiceResponseData={}
 
             // 补充原填写数据
@@ -337,6 +338,17 @@ export default {
                 this.ChoiceResponseData.JonitEmpAssessment=0
             }
             this.FeedingReworkData.ResponseData=this.ChoiceResponseData
+            this.FeedingReworkData.PcDetails.forEach((item) => {
+                item.rData.ResRemark =this.ChoiceResponseData.ResRemark
+                item.rData.ResWorkGroupId=this.ChoiceResponseData.ResWorkGroupId
+                item.rData.ResWorkGroup=this.ChoiceResponseData.ResWorkGroup
+                item.rData.ResEmployeeId=this.ChoiceResponseData.ResEmployeeId
+                item.rData.ResEmployee=this.ChoiceResponseData.ResEmployee
+                item.rData.JointEmpId=this.ChoiceResponseData.JointEmpId
+                item.rData.JointEmp=this.ChoiceResponseData.JointEmp
+                item.rData.ResEmpAssessment=this.ChoiceResponseData.ResEmpAssessment
+                item.rData.JonitEmpAssessment=this.ChoiceResponseData.JonitEmpAssessment
+            });
         },
         //用于获取接口数据后，显示弹窗的信息
         makeGetData(){

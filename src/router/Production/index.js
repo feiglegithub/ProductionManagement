@@ -22,6 +22,8 @@ import FeedingReworkDetialYes from '../../views/Production/FeedingRework/Feeding
 import FeedingReworkedList from '../../views/Production/FeedingReworkExamine/FeedingReworkedList.vue'
 import ResponsibilityRecognition from '../../views/Production/FeedingReworkExamine/ResponsibilityRecognition.vue'
 import CriticismResponsibilityRecognition from '../../views/Production/FeedingReworkExamine/CriticismResponsibilityRecognition.vue'
+//欠件单
+import OwnResponsibilityRecognition from '../../views/Production/FeedingReworkExamine/OwnResponsibilityRecognition.vue'
 // 包装采集
 import PackCollection from '../../views/Production/PackagingCollection/PackCollection.vue'
 import PackResourceSelection from '../../views/Production/PackagingCollection/PackResourceSelection.vue'
@@ -164,7 +166,12 @@ export default [
     name: 'CriticismResponsibilityRecognition',
     component: CriticismResponsibilityRecognition,
   },
-
+  //欠件单
+  {
+    path: '/OwnResponsibilityRecognition',
+    name: 'OwnResponsibilityRecognition',
+    component: OwnResponsibilityRecognition,
+  },
   //包装采集
   {
     path: '/PackCollection',

@@ -81,6 +81,14 @@
                         </div>
                     </div>
                 </grid-item>
+                <grid-item class="f-flexjscen" @click.native="goFeedingReworkedList(2)" v-if="showBatchFeedingReworkedList">
+                    <div class="m-otherchoice">
+                        <div >
+                            <span class="iconfont icon-dianjian"></span>
+                            <p class="operationtitle">欠件单审核</p>
+                        </div>
+                    </div>
+                </grid-item>
                 <grid-item class="f-flexjscen" @click.native="$router.push({name:'PackResourceSelection'})" v-if="showPackResourceSelection">
                     <div class="m-otherchoice">
                         <div >
@@ -270,6 +278,9 @@ export default {
                         if(element.code=='批次补料审核'){
                             this.showBatchFeedingReworkedList=true
                         }
+                        if(element.code=='欠件单审核'){
+                            this.showBatchFeedingReworkedList=true
+                        }
                         if(element.code=='包装采集'){
                             this.showPackResourceSelection=true
                         }
@@ -317,6 +328,11 @@ export default {
             this.$router.push({name:'FeedingReworkIndex'})
         },
         //进入补料审核功能（批次和非批次）
+        goFeedingReworkedList(addtype){
+            this.$store.dispatch('changeUserInfo',{attr:"addtype",val:addtype});
+            this.$router.push({name:'FeedingReworkedList'})
+        },
+        //进入欠件单审核功能
         goFeedingReworkedList(addtype){
             this.$store.dispatch('changeUserInfo',{attr:"addtype",val:addtype});
             this.$router.push({name:'FeedingReworkedList'})
