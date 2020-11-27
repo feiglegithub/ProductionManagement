@@ -279,6 +279,41 @@ export default {
         //点击提交按钮
         doPost(){
             // this.ShowConfirm=true
+            if(this.FeedingReworkData.Details.length<=0){
+                this.showPositionValue=true
+                this.Msg='无数据，不能提交'
+                return
+            }
+            // console.log(this.FeedingReworkData.Details);
+
+            if(this.FeedingReworkData.IsBatch==0){
+                if(!this.FeedingReworkData.CreateById){
+                    this.showPositionValue=true
+                    this.Msg='制单人不能为空'
+                    return
+                }
+                for(let item of this.FeedingReworkData.Details){
+                    if(!item.ResponseData){
+                        this.showPositionValue=true
+                        this.Msg=`明细${item.UPI}责任班组不能为空`
+                        return
+                    }else{
+                        
+                        if(!item.ResponseData.ResRemark){
+                            this.showPositionValue=true
+                            this.Msg=`明细${item.UPI}责任班组类别不能为空`
+                            return
+                        }
+                        if(!item.ResponseData.ResWorkGroupId){
+                            this.showPositionValue=true
+                            this.Msg=`明细${item.UPI}责任班组不能为空`
+                            return
+                        }
+                    }
+                }
+            }
+
+
             console.log(this.FeedingReworkData);
             this.determineResponse(this.FeedingReworkData)
         },

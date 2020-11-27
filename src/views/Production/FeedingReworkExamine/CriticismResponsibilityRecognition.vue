@@ -296,15 +296,22 @@ export default {
         //点击提交按钮
         doPost(){
             this.makePostData()
+            debugger;
             console.log(this.FeedingReworkData);
-            this.determineResponse(this.FeedingReworkData)
+            if(this.FeedingReworkData.PcDetails.length > 0 && !this.FeedingReworkData.PcDetails[0].rData.ResWorkGroupId){
+                debugger;
+                this.showPositionValue=true
+                this.Msg='责任班组类别不能为空'
+                return
+            }
+
+           this.determineResponse(this.FeedingReworkData)
         },
         //构造暂存和提交的数据
         makePostData(){
             //构造提交的数据
-            debugger
             this.ChoiceResponseData={}
-
+           
             // 补充原填写数据
             if (!!this.FeedingReworkData.Details && !!this.FeedingReworkData.Details[0].ResponseData)
             {
