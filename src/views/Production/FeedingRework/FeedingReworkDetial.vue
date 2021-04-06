@@ -705,6 +705,7 @@ export default {
         },
         //点击责任班组
         clickGroup(){
+            //dugger;
             this.ShowGroup=true
             if(!this.GroupType){
                 this.showPositionValue=true
@@ -854,6 +855,7 @@ export default {
         } 
     },
     created(){
+        //dugger; 
         console.log(JSON.stringify(this.$route.params.Details));
         this.DeptId=this.$route.params.DeptId
         if(this.$route.params.Details){
