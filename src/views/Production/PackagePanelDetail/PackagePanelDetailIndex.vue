@@ -55,7 +55,7 @@
           <span class="text">{{ lst.ColorCode }}</span>
         </div>
         <div class="m-baserowbox">
-          <span class="label80">尺寸规则:</span>
+          <span class="label80">尺寸规格:</span>
           <span class="text">{{ lst.FinishSize }}</span>
         </div>
         <div class="m-baserowbox">

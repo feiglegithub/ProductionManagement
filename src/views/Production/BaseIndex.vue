@@ -283,6 +283,18 @@
             </div>
           </div>
         </grid-item>
+         <grid-item
+          class="f-flexjscen"
+          @click.native="$router.push({ name: 'SpecialMiningReportIndex' })"
+          v-if="showSpecialMiningReport" 
+        >
+          <div class="m-otherchoice">
+            <div>
+              <span class="iconfont icon-dianjian"></span>
+              <p class="operationtitle">特采板件统计</p>
+            </div>
+          </div>
+        </grid-item>
       </grid>
     </div>
     <div class="m-footers">
@@ -324,6 +336,7 @@ export default {
       showWarehouseRawMaterial: false,
       showReturnRepair: false,
       showPackagePanelDetail: false,
+      showSpecialMiningReport:false,
     };
   },
   components: {},
@@ -418,6 +431,9 @@ export default {
               }
               if (element.code == "包板件明细查询") {
                 this.showPackagePanelDetail = true;
+              }
+              if (element.code == "特采板件") {
+                this.showSpecialMiningReport = true;
               }
             });
           }

@@ -68,6 +68,10 @@ import ReturnRepairUpi from '../../views/Production/ReturnRepairs/ReturnRepairUp
 import ReturnRepairBatch from '../../views/Production/ReturnRepairs/ReturnRepairBatch.vue'
 import ReturnRepairBatchDetail from '../../views/Production/ReturnRepairs/ReturnRepairBatchDetail.vue'
 import ReturnRepairProcessSelection from '../../views/Production/ReturnRepairs/ReturnRepairProcessSelection.vue'
+
+import PackagePanelDetail from '../../views/Production/PackagePanelDetail/PackagePanelDetailIndex.vue'//包明细
+
+import SpecialMiningReport from '../../views/Production/SpecialMiningReport/SpecialMiningReportIndex.vue'//特采
 export default [
     
   {
@@ -299,5 +303,15 @@ export default [
     path: '/ReturnRepairProcessSelection',
     name: 'ReturnRepairProcessSelection',
     component: ReturnRepairProcessSelection,
+  },
+  {
+    path: '/PackagePanelDetail',
+    name: 'PackagePanelDetailIndex',
+    component: PackagePanelDetail,
+  },
+  {
+    path: '/SpecialMiningReport',
+    name: 'SpecialMiningReportIndex',
+    component: SpecialMiningReport,
   },
 ]
