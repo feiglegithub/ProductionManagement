@@ -24,6 +24,10 @@
               @keyup.enter="getBarCode()"
               class="s-inpbg"
             />
+            <span
+              class="iconfont icon-iconfontscan"
+              @click="scanBarCode"
+            ></span>
           </span>
         </div>
       </div>
@@ -573,6 +577,16 @@ export default {
     });
   },
   methods: {
+    scanBarCode() {
+      let that = this;
+      console.log("调用扫描接口");
+      this.$hybridApi.scanCode({
+        success: function (res) {
+          that.BarCode = res;
+          that.getBarCode();
+        },
+      });
+    },
     tabClick(tab, event) {
       this.SelTabName = tab.name;
       this.SelIndex = tab.index;
