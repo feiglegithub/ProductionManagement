@@ -478,18 +478,14 @@ export default {
     });
   },
   methods: {
-    async scanBarCode() {
+    scanBarCode() {
+      let that = this;
       console.log("调用扫描接口");
-      this.BarCode = await this.doScan();
-      this.getBarCode();
-    },
-    doScan() {
-      return new Promise((p) => {
-        this.$hybridApi.scanCode({
-          success: function (res) {
-            p(res);
-          },
-        });
+      this.$hybridApi.scanCode({
+        success: function (res) {
+          that.BarCode = res;
+          that.getBarCode();
+        },
       });
     },
     //返回
