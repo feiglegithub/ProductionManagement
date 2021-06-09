@@ -303,8 +303,7 @@
                 v-show="FeedingReworkData.Details.length > 0"
               >
                 <swipeout-item
-                  v-for="(item, idx) in FeedingReworkData.PcDetails[index]
-                    .Details"
+                  v-for="(item, idx) in FeedingReworkData.Details"
                   :key="idx"
                   @on-close="handleEvents('on-close')"
                   @on-open="handleEvents('on-open')"
@@ -635,9 +634,10 @@ export default {
         this.editableTabsValue = activeName;
         this.SelTabName = activeName;
         this.editableTabs = tabs.filter((tab) => tab.name !== targetName);
-        this.FeedingReworkData.PcDetails = this.FeedingReworkData.PcDetails.filter(
-          (tab) => tab.TabName !== targetName
-        );
+        this.FeedingReworkData.PcDetails =
+          this.FeedingReworkData.PcDetails.filter(
+            (tab) => tab.TabName !== targetName
+          );
       }
     },
 
@@ -771,14 +771,15 @@ export default {
       }
       if (this.HasMessage == 1) {
         console.log(this.TempFeedingReworkData);
-        this.saleOrderNo = this.TempFeedingReworkData.PcDetails[0].Details[0].SaleOrderNo;
+        this.saleOrderNo =
+          this.TempFeedingReworkData.PcDetails[0].Details[0].SaleOrderNo;
         if (
           this.FeedingReworkData == null ||
           this.FeedingReworkData.PcDetails.length == 0
         ) {
-          this.FeedingReworkData = this.TempFeedingReworkData;
           this.consoleAddTab();
         }
+        this.FeedingReworkData = this.TempFeedingReworkData;
         this.NowBatchNo = this.TempFeedingReworkData.BatchNo;
         this.BarCode = null;
       }
@@ -1043,11 +1044,10 @@ export default {
       index = this.SelIndex;
       this.FeedingReworkData.PcDetails[index].rData.EquipId = $event[0];
       if (!!this.FeedingReworkData.PcDetails[index].rData.EquipId) {
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.Equipment = this.GetEquipment.find(
-          (item) => item.EquipId == id
-        ).MachineAndTypeName;
+        this.FeedingReworkData.PcDetails[index].rData.Equipment =
+          this.GetEquipment.find(
+            (item) => item.EquipId == id
+          ).MachineAndTypeName;
       } else {
         this.FeedingReworkData.PcDetails[index].rData.EquipId = null;
         this.FeedingReworkData.PcDetails[index].rData.Equipment = null;
@@ -1062,11 +1062,8 @@ export default {
       this.FeedingReworkData.PcDetails[index].rData.DefectId = null;
       this.FeedingReworkData.PcDetails[index].rData.Defect = null;
       if (!!this.FeedingReworkData.PcDetails[index].rData.DefectCategoryId) {
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.DefectCategory = this.GetMiddleError.find(
-          (item) => item.Id == id
-        ).Name;
+        this.FeedingReworkData.PcDetails[index].rData.DefectCategory =
+          this.GetMiddleError.find((item) => item.Id == id).Name;
       } else {
         this.FeedingReworkData.PcDetails[index].rData.DefectCategory = null;
         this.FeedingReworkData.PcDetails[index].rData.DefectCategoryId = null;
@@ -1078,9 +1075,10 @@ export default {
       index = this.SelIndex;
       this.FeedingReworkData.PcDetails[index].rData.DefectId = $event[0];
       if (!!this.FeedingReworkData.PcDetails[index].rData.DefectId) {
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.Defect = this.GetDefectCode.find((item) => item.Id == id).Name;
+        this.FeedingReworkData.PcDetails[index].rData.Defect =
+          this.GetDefectCode.find((item) => item.Id == id).Name;
+        this.FeedingReworkData.PcDetails[index].rData.DefectCategory =
+          this.GetDefectCode.find((item) => item.Id == id).DefectCategoryName;
         this.editableTabs.forEach((tab) => {
           if (tab.name == this.FeedingReworkData.PcDetails[index].TabName)
             tab.title = this.FeedingReworkData.PcDetails[index].rData.Defect;
@@ -1102,17 +1100,14 @@ export default {
         this.FeedingReworkData.PcDetails[index].rData.ResEmployee = null;
         this.FeedingReworkData.PcDetails[index].rData.ResEmployeeId = null;
         this.FeedingReworkData.PcDetails[index].rData.QualityInspection = null;
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.QualityInspectionId = null;
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.StrResEmpAssessment = null;
+        this.FeedingReworkData.PcDetails[index].rData.QualityInspectionId =
+          null;
+        this.FeedingReworkData.PcDetails[index].rData.StrResEmpAssessment =
+          null;
         this.FeedingReworkData.PcDetails[index].rData.JointEmp = null;
         this.FeedingReworkData.PcDetails[index].rData.JointEmpId = null;
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.StrJonitEmpAssessment = null;
+        this.FeedingReworkData.PcDetails[index].rData.StrJonitEmpAssessment =
+          null;
         this.FeedingReworkData.PcDetails[index].rData.ResRemark = $event[0];
       }
     },
@@ -1129,17 +1124,15 @@ export default {
         this.FeedingReworkData.PcDetails[index].rData.ResEmployee = null;
         this.FeedingReworkData.PcDetails[index].rData.ResEmployeeId = null;
         this.FeedingReworkData.PcDetails[index].rData.QualityInspection = null;
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.QualityInspectionId = null;
+        this.FeedingReworkData.PcDetails[index].rData.QualityInspectionId =
+          null;
         this.FeedingReworkData.PcDetails[index].rData.JointEmp = null;
         this.FeedingReworkData.PcDetails[index].rData.JointEmpId = null;
       }
       this.FeedingReworkData.PcDetails[index].rData.ResWorkGroupId = $event[0];
       if (!!this.FeedingReworkData.PcDetails[index].rData.ResWorkGroupId) {
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.ResWorkGroup = this.GetGroup.find((item) => item.Id == id).Name;
+        this.FeedingReworkData.PcDetails[index].rData.ResWorkGroup =
+          this.GetGroup.find((item) => item.Id == id).Name;
         this.GroupIsProduct = this.GetGroup.find(
           (item) => item.Id == id
         ).IsProduct;
@@ -1155,11 +1148,8 @@ export default {
       index = this.SelIndex;
       this.FeedingReworkData.PcDetails[index].rData.ResEmployeeId = $event[0];
       if (!!this.FeedingReworkData.PcDetails[index].rData.ResEmployeeId) {
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.ResEmployee = this.GetPersonLiable.find(
-          (item) => item.Id == id
-        ).Name;
+        this.FeedingReworkData.PcDetails[index].rData.ResEmployee =
+          this.GetPersonLiable.find((item) => item.Id == id).Name;
       } else {
         this.FeedingReworkData.PcDetails[index].rData.ResEmployee = null;
         this.FeedingReworkData.PcDetails[index].rData.ResEmployeeId = null;
@@ -1172,15 +1162,11 @@ export default {
       this.FeedingReworkData.PcDetails[index].rData.QualityInspectionId =
         $event[0];
       if (!!this.FeedingReworkData.PcDetails[index].rData.QualityInspectionId) {
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.QualityInspection = this.GetQualityTest.find(
-          (item) => item.Id == id
-        ).Name;
+        this.FeedingReworkData.PcDetails[index].rData.QualityInspection =
+          this.GetQualityTest.find((item) => item.Id == id).Name;
       } else {
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.QualityInspectionId = null;
+        this.FeedingReworkData.PcDetails[index].rData.QualityInspectionId =
+          null;
         this.FeedingReworkData.PcDetails[index].rData.QualityInspection = null;
       }
     },
@@ -1202,11 +1188,8 @@ export default {
       index = this.SelIndex;
       this.FeedingReworkData.PcDetails[index].rData.JointEmpId = $event[0];
       if (!!this.FeedingReworkData.PcDetails[index].rData.JointEmpId) {
-        this.FeedingReworkData.PcDetails[
-          index
-        ].rData.JointEmp = this.GetRelationPerson.find(
-          (item) => item.Id == id
-        ).Name;
+        this.FeedingReworkData.PcDetails[index].rData.JointEmp =
+          this.GetRelationPerson.find((item) => item.Id == id).Name;
       } else {
         this.FeedingReworkData.PcDetails[index].rData.JointEmpId = null;
         this.FeedingReworkData.PcDetails[index].rData.JointEmp = null;
@@ -1282,21 +1265,21 @@ export default {
     //点击缺陷代码
     clickDefectCode() {
       let index = this.SelIndex;
-      console.log(this.MiddleErrorId);
-      if (
-        this.FeedingReworkData.PcDetails[index].rData.DefectCategoryId ===
-          null ||
-        this.FeedingReworkData.PcDetails[index].rData.DefectCategoryId === ""
-      ) {
-        this.showPositionValue = true;
-        this.Msg = "请先填出错中类";
-        return;
-      }
+      // console.log(this.MiddleErrorId);
+      // if (
+      //   this.FeedingReworkData.PcDetails[index].rData.DefectCategoryId ===
+      //     null ||
+      //   this.FeedingReworkData.PcDetails[index].rData.DefectCategoryId === ""
+      // ) {
+      //   this.showPositionValue = true;
+      //   this.Msg = "请先填出错中类";
+      //   return;
+      // }
       this.ShowDefectCode = true;
       this.$axiosApi
-        .getRepDefectCodes(
-          this.FeedingReworkData.PcDetails[index].rData.DefectCategoryId
-        )
+        .getRepDefectCodes
+        // this.FeedingReworkData.PcDetails[index].rData.DefectCategoryId
+        ()
         .then((res) => {
           if (res.Success == true) {
             console.log(res);
