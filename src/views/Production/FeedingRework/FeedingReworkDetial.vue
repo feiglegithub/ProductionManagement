@@ -914,14 +914,14 @@ export default {
 
     //点击缺陷代码
     clickDefectCode() {
-      //console.log(this.MiddleErrorId);
+      // console.log(this.MiddleErrorId);
       // if(this.MiddleErrorId===null || this.MiddleErrorId===''){
       //     this.showPositionValue=true
       //     this.Msg='请先填出错中类'
       //     return
       // }
       this.ShowDefectCode = true;
-      this.$axiosApi.getRepDefectCodes(0).then((res) => {
+      this.$axiosApi.getRepDefectCodes(this.MiddleErrorId).then((res) => {
         if (res.Success == true) {
           console.log(res);
           this.GetDefectCode = res.Result;

@@ -1483,9 +1483,9 @@ export default {
       // }
       this.ShowDefectCode = true;
       this.$axiosApi
-        .getRepDefectCodes
-        // this.FeedingReworkData.PcDetails[index].rData.DefectCategoryId
-        ()
+        .getRepDefectCodes(
+          this.FeedingReworkData.PcDetails[index].rData.DefectCategoryId
+        )
         .then((res) => {
           if (res.Success == true) {
             console.log(res);
