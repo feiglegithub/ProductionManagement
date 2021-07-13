@@ -138,6 +138,31 @@
                         }}
                       </div>
                     </div>
+                    <div
+                      class="m-inp f-mtb5"
+                      style="
+                        position: fixed;
+                        z-index: 9999;
+                        width: 60%;
+                        left: 20%;
+                        top: 63%;
+                        overflow: hidden;
+                      "
+                      v-show="ShowMiddleError"
+                    >
+                      <input
+                        class="inp s-bgwhile"
+                        style="
+                          text-align: center;
+                          width: 1%;
+                          margin: 0 auto;
+                          opacity: 0.6;
+                        "
+                        v-model="MiddleErrorFilter"
+                        @keyup="doMiddleErrorFilter"
+                        ref="MiddleErrorRef"
+                      />
+                    </div>
                   </div>
                   <div class="m-baserowbox">
                     <span class="label80">缺陷代码:</span>
@@ -151,6 +176,30 @@
                       <div class="select-text">
                         {{ FeedingReworkData.PcDetails[index].rData.Defect }}
                       </div>
+                    </div>
+                    <div
+                      class="m-inp f-mtb5"
+                      style="
+                        position: fixed;
+                        z-index: 9999;
+                        width: 60%;
+                        left: 20%;
+                        top: 63%;
+                        overflow: hidden;
+                      "
+                      v-show="ShowDefectCode"
+                    >
+                      <input
+                        class="inp s-bgwhile"
+                        style="
+                          text-align: center;
+                          width: 1%;
+                          margin: 0 auto;
+                          opacity: 0.6;
+                        "
+                        v-model="DefectCodeFilter"
+                        @keyup="doDefectCodeFilter"
+                      />
                     </div>
                   </div>
                   <div class="m-baserowbox">
@@ -196,6 +245,30 @@
                         }}
                       </div>
                     </div>
+                    <div
+                      class="m-inp f-mtb5"
+                      style="
+                        position: fixed;
+                        z-index: 9999;
+                        width: 60%;
+                        left: 20%;
+                        top: 63%;
+                        overflow: hidden;
+                      "
+                      v-show="ShowGroup"
+                    >
+                      <input
+                        class="inp s-bgwhile"
+                        style="
+                          text-align: center;
+                          width: 1%;
+                          margin: 0 auto;
+                          opacity: 0.6;
+                        "
+                        v-model="GroupFilter"
+                        @keyup="doGroupFilter"
+                      />
+                    </div>
                   </div>
                   <div
                     class="m-baserowbox"
@@ -215,6 +288,30 @@
                         }}
                       </div>
                     </div>
+                    <div
+                      class="m-inp f-mtb5"
+                      style="
+                        position: fixed;
+                        z-index: 9999;
+                        width: 60%;
+                        left: 20%;
+                        top: 63%;
+                        overflow: hidden;
+                      "
+                      v-show="ShowPersonLiable"
+                    >
+                      <input
+                        class="inp s-bgwhile"
+                        style="
+                          text-align: center;
+                          width: 1%;
+                          margin: 0 auto;
+                          opacity: 0.6;
+                        "
+                        v-model="PersonFilter"
+                        @keyup="doPersonLiableFilter"
+                      />
+                    </div>
                   </div>
                   <div class="m-baserowbox">
                     <span class="label80">定责质检:</span>
@@ -231,6 +328,30 @@
                             .QualityInspection
                         }}
                       </div>
+                    </div>
+                    <div
+                      class="m-inp f-mtb5"
+                      style="
+                        position: fixed;
+                        z-index: 9999;
+                        width: 60%;
+                        left: 20%;
+                        top: 63%;
+                        overflow: hidden;
+                      "
+                      v-show="ShowQualityTest"
+                    >
+                      <input
+                        class="inp s-bgwhile"
+                        style="
+                          text-align: center;
+                          width: 1%;
+                          margin: 0 auto;
+                          opacity: 0.6;
+                        "
+                        v-model="QualityTestFilter"
+                        @keyup="doQualityTestFilter"
+                      />
                     </div>
                   </div>
                   <div class="m-baserowbox">
@@ -262,6 +383,31 @@
                       <div class="select-text">
                         {{ FeedingReworkData.PcDetails[index].rData.JointEmp }}
                       </div>
+                    </div>
+
+                    <div
+                      class="m-inp f-mtb5"
+                      style="
+                        position: fixed;
+                        z-index: 9999;
+                        width: 60%;
+                        left: 20%;
+                        top: 63%;
+                        overflow: hidden;
+                      "
+                      v-show="ShowRelationPerson"
+                    >
+                      <input
+                        class="inp s-bgwhile"
+                        style="
+                          text-align: center;
+                          width: 1%;
+                          margin: 0 auto;
+                          opacity: 0.6;
+                        "
+                        v-model="RelationPersonFilter"
+                        @keyup="doRelationPersonFilter"
+                      />
                     </div>
                   </div>
                   <div class="m-baserowbox">
@@ -452,12 +598,14 @@ export default {
       MiddleErrorList: [[" "]], //出错中类的列表
       MiddleError: null, //选择的出错中类
       MiddleErrorId: null, //选择的出错中类
+      MiddleErrorFilter: null,
 
       ShowDefectCode: false, //控制缺陷代码弹窗的显隐
       GetDefectCode: null, //接口获取到的缺陷代码的数据
       DefectCodeList: [[" "]], //缺陷代码的列表
       DefectCode: null, //选择的缺陷代码
       DefectCodeId: null, //选择的缺陷代码
+      DefectCodeFilter: null,
 
       ShowGroup: false, //控制班组弹窗的显隐
       GetGroup: null, //接口获取到的班组的数据
@@ -465,6 +613,7 @@ export default {
       Group: null, //选择的班组
       GroupId: null, //选择的班组
       GroupIsProduct: null, //选择的班组是否为生产班组
+      GroupFilter: null,
 
       GetGroupType: null, //获取的班组类别
       ShowGroupType: false, //控制班组班组类别弹窗的显隐
@@ -476,12 +625,14 @@ export default {
       QualityTestList: [[{ name: "", value: "" }]], //定责质检的列表
       QualityTest: null, //选择的定责质检
       QualityTestId: null, //定责质检id
+      QualityTestFilter: null,
 
       ShowPersonLiable: false, //控制责任人的显隐
       GetPersonLiable: null, //接口获取到责任人数据
       PersonLiableList: [[" "]], //责任人列表
       PersonLiable: null, //选择的责任人
       PersonLiableId: null, //责任人id
+      PersonFilter: null,
 
       ShowLiableExamine: false, //控制考核情况的显隐
       GetLiableExamine: null, //接口获取考核情况的数据
@@ -494,6 +645,7 @@ export default {
       RelationPersonList: [[" "]], //连带责任人的列表
       RelationPerson: null, //选择的连带责任人
       RelationPersonId: null, //连带责任人id
+      RelationPersonFilter: null,
 
       ShowRelationExamine: false, //控制连带考核情况的显隐
       GetRelationExamine: null, //控制连带考核情况的显隐
@@ -1069,6 +1221,15 @@ export default {
         this.FeedingReworkData.PcDetails[index].rData.DefectCategoryId = null;
       }
     },
+    doMiddleErrorFilter() {
+      this.MiddleErrorList = [
+        this.GetMiddleError.filter(
+          (p) => p.Name.indexOf(this.MiddleErrorFilter) >= 0
+        ).map((item) => {
+          return { name: item.Name, value: item.Id };
+        }),
+      ];
+    },
     //选择缺陷代码
     changeDefectCode($event, index) {
       let id = $event[0];
@@ -1087,6 +1248,15 @@ export default {
         this.FeedingReworkData.PcDetails[index].rData.DefectId = null;
         this.FeedingReworkData.PcDetails[index].rData.Defect = null;
       }
+    },
+    doDefectCodeFilter() {
+      this.DefectCodeList = [
+        this.GetDefectCode.filter(
+          (p) => p.Name.indexOf(this.DefectCodeFilter) >= 0
+        ).map((item) => {
+          return { name: item.Name, value: item.Id };
+        }),
+      ];
     },
     //选择班组类别
     changeGroupType($event, index) {
@@ -1110,6 +1280,15 @@ export default {
           null;
         this.FeedingReworkData.PcDetails[index].rData.ResRemark = $event[0];
       }
+    },
+    doGroupFilter() {
+      this.GroupList = [
+        this.GetGroup.filter((p) => p.Name.indexOf(this.GroupFilter) >= 0).map(
+          (item) => {
+            return { name: item.Name, value: item.Id };
+          }
+        ),
+      ];
     },
 
     //选择班组
@@ -1155,6 +1334,15 @@ export default {
         this.FeedingReworkData.PcDetails[index].rData.ResEmployeeId = null;
       }
     },
+    doPersonLiableFilter() {
+      this.PersonLiableList = [
+        this.GetPersonLiable.filter(
+          (p) => p.Name.indexOf(this.PersonFilter) >= 0
+        ).map((item) => {
+          return { name: item.Name, value: item.Id };
+        }),
+      ];
+    },
     //选择定责质检
     changeQualityTest($event, index) {
       let id = $event[0];
@@ -1169,6 +1357,15 @@ export default {
           null;
         this.FeedingReworkData.PcDetails[index].rData.QualityInspection = null;
       }
+    },
+    doQualityTestFilter() {
+      this.QualityTestList = [
+        this.GetQualityTest.filter(
+          (p) => p.Name.indexOf(this.QualityTestFilter) >= 0
+        ).map((item) => {
+          return { name: item.Name, value: item.Id };
+        }),
+      ];
     },
     //选择的责任人的考核请款
     changeLiableExamine($event, index) {
@@ -1194,6 +1391,15 @@ export default {
         this.FeedingReworkData.PcDetails[index].rData.JointEmpId = null;
         this.FeedingReworkData.PcDetails[index].rData.JointEmp = null;
       }
+    },
+    doRelationPersonFilter() {
+      this.RelationPersonList = [
+        this.GetRelationPerson.filter(
+          (p) => p.Name.indexOf(this.RelationPersonFilter) >= 0
+        ).map((item) => {
+          return { name: item.Name, value: item.Id };
+        }),
+      ];
     },
     //连带责任人的考核情况
     changeRelationExamine($event, index) {

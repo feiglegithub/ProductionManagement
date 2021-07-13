@@ -29,7 +29,7 @@
               type="text"
               class="s-inpbg"
               ref="barinput"
-              @keyup.enter="scanBarCode()"
+              @keyup.enter="getBarCode()"
             />
             <span
               class="iconfont icon-iconfontscan"
@@ -171,6 +171,31 @@ export default {
     "upload-img": uploadImg,
   },
   methods: {
+    getBarCode() {
+      if (this.BarCode == null || this.BarCode == "") {
+        this.showPositionValue = true;
+        this.Msg = "条码不能为空";
+        return;
+      }
+      this.Info.upi = this.BarCode;
+      this.SpecialMiningBy = null;
+      this.DefectCode = null;
+      this.MiddleError = null;
+      this.arrayImage = [];
+      this.isShow = true;
+      // this.$axiosApi.getSpecialMiningInfo(this.BarCode).then((res) => {
+      //   if (res.Success == true) {
+
+      //     this.Info = res.Result;
+      //     console.log(this.Info.upi);
+
+      //   } else {
+      //     this.showPositionValue = true;
+      //     this.Msg = res.Message;
+      //     return;
+      //   }
+      // });
+    },
     clickDefectCode() {
       console.log(this.MiddleErrorId);
       if (this.MiddleErrorId === null || this.MiddleErrorId === "") {
@@ -296,9 +321,12 @@ export default {
     scanBarCode() {
       let that = this;
       console.log("调用扫描接口");
-      this.Info.upi = this.BarCode;
-      console.log(this.Info.upi);
-      this.isShow = true;
+      this.$hybridApi.scanCode({
+        success: function (res) {
+          that.BarCode = res;
+          that.getBarCode();
+        },
+      });
     },
     doPost() {
       if (this.Info.upi == "" || this.Info.upi == null) {
@@ -328,6 +356,7 @@ export default {
           this.Dangerbtn = false;
           this.BadColor = false;
           this.ConfirmMsg = "提交成功";
+          this.Reset();
         } else {
           this.ShowConfirm = true;
           this.Successbtn = false;
@@ -360,7 +389,8 @@ export default {
         (this.Info.SpecialMiningBy = ""),
         (this.Info.PicPaths = ""),
         (this.isShow = false),
-        (this.BarCode = "");
+        (this.BarCode = ""),
+        (this.arrayImage = []);
     },
     goToBack() {
       this.$router.push({ name: "BaseIndex" });
