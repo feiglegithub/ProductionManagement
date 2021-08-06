@@ -309,6 +309,14 @@
       :text="Msg"
       position="middle"
     ></toast>
+    <toast
+      width="12em"
+      v-model="showPositionValue2"
+      type="text"
+      :time="3500"
+      :text="Msg2"
+      position="middle"
+    ></toast>
     <loading :show="showThost" :text="loadingtitle"></loading>
   </div>
 </template>
@@ -1304,6 +1312,10 @@ export default {
           this.Successbtn = true;
           this.Dangerbtn = false;
           this.ShowPostConfirm = true;
+          if (res.Result != "") {
+            this.showPositionValue = true;
+            this.Msg = res.Result;
+          }
         } else {
           this.ConfirmMsg = res.Message;
           this.BadColor = true;

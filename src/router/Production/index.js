@@ -72,6 +72,8 @@ import ReturnRepairProcessSelection from '../../views/Production/ReturnRepairs/R
 import PackagePanelDetail from '../../views/Production/PackagePanelDetail/PackagePanelDetailIndex.vue'//包明细
 
 import SpecialMiningReport from '../../views/Production/SpecialMiningReport/SpecialMiningReportIndex.vue'//特采
+import WorkReportIndex from '../../views/Production/WorkReportToScan/WorkReportIndex.vue'//报工扫描
+import WorkReportDetailIndex from '../../views/Production/WorkReportToScan/WorkReportDetailIndex.vue'//报工扫描
 export default [
     
   {
@@ -313,5 +315,15 @@ export default [
     path: '/SpecialMiningReport',
     name: 'SpecialMiningReportIndex',
     component: SpecialMiningReport,
+  },
+  {
+    path: '/WorkReportToScan',
+    name: 'WorkReportIndex',
+    component: WorkReportIndex,
+  },
+  {
+    path: '/WorkReportDetail',
+    name: 'WorkReportDetailIndex',
+    component: WorkReportDetailIndex,
   },
 ]

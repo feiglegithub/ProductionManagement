@@ -295,6 +295,18 @@
             </div>
           </div>
         </grid-item>
+        <grid-item
+          class="f-flexjscen"
+          @click.native="$router.push({ name: 'WorkReportIndex' })"
+          v-if="showWorkReport" 
+        >
+          <div class="m-otherchoice">
+            <div>
+              <span class="iconfont icon-dianjian"></span>
+              <p class="operationtitle">报工扫描</p>
+            </div>
+          </div>
+        </grid-item>
       </grid>
     </div>
     <div class="m-footers">
@@ -337,6 +349,7 @@ export default {
       showReturnRepair: false,
       showPackagePanelDetail: false,
       showSpecialMiningReport:false,
+      showWorkReport:false,
     };
   },
   components: {},
@@ -434,6 +447,9 @@ export default {
               }
               if (element.code == "特采板件") {
                 this.showSpecialMiningReport = true;
+              }
+              if (element.code == "生产报工扫描") {
+                this.showWorkReport = true;
               }
             });
           }
