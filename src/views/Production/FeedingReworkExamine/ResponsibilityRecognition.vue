@@ -194,6 +194,44 @@
                     <div>{{ item.ResponseData.JonitEmpAssessmentName }}</div>
                   </div>
                 </div>
+                <div class="m-baserowbox">
+                  <span class="label80">设备:</span>
+                  <div class="select s-bgwhile" @click="clickEquipment(index)">
+                    <popup-picker
+                      :show.sync="ShowEquipment"
+                      :data="EquipmentList"
+                      @on-change="changeEquipment"
+                      value-text-align="left"
+                    ></popup-picker>
+                    <div class="select-text">
+                      {{ item.ResponseData.ResponsMachine }}
+                    </div>
+                  </div>
+                  <div
+                    class="m-inp f-mtb5"
+                    style="
+                      position: fixed;
+                      z-index: 9999;
+                      width: 60%;
+                      left: 20%;
+                      top: 63%;
+                      overflow: hidden;
+                    "
+                    v-show="ShowEquipment"
+                  >
+                    <input
+                      class="inp s-bgwhile"
+                      style="
+                        text-align: center;
+                        width: 1%;
+                        margin: 0 auto;
+                        opacity: 0.6;
+                      "
+                      v-model="EquipmentFilter"
+                      @keyup="doEquipmentFilter"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -340,7 +378,15 @@ export default {
       RelationExamineList: [[" ", "已考核", "未考核"]], //控制连带考核情况的显隐
       JonitEmpAssessment: null, //控制连带考核情况的显隐
       RelationExamineName: null, //控制连带考核情况的显隐
+
+      ShowEquipment: false, //控制设备弹窗的显隐
+      GetEquipment: null, //接口获取到的设备的数据
+      EquipmentList: [[" "]], //设备的列表
+      Equipment: null, //选择的设备
+      EquipmentId: null, //选择的设备
+      EquipmentFilter: null, //搜索的设备
       //上传图片的参数配置开始
+      ChoiceEquipIndex: 0,
 
       arrayImage: [],
       //上传图片的参数配置结束
@@ -472,6 +518,50 @@ export default {
           (p) => p.Name.indexOf(this.PersonLiableFilter) >= 0
         ).map((item) => {
           return { name: item.Name, value: item.Id };
+        }),
+      ];
+    },
+    clickEquipment(index) {
+      this.ShowEquipment = true;
+      this.ChoiceEquipIndex = index;
+      this.$axiosApi.getRepResourceManages(this.DeptId).then((res) => {
+        if (res.Success == true) {
+          console.log(res);
+          this.GetEquipment = res.Result;
+          this.EquipmentList = [[{ name: "", value: "" }]];
+          let EquipmentListData = [
+            this.GetEquipment.map((item) => {
+              return { name: item.MachineAndTypeName, value: item.EquipId };
+            }),
+          ];
+          this.EquipmentList[0].push(...EquipmentListData[0]);
+        } else {
+          this.showPositionValue = true;
+          this.Msg = res.Message;
+        }
+      });
+    },
+    //选择设备
+    changeEquipment(val) {
+      let id = val[0];
+      this.EquipmentId = val[0];
+      if (!!this.EquipmentId) {
+        this.FeedingReworkData.Details[
+          this.ChoiceEquipIndex
+        ].ResponseData.ResponsMachine = this.GetEquipment.find(
+          (item) => item.EquipId == id
+        ).MachineAndTypeName;
+      } else {
+        this.EquipmentId = null;
+        this.Equipment = null;
+      }
+    },
+    doEquipmentFilter() {
+      this.EquipmentList = [
+        this.GetEquipment.filter(
+          (p) => p.MachineAndTypeName.indexOf(this.EquipmentFilter) >= 0
+        ).map((item) => {
+          return { name: item.MachineAndTypeName, value: item.EquipId };
         }),
       ];
     },

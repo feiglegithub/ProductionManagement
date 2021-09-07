@@ -118,8 +118,32 @@
                         value-text-align="left"
                       ></popup-picker>
                       <div class="select-text">
-                        {{ FeedingReworkData.PcDetails[index].rData.Equipment }}
+                        {{ FeedingReworkData.PcDetails[index].rData.ResponsMachine }}
                       </div>
+                    </div>
+                    <div
+                      class="m-inp f-mtb5"
+                      style="
+                        position: fixed;
+                        z-index: 9999;
+                        width: 60%;
+                        left: 20%;
+                        top: 63%;
+                        overflow: hidden;
+                      "
+                      v-show="ShowEquipment"
+                    >
+                      <input
+                        class="inp s-bgwhile"
+                        style="
+                          text-align: center;
+                          width: 1%;
+                          margin: 0 auto;
+                          opacity: 0.6;
+                        "
+                        v-model="EquipmentFilter"
+                        @keyup="doEquipmentFilter"
+                      />
                     </div>
                   </div>
                   <div class="m-baserowbox">
@@ -592,6 +616,7 @@ export default {
       EquipmentList: [[" "]], //设备的列表
       Equipment: null, //选择的设备
       EquipmentId: null, //选择的设备
+      EquipmentFilter: null, //搜索的设备
 
       ShowMiddleError: false, //控制出错中类弹窗的显隐
       GetMiddleError: null, //接口获取到的出错中类的数据
@@ -932,6 +957,9 @@ export default {
           this.consoleAddTab();
         }
         this.FeedingReworkData = this.TempFeedingReworkData;
+        var resRemark = this.FeedingReworkData.PcDetails[0].rData.ResRemark;
+        this.FeedingReworkData.PcDetails[0].rData.ResRemark =
+          resRemark == null ? "生产性责任班组" : resRemark;
         this.NowBatchNo = this.TempFeedingReworkData.BatchNo;
         this.BarCode = null;
       }
@@ -1138,6 +1166,11 @@ export default {
             this.showPositionValue = true;
             return;
           }
+          if (item.rData.Defect == "设备故障" && item.rData.EquipId == null) {
+            this.showPositionValue = true;
+            this.Msg = `缺陷代码为“设备故障”时，设备不能为空`;
+            return;
+          }
         });
         if (this.Msg != "" && this.Msg != null) {
           return;
@@ -1196,7 +1229,7 @@ export default {
       index = this.SelIndex;
       this.FeedingReworkData.PcDetails[index].rData.EquipId = $event[0];
       if (!!this.FeedingReworkData.PcDetails[index].rData.EquipId) {
-        this.FeedingReworkData.PcDetails[index].rData.Equipment =
+        this.FeedingReworkData.PcDetails[index].rData.ResponsMachine =
           this.GetEquipment.find(
             (item) => item.EquipId == id
           ).MachineAndTypeName;
@@ -1204,6 +1237,15 @@ export default {
         this.FeedingReworkData.PcDetails[index].rData.EquipId = null;
         this.FeedingReworkData.PcDetails[index].rData.Equipment = null;
       }
+    },
+    doEquipmentFilter() {
+      this.EquipmentList = [
+        this.GetEquipment.filter(
+          (p) => p.MachineAndTypeName.indexOf(this.EquipmentFilter) >= 0
+        ).map((item) => {
+          return { name: item.MachineAndTypeName, value: item.EquipId };
+        }),
+      ];
     },
     //选择错误中类
     changeMiddleError($event, index) {
@@ -1761,7 +1803,6 @@ export default {
             console.log(res);
 
             this.saleOrderNo = res.Result.Details[0].SaleOrderNo;
-
             //12月5日，用于卡控，不同订单相同批次不允许加入
             console.log(res.Result.BatchNo);
             if (
@@ -1786,6 +1827,10 @@ export default {
             } else {
               this.FeedingReworkData = res.Result;
               this.NowBatchNo = res.Result.BatchNo;
+              var resRemark =
+                this.FeedingReworkData.PcDetails[0].rData.ResRemark;
+              this.FeedingReworkData.PcDetails[0].rData.ResRemark =
+                resRemark == null ? "生产性责任班组" : resRemark;
               this.BarCode = null;
               if (isInit) {
                 this.consoleAddTab();

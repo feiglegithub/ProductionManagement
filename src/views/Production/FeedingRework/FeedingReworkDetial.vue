@@ -74,6 +74,30 @@
                   ></popup-picker>
                   <div class="select-text">{{ Equipment }}</div>
                 </div>
+                <div
+                  class="m-inp f-mtb5"
+                  style="
+                    position: fixed;
+                    z-index: 9999;
+                    width: 60%;
+                    left: 20%;
+                    top: 63%;
+                    overflow: hidden;
+                  "
+                  v-show="ShowEquipment"
+                >
+                  <input
+                    class="inp s-bgwhile"
+                    style="
+                      text-align: center;
+                      width: 1%;
+                      margin: 0 auto;
+                      opacity: 0.6;
+                    "
+                    v-model="EquipmentFilter"
+                    @keyup="doEquipmentFilter"
+                  />
+                </div>
               </div>
               <div class="m-baserowbox">
                 <span class="label80">出错中类:</span>
@@ -416,6 +440,7 @@ export default {
       EquipmentList: [[" "]], //设备的列表
       Equipment: null, //选择的设备
       EquipmentId: null, //选择的设备
+      EquipmentFilter: null, //搜索的设备
 
       ShowMiddleError: false, //控制出错中类弹窗的显隐
       GetMiddleError: null, //接口获取到的出错中类的数据
@@ -638,6 +663,7 @@ export default {
       this.DetailData.ResponseData.ResEmployee = this.PersonLiable;
       this.DetailData.ResponseData.QualityInspectionId = this.QualityTestId;
       this.DetailData.ResponseData.QualityInspection = this.QualityTest;
+      this.DetailData.ResponseData.ResponsMachine = this.Equipment;
       if (this.LiableExamine == "已考核") {
         this.DetailData.ResponseData.ResEmpAssessment = 1;
       }
@@ -684,6 +710,15 @@ export default {
         this.EquipmentId = null;
         this.Equipment = null;
       }
+    },
+    doEquipmentFilter() {
+      this.EquipmentList = [
+        this.GetEquipment.filter(
+          (p) => p.MachineAndTypeName.indexOf(this.EquipmentFilter) >= 0
+        ).map((item) => {
+          return { name: item.MachineAndTypeName, value: item.EquipId };
+        }),
+      ];
     },
     //选择错误中类
     changeMiddleError(val) {
@@ -800,7 +835,7 @@ export default {
     doPersonLiableFilter() {
       this.PersonLiableList = [
         this.GetPersonLiable.filter(
-          (p) => p.Name.indexOf(this.PersonFilter)>=0
+          (p) => p.Name.indexOf(this.PersonFilter) >= 0
         ).map((item) => {
           return { name: item.Name, value: item.Id };
         }),
@@ -822,7 +857,7 @@ export default {
     doQualityTestFilter() {
       this.QualityTestList = [
         this.GetQualityTest.filter(
-          (p) => p.Name.indexOf(this.QualityTestFilter)>=0
+          (p) => p.Name.indexOf(this.QualityTestFilter) >= 0
         ).map((item) => {
           return { name: item.Name, value: item.Id };
         }),
@@ -849,7 +884,7 @@ export default {
     doRelationPersonFilter() {
       this.RelationPersonList = [
         this.GetRelationPerson.filter(
-          (p) => p.Name.indexOf(this.PersonFilter)>=0
+          (p) => p.Name.indexOf(this.PersonFilter) >= 0
         ).map((item) => {
           return { name: item.Name, value: item.Id };
         }),
@@ -1140,7 +1175,10 @@ export default {
         this.DefectCodeId = this.DetailData.ResponseData.DefectId;
         this.DefectCode = this.DetailData.ResponseData.Defect;
         this.DefectDescription = this.DetailData.ResponseData.DefectDescription;
-        this.GroupType = this.DetailData.ResponseData.ResRemark;
+        this.GroupType =
+          this.DetailData.ResponseData.ResRemark == null
+            ? "生产性责任班组"
+            : this.DetailData.ResponseData.ResRemark;
         this.GroupId = this.DetailData.ResponseData.ResWorkGroupId;
         this.Group = this.DetailData.ResponseData.ResWorkGroup;
         this.GroupIsProduct =
@@ -1165,6 +1203,8 @@ export default {
         }
         // this.MakerId=this.DetailData.ResponseData.MakerId
         // this.Maker=this.DetailData.ResponseData.Maker
+      } else {
+        this.GroupType = "生产性责任班组";
       }
     }
   },

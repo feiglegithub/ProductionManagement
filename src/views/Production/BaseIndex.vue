@@ -307,6 +307,30 @@
             </div>
           </div>
         </grid-item>
+        <grid-item
+          class="f-flexjscen"
+          @click.native="$router.push({ name: 'CuttingTaskSelectionIndex' })"
+          v-if="showCuttingTask" 
+        >
+          <div class="m-otherchoice">
+            <div>
+              <span class="iconfont icon-dianjian"></span>
+              <p class="operationtitle">工作台</p>
+            </div>
+          </div>
+        </grid-item>
+        <grid-item
+          class="f-flexjscen"
+          @click.native="$router.push({ name: 'PanelExceptionCollectionSelectIndex' })"
+          v-if="showPanelExceptionCollection" 
+        >
+          <div class="m-otherchoice">
+            <div>
+              <span class="iconfont icon-dianjian"></span>
+              <p class="operationtitle">异常采集</p>
+            </div>
+          </div>
+        </grid-item>
       </grid>
     </div>
     <div class="m-footers">
@@ -350,6 +374,8 @@ export default {
       showPackagePanelDetail: false,
       showSpecialMiningReport:false,
       showWorkReport:false,
+      showCuttingTask:false,
+      showPanelExceptionCollection:false,
     };
   },
   components: {},
@@ -450,6 +476,12 @@ export default {
               }
               if (element.code == "生产报工扫描") {
                 this.showWorkReport = true;
+              }
+              if (element.code == "工作台") {
+                this.showCuttingTask = true;
+              }
+              if (element.code == "异常采集") {
+                this.showPanelExceptionCollection = true;
               }
             });
           }

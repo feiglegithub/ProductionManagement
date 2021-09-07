@@ -22,11 +22,11 @@ export default function devLogin(vue){
 
 }else{
   console.log('进来了登陆接口了');
-  Vue.prototype.$axiosApi.login("10110724","123456").then(res=>{
+  Vue.prototype.$axiosApi.login("11025449","123456").then(res=>{
 
     if(res.Success){
 //  console.log(res);
-let orgId=res.Context.InvOrgId;
+let orgId=83;
 let ticket=res.Context.Ticket;
 let userId=res.Result.UserId;
 let userName=res.Result.UserName;

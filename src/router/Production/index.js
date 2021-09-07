@@ -74,6 +74,11 @@ import PackagePanelDetail from '../../views/Production/PackagePanelDetail/Packag
 import SpecialMiningReport from '../../views/Production/SpecialMiningReport/SpecialMiningReportIndex.vue'//特采
 import WorkReportIndex from '../../views/Production/WorkReportToScan/WorkReportIndex.vue'//报工扫描
 import WorkReportDetailIndex from '../../views/Production/WorkReportToScan/WorkReportDetailIndex.vue'//报工扫描
+import CuttingTaskSelectionIndex from '../../views/Production/CuttingTask/CuttingTaskSelectionIndex.vue'//开料任务
+import CuttingTaskIndex from '../../views/Production/CuttingTask/CuttingTaskIndex.vue'
+import CuttingTaskDetailIndex from '../../views/Production/CuttingTask/CuttingTaskDetailIndex.vue'
+import PanelExceptionCollectionSelectIndex from '../../views/Production/PanelExceptionCollection/PanelExceptionCollectionSelectIndex.vue'
+import PanelExceptionCollectionIndex from '../../views/Production/PanelExceptionCollection/PanelExceptionCollectionIndex.vue'
 export default [
     
   {
@@ -326,4 +331,30 @@ export default [
     name: 'WorkReportDetailIndex',
     component: WorkReportDetailIndex,
   },
+  {
+    path: '/CuttingTaskSelection',
+    name: 'CuttingTaskSelectionIndex',
+    component: CuttingTaskSelectionIndex,
+  },
+  {
+    path: '/CuttingTask',
+    name: 'CuttingTaskIndex',
+    component: CuttingTaskIndex,
+  },
+  {
+    path: '/CuttingTaskDetail',
+    name: 'CuttingTaskDetailIndex',
+    component: CuttingTaskDetailIndex,
+  },
+  {
+    path: '/PanelExceptionCollectionSelect',
+    name: 'PanelExceptionCollectionSelectIndex',
+    component: PanelExceptionCollectionSelectIndex,
+  }
+  ,
+  {
+    path: '/PanelExceptionCollection',
+    name: 'PanelExceptionCollectionIndex',
+    component: PanelExceptionCollectionIndex,
+  }
 ]

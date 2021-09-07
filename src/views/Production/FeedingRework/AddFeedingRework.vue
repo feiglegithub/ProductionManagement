@@ -305,7 +305,7 @@
       width="12em"
       v-model="showPositionValue"
       type="text"
-      :time="2500"
+      :time="3000"
       :text="Msg"
       position="middle"
     ></toast>
@@ -775,6 +775,11 @@ export default {
             if (!item.ResponseData.ResWorkGroupId) {
               this.showPositionValue = true;
               this.Msg = `明细${item.UPI}责任班组不能为空`;
+              return;
+            }
+            if (item.ResponseData.Defect=="设备故障"&&item.ResponseData.EquipId==null) {
+              this.showPositionValue = true;
+              this.Msg = `明细${item.UPI}缺陷代码为“设备故障”时，设备不能为空`;
               return;
             }
           }
