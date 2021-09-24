@@ -52,7 +52,7 @@
               </div>
               <div slot="content" class="f-pd5 vux-1px-t">
                 <div class="g-tranbox s-bgE7E7E7">
-                  <div class="m-ordernumber"></div>
+                  <div class="m-ordernumber">{{ index + 1 }}</div>
                   <div>
                     <!-- v-for="(item,index) in UpiDataInfo" :key="index" -->
                     <div class="m-baserowbox">

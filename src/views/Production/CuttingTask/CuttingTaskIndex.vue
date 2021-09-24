@@ -22,9 +22,7 @@
     >
       <div class="f-flexg1" style="overflow: scroll" ref="bscroll">
         <div style="padding: 10px">
-          <el-button @click="judgeIsExec"
-            >补扫UPI</el-button
-          >
+          <el-button @click="judgeIsExec">补扫UPI</el-button>
           <el-button @click="goDetial">查看板件明细</el-button>
         </div>
         <el-table
@@ -35,7 +33,7 @@
           @current-change="doChoice"
           @header-click="headerClick"
         >
-          <el-table-column prop="" label="序号"></el-table-column>
+          <el-table-column type="index" label="序号"></el-table-column>
           <el-table-column prop="DepartMentCode" label="部门">
           </el-table-column>
           <el-table-column prop="SubBatchCode" label="子批次">
@@ -57,21 +55,38 @@
           <el-table-column prop="MacheCode" label="机台号"> </el-table-column>
           <el-table-column prop="AssingTime" label="分派时间">
           </el-table-column>
-          <el-table-column prop="MainColor" label="批次主花色">
+          <el-table-column prop="MainColor" min-width="100%" label="批次主花色">
           </el-table-column>
           <el-table-column prop="EmergencyType" label="加急标识">
           </el-table-column>
           <el-table-column prop="SectionFlag" label="分段标识">
           </el-table-column>
+          <el-table-column
+            prop="SecondaryBoardNum"
+            min-width="100%"
+            label="B级板数量"
+          >
+          </el-table-column>
         </el-table>
         <!-- <div class="u-nodata" v-show="HasData">暂无数据</div> -->
       </div>
-      <div class="m-page" style="height:30px">
-        <span class="f-marleft10" style="font-size:15px" @click="perPage">上一页</span>
+      <div class="m-page" style="height: 30px">
+        <span class="f-marleft10" style="font-size: 15px" @click="perPage"
+          >上一页</span
+        >
         <span class="f-marleft10">{{ NowPage }}/{{ TotlePageCount }}</span>
-        <span class="f-marleft10" style="font-size:15px" @click="nextPage">下一页</span>
-        <input type="text" class="pageinp f-marleft10" style="height:20px" v-model="JunpPageNum" />
-        <span class="f-marleft10" style="font-size:15px" @click="jumpPage">跳转</span>
+        <span class="f-marleft10" style="font-size: 15px" @click="nextPage"
+          >下一页</span
+        >
+        <input
+          type="text"
+          class="pageinp f-marleft10"
+          style="height: 20px"
+          v-model="JunpPageNum"
+        />
+        <span class="f-marleft10" style="font-size: 15px" @click="jumpPage"
+          >跳转</span
+        >
       </div>
     </div>
 
@@ -130,7 +145,7 @@ export default {
       Msg: "",
       ConfirmMsg: "",
       ShowConfirm2: false, //控制弹窗的显隐
-      ConfirmMsg2:"",
+      ConfirmMsg2: "",
       loadingtitle: "",
       loadingtitle: "",
       scanCode: "",
@@ -168,6 +183,9 @@ export default {
           if (res.Success == true) {
             this.ProductionTaskData = res.Result.Datas;
             this.TotlePageCount = res.Result.PageCount;
+            for(var i = 1; i<=this.ProductionTaskData.length ; i++){
+              //this.ProductionTaskData[i].Seq = i;
+            }
             console.log(this.ProductionTaskData);
           } else {
             this.showPositionValue = true;
