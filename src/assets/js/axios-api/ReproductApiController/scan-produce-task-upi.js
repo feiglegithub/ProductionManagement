@@ -11,7 +11,7 @@
  */
 import Vue from 'vue';
 import Storage from '../../storage.js'
-export default function (barcode,isBatch,saleOrderNo) {
+export default function (barcode,isBatch,saleOrderNo,isLineDetail) {
     return Vue.axios.post(Storage.url(), {
         "ApiType": "ReproductApiController",
         "Parameters": [
@@ -23,6 +23,9 @@ export default function (barcode,isBatch,saleOrderNo) {
           },
           {
             "Value": saleOrderNo
+          },
+          {
+            "Value": isLineDetail
           }
         ],
         "Method": "ScanProduceTaskUpi",

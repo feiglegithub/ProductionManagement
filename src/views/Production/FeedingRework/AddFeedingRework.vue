@@ -13,7 +13,14 @@
       <a slot="right" @click="doPost">提交</a>
     </x-header>
     <div class="f-flexvw f-flexg1 f-pdlr5">
-      <div class="g-inp">
+      <div
+        class="g-inp"
+        :style="
+          LineDetail == '行明细' && FeedingReworkData.Details.length > 0
+            ? 'height:25%'
+            : ''
+        "
+      >
         <div class="m-inp f-mtb5">
           <span class="laber" style="min-width: 74px">条码</span>
           <span class="inp s-inpbg">
@@ -30,12 +37,30 @@
             ></span>
           </span>
         </div>
+        <div class="m-inp f-mtb5">
+          <x-switch
+            class="f-mtb5"
+            style="
+              font-size: 16px;
+              padding: 0 10px;
+              margin-left: 57px;
+              width: 140px;
+            "
+            title="选择"
+            :value-map="['行', '行明细']"
+            v-model="LineDetail"
+            @on-change="changeIsLineDetail"
+          ></x-switch>
+          <div style="font-size: 16px; margin-left: 5px">
+            {{ LineDetail }}
+          </div>
+        </div>
         <!-- <div class="m-inp f-mtb5">
                     <x-switch class="f-mtb5" style="font-size: 16px;padding:0 10px;margin-left: 1px;width:140px" title="批次补料" :value-map="['否','是']" v-model="IsBatchFeeding" @on-change="changeIsBatchFeeding" :disabled='FeedingReworkData.Details.length>0'></x-switch>
                     <div style="font-size: 16px;margin-left: 5px;">{{IsBatchFeeding}}</div>
                 </div> -->
       </div>
-      <div class="g-scrollbox">
+      <div class="g-scrollbox" style="margin-top: 10px">
         <div class="f-auto">
           <s-messageheader
             class="f-mt10"
@@ -254,29 +279,40 @@
                 >
               </div>
               <div slot="content" class="f-pd5 vux-1px-t">
-                <div class="g-tranbox s-bgE7E7E7" @click="goDetial(item)">
-                  <div class="m-ordernumber">{{ index + 1 }}</div>
-                  <div>
-                    <div class="m-baserowbox">
-                      <span class="label80">板件信息:</span>
-                      <span class="text">{{ item.UPI }}</span>
-                    </div>
-                    <div class="m-baserowbox">
-                      <span class="label80">物料:</span>
-                      <span class="text">{{ item.ItemCode }}</span>
-                    </div>
-                    <div class="m-baserowbox">
-                      <span class="label80">规格:</span>
-                      <span class="text">{{ item.Specifacation }}</span>
-                    </div>
-                    <div class="m-baserowbox">
-                      <span class="label80">名称:</span>
-                      <span class="text">{{ item.ItemName }}</span>
-                    </div>
-                    <!-- <div class="m-baserowbox">
+                <div class="g-tranbox s-bgE7E7E7">
+                  <div class="m-ordernumber" @click="goDetial(item)">
+                    {{ index + 1 }}
+                  </div>
+                  <div style="width: 80%" @click="goDetial(item)">
+                    <div>
+                      <div class="m-baserowbox">
+                        <span class="label80">板件信息:</span>
+                        <span class="text">{{ item.UPI }}</span>
+                      </div>
+                      <div class="m-baserowbox">
+                        <span class="label80">物料:</span>
+                        <span class="text">{{ item.ItemCode }}</span>
+                      </div>
+                      <div class="m-baserowbox">
+                        <span class="label80">规格:</span>
+                        <span class="text">{{ item.Specifacation }}</span>
+                      </div>
+                      <div class="m-baserowbox">
+                        <span class="label80">名称:</span>
+                        <span class="text">{{ item.ItemName }}</span>
+                      </div>
+                      <!-- <div class="m-baserowbox">
                                             <span class="label80" >设备:</span>
                                             <span class="text">{{item.ItemName}}</span>
                                         </div> -->
+                    </div>
+                  </div>
+                  <div style="margin-top: 10px">
+                    <input
+                      type="checkbox"
+                      v-model="item.IsCheck"
+                      style="width: 30px; height: 30px; border-radius: 100%"
+                    />
                   </div>
                   <!-- <div class="target" @click.stop="showMore(item,$event)">点击展示</div> -->
                 </div>
@@ -355,6 +391,7 @@ export default {
         ResponseData: null, // 单据选择的概要信息
         StockFlowId: null, //备货流程
       },
+      LineDetail: "行",
 
       DefectDescription: null, //出错描述
       ShowEquipment: false, //控制设备弹窗的显隐
@@ -541,6 +578,10 @@ export default {
       // console.log(event.currentTarget);
     },
 
+    changeIsLineDetail(value) {
+      console.log(value);
+    },
+
     //获取条码
     getBarCode() {
       if (this.BarCode == null || this.BarCode == "") {
@@ -567,7 +608,8 @@ export default {
       this.scanProduceTaskUpi(
         this.BarCode,
         this.FeedingReworkData.IsBatch,
-        this.saleOrderNo
+        this.saleOrderNo,
+        this.LineDetail == "行明细"
       );
     },
     //触发单项左右滑动
@@ -747,7 +789,12 @@ export default {
         return;
       }
       // console.log(this.FeedingReworkData.Details);
-
+      var detail = this.FeedingReworkData.Details;
+      var details = this.FeedingReworkData.Details.filter(
+        (p) => p.IsCheck == true
+      );
+      this.FeedingReworkData.Details = details;
+      console.log(this.FeedingReworkData.Details);
       if (this.FeedingReworkData.IsBatch == 0) {
         this.FeedingReworkData.CreateById = this.MakerId;
         this.FeedingReworkData.CreateBy = this.Maker;
@@ -760,26 +807,34 @@ export default {
           if (!item.ResponseData) {
             this.showPositionValue = true;
             this.Msg = `明细${item.UPI}缺陷代码和责任班组不能为空`;
+            this.FeedingReworkData.Details = detail;
             return;
           } else {
             if (!item.ResponseData.DefectId) {
               this.showPositionValue = true;
               this.Msg = `明细${item.UPI}缺陷代码不能为空`;
+              this.FeedingReworkData.Details = detail;
               return;
             }
             if (!item.ResponseData.ResRemark) {
               this.showPositionValue = true;
               this.Msg = `明细${item.UPI}责任班组类别不能为空`;
+              this.FeedingReworkData.Details = detail;
               return;
             }
             if (!item.ResponseData.ResWorkGroupId) {
               this.showPositionValue = true;
               this.Msg = `明细${item.UPI}责任班组不能为空`;
+              this.FeedingReworkData.Details = detail;
               return;
             }
-            if (item.ResponseData.Defect=="设备故障"&&item.ResponseData.EquipId==null) {
+            if (
+              item.ResponseData.Defect == "设备故障" &&
+              item.ResponseData.EquipId == null
+            ) {
               this.showPositionValue = true;
               this.Msg = `明细${item.UPI}缺陷代码为“设备故障”时，设备不能为空`;
+              this.FeedingReworkData.Details = detail;
               return;
             }
           }
@@ -1218,16 +1273,20 @@ export default {
       });
     },
     //接口：扫描upi
-    scanProduceTaskUpi(barcode, isBatch, saleOrderNo) {
+    scanProduceTaskUpi(barcode, isBatch, saleOrderNo, isLineDetail) {
       this.loadingtitle = "加载中";
       this.showThost = true;
       this.$axiosApi
-        .scanProduceTaskUpi(barcode, isBatch, saleOrderNo)
+        .scanProduceTaskUpi(barcode, isBatch, saleOrderNo, isLineDetail)
         .then((res) => {
           this.showThost = false;
           if (res.Success == true) {
             console.log(res);
-
+            res.Result.Details.forEach((item) => {
+              if (!item.BatchDetail) {
+                item.IsCheck = true;
+              }
+            });
             //12月5日，用于卡控，不同订单相同批次不允许加入
             console.log(res.Result.BatchNo);
             if (

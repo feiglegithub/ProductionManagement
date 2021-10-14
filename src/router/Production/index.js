@@ -79,6 +79,7 @@ import CuttingTaskIndex from '../../views/Production/CuttingTask/CuttingTaskInde
 import CuttingTaskDetailIndex from '../../views/Production/CuttingTask/CuttingTaskDetailIndex.vue'
 import PanelExceptionCollectionSelectIndex from '../../views/Production/PanelExceptionCollection/PanelExceptionCollectionSelectIndex.vue'
 import PanelExceptionCollectionIndex from '../../views/Production/PanelExceptionCollection/PanelExceptionCollectionIndex.vue'
+import SprayPowderPlateIndex from '../../views/Production/SprayPowderPlate/SprayPowderPlateIndex.vue'
 export default [
     
   {
@@ -356,5 +357,10 @@ export default [
     path: '/PanelExceptionCollection',
     name: 'PanelExceptionCollectionIndex',
     component: PanelExceptionCollectionIndex,
+  },
+  {
+    path: '/SprayPowderPlateIndex',
+    name: 'SprayPowderPlateIndex',
+    component: SprayPowderPlateIndex,
   }
 ]

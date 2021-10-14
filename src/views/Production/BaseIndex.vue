@@ -283,10 +283,10 @@
             </div>
           </div>
         </grid-item>
-         <grid-item
+        <grid-item
           class="f-flexjscen"
           @click.native="$router.push({ name: 'SpecialMiningReportIndex' })"
-          v-if="showSpecialMiningReport" 
+          v-if="showSpecialMiningReport"
         >
           <div class="m-otherchoice">
             <div>
@@ -298,7 +298,7 @@
         <grid-item
           class="f-flexjscen"
           @click.native="$router.push({ name: 'WorkReportIndex' })"
-          v-if="showWorkReport" 
+          v-if="showWorkReport"
         >
           <div class="m-otherchoice">
             <div>
@@ -310,7 +310,7 @@
         <grid-item
           class="f-flexjscen"
           @click.native="$router.push({ name: 'CuttingTaskSelectionIndex' })"
-          v-if="showCuttingTask" 
+          v-if="showCuttingTask"
         >
           <div class="m-otherchoice">
             <div>
@@ -321,13 +321,29 @@
         </grid-item>
         <grid-item
           class="f-flexjscen"
-          @click.native="$router.push({ name: 'PanelExceptionCollectionSelectIndex' })"
-          v-if="showPanelExceptionCollection" 
+          @click.native="
+            $router.push({ name: 'PanelExceptionCollectionSelectIndex' })
+          "
+          v-if="showPanelExceptionCollection"
         >
           <div class="m-otherchoice">
             <div>
               <span class="iconfont icon-dianjian"></span>
               <p class="operationtitle">异常采集</p>
+            </div>
+          </div>
+        </grid-item>
+        <grid-item
+          class="f-flexjscen"
+          @click.native="
+            $router.push({ name: 'SprayPowderPlateIndex' })
+          "
+          v-if="showSprayPowderPlate"
+        >
+          <div class="m-otherchoice">
+            <div>
+              <span class="iconfont icon-dianjian"></span>
+              <p class="operationtitle">板件喷粉</p>
             </div>
           </div>
         </grid-item>
@@ -372,10 +388,11 @@ export default {
       showWarehouseRawMaterial: false,
       showReturnRepair: false,
       showPackagePanelDetail: false,
-      showSpecialMiningReport:false,
-      showWorkReport:false,
-      showCuttingTask:false,
-      showPanelExceptionCollection:false,
+      showSpecialMiningReport: false,
+      showWorkReport: false,
+      showCuttingTask: false,
+      showPanelExceptionCollection: false,
+      showSprayPowderPlate: false,
     };
   },
   components: {},
@@ -482,6 +499,9 @@ export default {
               }
               if (element.code == "异常采集") {
                 this.showPanelExceptionCollection = true;
+              }
+              if (element.code == "板件喷粉") {
+                this.showSprayPowderPlate = true;
               }
             });
           }

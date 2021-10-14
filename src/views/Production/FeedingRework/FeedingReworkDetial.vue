@@ -362,6 +362,21 @@
                   <div class="select-text">{{ RelationExamine }}</div>
                 </div>
               </div>
+              <div class="m-baserowbox">
+                <span class="label80">补料板件:</span>
+                <div
+                  class="select s-bgwhile"
+                  @click="clickPanelNum(DetailData.PanelCount)"
+                >
+                  <popup-picker
+                    :show.sync="ShowPanelNum"
+                    :data="PanelNumList"
+                    @on-change="changePanelNum"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ PanelNum }}</div>
+                </div>
+              </div>
               <!-- <div class="m-baserowbox">
                                 <span class="label80" >制单人:</span>
                                 <div class="select s-bgwhile"  @click="clickMaker">
@@ -501,11 +516,10 @@ export default {
       RelationExamine: null, //控制连带考核情况的显隐
       RelationExamineId: null, //控制连带考核情况的显隐
 
-      // ShowMaker:false,  //控制制单人的显隐
-      // GetMaker:null,    //控制制单人的显隐
-      // MakerList:[['']],  //控制制单人的显隐
-      // Maker:null,       //控制制单人的显隐
-      // MakerId:null,       //控制制单人的显隐
+      ShowPanelNum: false,
+      GetPanelNum: null,
+      PanelNumList: [[]],
+      PanelNum: 1,
 
       DetailData: {
         //单信息
@@ -664,6 +678,7 @@ export default {
       this.DetailData.ResponseData.QualityInspectionId = this.QualityTestId;
       this.DetailData.ResponseData.QualityInspection = this.QualityTest;
       this.DetailData.ResponseData.ResponsMachine = this.Equipment;
+      this.DetailData.ResponseData.ReproducePanelQty = this.PanelNum;
       if (this.LiableExamine == "已考核") {
         this.DetailData.ResponseData.ResEmpAssessment = 1;
       }
@@ -1152,6 +1167,17 @@ export default {
           this.Msg = res.Message;
         }
       });
+    },
+    //点击补料板件
+    clickPanelNum(PanelCount) {
+      this.ShowPanelNum = true;
+      for (var i = 1; i <= PanelCount; i++) {
+        this.PanelNumList[0].push({ name: i, value: i });
+      }
+    },
+    //选择补料板件
+    changePanelNum(val) {
+      this.PanelNum = val[0];
     },
     //深拷贝
     deepClone(obj) {
