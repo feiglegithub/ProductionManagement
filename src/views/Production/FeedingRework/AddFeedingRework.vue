@@ -311,7 +311,12 @@
                     <input
                       type="checkbox"
                       v-model="item.IsCheck"
-                      style="width: 30px; height: 30px; border-radius: 100%"
+                      style="width: 40px; height: 40px; border-radius: 100%"
+                      @click="
+                        item.IsCheck = item.BatchDetail
+                          ? !item.BatchDetail
+                          : !item.IsCheck
+                      "
                     />
                   </div>
                   <!-- <div class="target" @click.stop="showMore(item,$event)">点击展示</div> -->
@@ -555,7 +560,7 @@ export default {
 
       // if(this.IsBatchFeeding=='否'){
       //     this.$router.push({name:'FeedingReworkDetial',params:{Details:this.Details}})
-      //     this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetial')
+      //     this.$store.dispatch('removeKeepAlive', 'removeKeepAlive')
       // }
       // if(this.IsBatchFeeding=='是'){
       //     this.$router.push({name:'FeedingReworkDetialYes',params:{Details:this.Details}})
