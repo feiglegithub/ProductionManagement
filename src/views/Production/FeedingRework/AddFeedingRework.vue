@@ -312,10 +312,10 @@
                       type="checkbox"
                       v-model="item.IsCheck"
                       style="width: 40px; height: 40px; border-radius: 100%"
-                      @click="
-                        item.IsCheck = item.BatchDetail
+                      @change="
+                        item.IsCheck = !item.BatchDetail
                           ? !item.BatchDetail
-                          : !item.IsCheck
+                          : item.IsCheck
                       "
                     />
                   </div>
@@ -518,6 +518,16 @@ export default {
       //  这里的vm指的就是vue实例，可以用来当做this使用
       if (vm.$route.params.BtnType == "Save") {
         console.log("调用接口，获取明细");
+        var detail = vm.FeedingReworkData.Details;
+        for (var i = 0; i < detail.length; i++) {
+          if (
+            detail[i].ResponseData != null &&
+            detail[i].ResponseData.DefectId != null
+          ) {
+            detail[i].IsCheck = true;
+          }
+        }
+        vm.$forceUpdate();
         // console.log(vm.$route.params.Details);  //获取到的类型
         // vm.Details=vm.$route.params.Details
         // console.log(vm.FeedingReworkData.Details.find(item=>item.UPI == vm.$route.params.Details.UPI));
