@@ -1336,7 +1336,10 @@ export default {
             } else {
               this.saleOrderNo = res.Result.Details[0].SaleOrderNo;
               if (this.FeedingReworkData.Details.length > 0) {
-                this.FeedingReworkData.Details.unshift(res.Result.Details[0]);
+                res.Result.Details.forEach(model=>
+                {
+                  this.FeedingReworkData.Details.unshift(model);
+                });
               } else {
                 this.FeedingReworkData = res.Result;
               }
