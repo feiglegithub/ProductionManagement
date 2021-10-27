@@ -335,15 +335,25 @@
         </grid-item>
         <grid-item
           class="f-flexjscen"
-          @click.native="
-            $router.push({ name: 'SprayPowderPlateIndex' })
-          "
+          @click.native="$router.push({ name: 'SprayPowderPlateIndex' })"
           v-if="showSprayPowderPlate"
         >
           <div class="m-otherchoice">
             <div>
               <span class="iconfont icon-dianjian"></span>
               <p class="operationtitle">板件喷粉</p>
+            </div>
+          </div>
+        </grid-item>
+        <grid-item
+          class="f-flexjscen"
+          @click.native="$router.push({ name: 'ReportViewIndex' })"
+          v-if="showReportView"
+        >
+          <div class="m-otherchoice">
+            <div>
+              <span class="iconfont icon-dianjian"></span>
+              <p class="operationtitle">报表查看</p>
             </div>
           </div>
         </grid-item>
@@ -393,6 +403,7 @@ export default {
       showCuttingTask: false,
       showPanelExceptionCollection: false,
       showSprayPowderPlate: false,
+      showReportView: false,
     };
   },
   components: {},
@@ -502,6 +513,9 @@ export default {
               }
               if (element.code == "板件喷粉") {
                 this.showSprayPowderPlate = true;
+              }
+              if (element.code == "报表查看") {
+                this.showReportView = true;
               }
             });
           }

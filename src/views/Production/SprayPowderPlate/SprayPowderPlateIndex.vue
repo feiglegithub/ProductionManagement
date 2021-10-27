@@ -8,7 +8,11 @@
     >
       板件喷粉
       <!-- <a slot="right">取消</a> -->
-      <a slot="right" @click="doPost" :class="{ 'f-noclick': showThost }"
+      <a
+        slot="right"
+        @click="doPost"
+        :class="{ 'f-noclick': showThost }"
+        v-show="isPrint == '否'"
         >提交</a
       >
     </x-header>
@@ -36,7 +40,7 @@
               ref="ChipNo"
               placeholder="请扫描芯片ID"
               type="text"
-              @keyup.enter="isPrint == '否' ? getChipNo() : doPrint()"
+              @keyup.enter="doJudge(isPrint)"
               class="s-inpbg"
             />
           </span>
@@ -53,6 +57,7 @@
             title="打印"
             :value-map="['否', '是']"
             v-model="isPrint"
+            @on-change="ReturnData = {}"
           ></x-switch>
           <div style="font-size: 16px; margin-left: 5px">
             {{ isPrint }}
@@ -143,7 +148,9 @@
                       }}</span>
                     </div>
                     <div class="showlistmsg">
-                      <span class="label">结果:</span>
+                      <span class="label"
+                        >{{ isPrint == "是" ? "打印" : "绑定" }}结果:</span
+                      >
                       <span class="showmsg f-ml10">{{
                         ReturnData.BindingState
                       }}</span>
@@ -166,6 +173,19 @@
       :bad="BadColor"
       @on-cancel="onCancel"
       @on-confirm="onConfirm"
+    >
+    </s-confirm>
+
+    <s-confirm
+      v-model="ShowConfirm2"
+      :content="ConfirmMsg2"
+      :showConfirmButton="false"
+      :showCancelButton="false"
+      :showSuccessButton="Successbtn"
+      :showDangerButton="Dangerbtn"
+      :bad="BadColor"
+      @on-cancel="onCancel"
+      @on-confirm="onConfirm2"
     >
     </s-confirm>
 
@@ -192,6 +212,8 @@ export default {
       BadColor: false,
       Successbtn: true,
       Dangerbtn: true,
+      ShowConfirm2: false, //控制提示弹窗的显隐
+      ConfirmMsg2: "提交成功",
 
       showPositionValue: false, //提示信息显隐
       Msg: "有问题", //提示信息
@@ -224,19 +246,63 @@ export default {
   },
   components: {},
   methods: {
+    doJudge(isPrint) {
+      if (isPrint == "否") {
+        this.getChipNo();
+      } else {
+        this.doPrint(0);
+      }
+    },
     //获取芯片
     getChipNo() {
-      if (!!!this.ReturnData && !!!this.ReturnData.Upi) {
+      // if (!!this.ReturnData && !!!this.ReturnData.Upi) {
+      //   this.showPositionValue = true;
+      //   this.Msg = "请先扫描UPI!";
+      //   this.ChipNo = null;
+      //   return;
+      // }
+      this.$axiosApi.judgeHasChipNo().then((res) => {
+        if (res.Success) {
+          this.ReturnData.ChipNo = this.ChipNo;
+          this.$refs.UPI.focus();
+        } else {
+          this.showPositionValue = true;
+          this.Msg = res.Message;
+        }
+        this.ChipNo = null;
+      });
+    },
+    doPrint(isRePrint) {
+      if (!!!this.ChipNo) {
         this.showPositionValue = true;
-        this.Msg = "请先扫描UPI!";
+        this.Msg = "请先扫描芯片！";
         return;
       }
-      this.ReturnData.ChipNo = this.ChipNo;
-      this.ChipNo = null;
-      this.$refs.UPI.focus();
-    },
-    doPrint() {
-      
+      this.loadingtitle = "打印中";
+      this.showThost = true;
+      var ReturnData = {};
+      ReturnData.ChipNo = this.ChipNo;
+      ReturnData.IsRePrint = isRePrint;
+      this.$axiosApi.doPrintLabel(ReturnData).then((res) => {
+        if (res.Success) {
+          var returnData = res.Result;
+          if (returnData.Msg != null) {
+            this.ShowConfirm2 = true;
+            this.ConfirmMsg2 = returnData.Msg;
+            this.showThost = false;
+            return;
+          }
+          this.showPositionValue = true;
+          this.Msg = "打印成功！";
+          this.ReturnData = res.Result;
+          this.showThost = false;
+        } else {
+          this.showPositionValue = true;
+          this.Msg = "打印失败；" + res.Message;
+          this.showThost = false;
+        }
+        this.ChipNo = null;
+      });
     },
     //获取UPI
     getUPI() {
@@ -287,6 +353,14 @@ export default {
       this.Successbtn = false;
       this.Dangerbtn = false;
     },
+    onConfirm2() {
+      this.ShowConfirm2 = false;
+      this.ConfirmMsg2 = "";
+      this.BadColor = false;
+      this.Successbtn = false;
+      this.Dangerbtn = false;
+      this.doPrint(1);
+    },
     //点击提交按钮
     doPost() {
       if (!!!this.ReturnData) {
@@ -311,12 +385,11 @@ export default {
         if (res.Success) {
           console.log(res);
           this.ReturnData = res.Result;
-          this.UPI = null;
         } else {
           this.showPositionValue = true;
-          this.Msg = res.Result.ErrorMsg;
-          this.UPI = null;
+          this.Msg = res.Message;
         }
+        this.UPI = null;
       });
     },
 
@@ -336,7 +409,7 @@ export default {
           this.ReturnData = {};
         } else {
           this.ShowConfirm = true;
-          this.ConfirmMsg = res.Result.ErrorMsg;
+          this.ConfirmMsg = res.Message;
           this.BadColor = true;
           this.Successbtn = false;
           this.Dangerbtn = true;
@@ -345,7 +418,7 @@ export default {
     },
   },
   mounted() {
-    this.$refs.SupportInp.focus();
+    this.$refs.UPI.focus();
   },
 };
 </script>

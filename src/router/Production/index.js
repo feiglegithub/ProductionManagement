@@ -74,14 +74,19 @@ import PackagePanelDetail from '../../views/Production/PackagePanelDetail/Packag
 import SpecialMiningReport from '../../views/Production/SpecialMiningReport/SpecialMiningReportIndex.vue'//特采
 import WorkReportIndex from '../../views/Production/WorkReportToScan/WorkReportIndex.vue'//报工扫描
 import WorkReportDetailIndex from '../../views/Production/WorkReportToScan/WorkReportDetailIndex.vue'//报工扫描
-import CuttingTaskSelectionIndex from '../../views/Production/CuttingTask/CuttingTaskSelectionIndex.vue'//开料任务
-import CuttingTaskIndex from '../../views/Production/CuttingTask/CuttingTaskIndex.vue'
-import CuttingTaskDetailIndex from '../../views/Production/CuttingTask/CuttingTaskDetailIndex.vue'
-import PanelExceptionCollectionSelectIndex from '../../views/Production/PanelExceptionCollection/PanelExceptionCollectionSelectIndex.vue'
-import PanelExceptionCollectionIndex from '../../views/Production/PanelExceptionCollection/PanelExceptionCollectionIndex.vue'
-import SprayPowderPlateIndex from '../../views/Production/SprayPowderPlate/SprayPowderPlateIndex.vue'
+import CuttingTaskSelectionIndex from '../../views/Production/CuttingTask/CuttingTaskSelectionIndex.vue'//开料任务-选择页面
+import CuttingTaskIndex from '../../views/Production/CuttingTask/CuttingTaskIndex.vue'//开料任务
+import CuttingTaskDetailIndex from '../../views/Production/CuttingTask/CuttingTaskDetailIndex.vue'//开料任务明细
+import PanelExceptionCollectionSelectIndex from '../../views/Production/PanelExceptionCollection/PanelExceptionCollectionSelectIndex.vue'//板件异常采集选择页面
+import PanelExceptionCollectionIndex from '../../views/Production/PanelExceptionCollection/PanelExceptionCollectionIndex.vue'//板件异常采集
+import SprayPowderPlateIndex from '../../views/Production/SprayPowderPlate/SprayPowderPlateIndex.vue'//板件喷粉
+import ReportViewIndex from '../../views/Production/ReportView/ReportViewIndex.vue'//报表查看
+import ProductionProgressIndex from '../../views/Production/ReportView/ProductionProgressIndex.vue'
+import MachineCapacityIndex from '../../views/Production/ReportView/MachineCapacityIndex.vue'
+import PunchOweIndex from '../../views/Production/ReportView/PunchOweIndex.vue'
+import ProductWIPQueryIndex from '../../views/Production/ReportView/ProductWIPQueryIndex.vue'
 export default [
-    
+
   {
     path: '/',
     name: 'BaseIndex',
@@ -362,5 +367,31 @@ export default [
     path: '/SprayPowderPlateIndex',
     name: 'SprayPowderPlateIndex',
     component: SprayPowderPlateIndex,
+  },
+  {//报表查看
+    path: '/ReportView',
+    name: 'ReportViewIndex',
+    component: ReportViewIndex,
+  },
+  {//生产进度报表
+    path: '/ProductionProgress',
+    name: 'ProductionProgressIndex',
+    component: ProductionProgressIndex,
+  },
+  {//机台产能报表
+    path: '/MachineCapacity',
+    name: 'MachineCapacityIndex',
+    component: MachineCapacityIndex
+  },
+  {//打孔欠件
+    path: '/PunchOwe',
+    name: 'PunchOweIndex',
+    component: PunchOweIndex
+  },
+  {//生产WIP查询
+    path: '/ProductWIPQuery',
+    name: 'ProductWIPQueryIndex',
+    component: ProductWIPQueryIndex
   }
+
 ]

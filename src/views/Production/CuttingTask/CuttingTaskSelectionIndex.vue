@@ -126,9 +126,8 @@ export default {
         return;
       }
       if (this.ChoiceResourceId == "" || this.ChoiceResourceId == null) {
-        this.Msg = "请先选择设备";
-        this.showPositionValue = true;
-        return;
+        this.ChoiceResourceId = 0;
+        localStorage.setItem("CuttingTaskResourceKey", this.ChoiceResourceId);
       }
       this.$router.push({
         name: "CuttingTaskIndex",
@@ -237,6 +236,7 @@ export default {
                 return { name: item.Name, value: item.Id };
               }),
             ];
+            this.ResourceList[0].unshift({ name: "", value: 0 });
           } else {
             this.showPositionValue = true;
             this.Msg = res.Message;
@@ -310,7 +310,9 @@ export default {
             return item.Id == localStorage.getItem("CuttingTaskProcessKey");
           });
           if (newArr.length > 0) {
-            this.ChoiceProcessId = localStorage.getItem("CuttingTaskProcessKey");
+            this.ChoiceProcessId = localStorage.getItem(
+              "CuttingTaskProcessKey"
+            );
             this.ChoiceProcess = newArr[0].Name;
           }
         }
@@ -327,7 +329,9 @@ export default {
           return item.Id == localStorage.getItem("CuttingTaskResourceKey");
         });
         if (newArr.length > 0) {
-          this.ChoiceResourceId = localStorage.getItem("CuttingTaskResourceKey");
+          this.ChoiceResourceId = localStorage.getItem(
+            "CuttingTaskResourceKey"
+          );
           this.ChoiceResource = newArr[0].Name;
         }
       }

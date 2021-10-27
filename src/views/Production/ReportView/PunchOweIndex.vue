@@ -11,7 +11,7 @@
       </a>
       <!-- <p v-show="MessageTitle='更换配件信息'">更换配件</p>
             <p v-show="MessageTitle='拆卸配件信息'">拆卸配件</p> -->
-      开料任务
+      打孔欠件
       <!--<a slot="right" @click="doPost" :class="{'f-noclick':showThost}">提交</a>-->
       <!-- <a slot="right" @click="doPost()">提交</a> -->
     </x-header>
@@ -20,13 +20,16 @@
       class="f-flexvw f-flexg1 f-pdlr5"
       style="overflow: auto"
     >
-      <div class="f-flexg1" style="overflow: scroll" ref="bscroll">
-        <div style="padding: 10px">
-          <el-button @click="judgeIsExec">补扫UPI</el-button>
-          <el-button @click="goDetial">查看板件明细</el-button>
+      <div class="f-flexg1" ref="bscroll">
+        <div style="padding: 10px" ref="header">
+          <div style="float: right; padding: 0 0 10px 0">
+            <el-button @click="doResaerch">刷新</el-button>
+            <el-button @click="goDetial">查询条件</el-button>
+          </div>
         </div>
         <el-table
-          :data="ProductionTaskData"
+          :data="ReturnData"
+          :height="divHeight"
           highlight-current-row
           style="font-size: 14px"
           :row-class-name="tableRowClassName"
@@ -34,38 +37,31 @@
           @header-click="headerClick"
         >
           <el-table-column type="index" label="序号"></el-table-column>
-          <el-table-column prop="DepartMentCode" label="部门">
+          <el-table-column
+            prop="BatchCode"
+            label="批次号"
+            min-width="80%"
+          ></el-table-column>
+          <el-table-column prop="OrderNumber" label="订单号"> </el-table-column>
+          <el-table-column prop="CarNo" label="车次号"> </el-table-column>
+          <el-table-column prop="UnitLength" min-width="100%" label="成品长">
           </el-table-column>
-          <el-table-column prop="SubBatchCode" label="子批次">
+          <el-table-column prop="UnitWidth" min-width="100%" label="成品宽">
           </el-table-column>
-          <el-table-column prop="TaskNumber" label="任务号"> </el-table-column>
-          <el-table-column prop="PanelCont" label="板件数"> </el-table-column>
-          <el-table-column prop="ProductionState" label="任务状态">
+          <el-table-column prop="Color" min-width="100%" label="花色">
           </el-table-column>
-          <el-table-column prop="SawFile" label="SAW文件"> </el-table-column>
-          <el-table-column prop="CompletedCount" label="已完成数">
+          <el-table-column prop="UPI" min-width="100%" label="UPI">
           </el-table-column>
-          <el-table-column prop="BoardCount" label="大板数"> </el-table-column>
-          <el-table-column prop="StockFlowName" label="备货流程">
+          <el-table-column prop="Route" min-width="100%" label="工艺路线">
           </el-table-column>
-          <el-table-column prop="ProcessingOrder" label="加工序号">
-          </el-table-column>
-          <el-table-column prop="AssingRule" label="分派规则">
-          </el-table-column>
-          <el-table-column prop="MacheCode" label="机台号"> </el-table-column>
-          <el-table-column prop="AssingTime" label="分派时间">
-          </el-table-column>
-          <el-table-column prop="MainColor" min-width="100%" label="批次主花色">
-          </el-table-column>
-          <el-table-column prop="EmergencyType" label="加急标识">
-          </el-table-column>
-          <el-table-column prop="SectionFlag" label="分段标识">
+          <el-table-column prop="IsReplenish" min-width="100%" label="是否补料">
           </el-table-column>
           <el-table-column
-            prop="SecondaryBoardNum"
-            min-width="100%"
-            label="B级板数量"
-          >
+            prop="MakeWorkGroup"
+            min-width="135%"
+            label="制单班组"
+          ></el-table-column>
+          <el-table-column prop="PanelStatus" min-width="100%" label="板件状态">
           </el-table-column>
         </el-table>
         <!-- <div class="u-nodata" v-show="HasData">暂无数据</div> -->
@@ -89,7 +85,47 @@
         >
       </div>
     </div>
-
+    <confirm
+      v-model="ShowCondition"
+      :title="title"
+      :show-cancel-button="true"
+      style="backgrand-color: #f9f0d8; z-index: 500"
+      @on-confirm="doConfirm"
+    >
+      <div style="width: 300px">
+        <el-form>
+          <div style="padding: 15px 10px 0px 20px">
+            <el-form-item style="text-align: center" label="批次号:">
+              <el-input placeholder="请输入批次号" v-model="BatchNo"></el-input>
+            </el-form-item>
+          </div>
+          <div style="padding: 0px 20px 2px 20px">
+            <el-form-item style="text-align: center" label="UPI:">
+              <el-input placeholder="请输入UPI" v-model="Upi"></el-input>
+            </el-form-item>
+          </div>
+          <div style="padding: 14px 20px 2px 20px">
+            <span style="float: left; padding-bottom: 15px">是否打孔:</span>
+            <el-form-item>
+              <el-select
+                placeholder="请选择"
+                v-model="isPunch"
+                style="width: 260px"
+                @focus="clickPunch()"
+              >
+                <el-option
+                  v-for="item in PunchList"
+                  :label="item.Name"
+                  :value="item.Id"
+                  :key="item.Id"
+                  ><span @click="isPunch = item.Id">{{ item.Name }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+        </el-form>
+      </div>
+    </confirm>
     <s-confirm
       v-model="ShowConfirm"
       :content="ConfirmMsg"
@@ -142,51 +178,54 @@ export default {
       MessageTitle: "", //标题
       showPositionValue: false, //显示消息提示
       showThost: false,
+      divHeight: "",
+      ShowCondition: false, //查询条件显隐
+      title: "查询条件",
+      BatchNo: null,
+      Upi: null,
+      isPunch: null,
+      PunchName: "",
       Msg: "",
       ConfirmMsg: "",
       ShowConfirm2: false, //控制弹窗的显隐
       ConfirmMsg2: "",
       loadingtitle: "",
       loadingtitle: "",
-      scanCode: "",
-      WorkshopId: "",
-      ProcessId: "",
-      ResourceId: "",
+      WorkshopId: 0,
+      WorkshopName: "",
+      WorkshopList: [],
+      PunchList: [
+        { Name: null, Id: null },
+        { Name: "否", Id: 0 },
+        { Name: "是", Id: 1 },
+      ],
       NowPage: 1, //当前页
-      PageSize: 10, //每页显示多少条
+      PageSize: 100, //每页显示多少条
       JunpPageNum: null, //跳转到第几页
       TotlePageCount: 0, //一共有多少页
-      ProductionTaskData: [],
+      ReturnData: [],
       PostProduceTaskId: 0,
+      day: 0,
     };
   },
   components: {
     "upload-img": uploadImg,
   },
   methods: {
-    getProductionDate(
-      pageSize,
-      pageNumber,
-      DepartmentId,
-      ResourceId,
-      Processid
-    ) {
+    GetPunchOwe() {
       this.$axiosApi
-        .getProductionDate(
-          pageSize,
-          pageNumber,
-          DepartmentId,
-          ResourceId,
-          Processid
+        .getPunchOwe(
+          this.PageSize,
+          this.NowPage,
+          this.BatchNo,
+          this.Upi,
+          this.isPunch
         )
         .then((res) => {
           if (res.Success == true) {
-            this.ProductionTaskData = res.Result.Datas;
+            this.ReturnData = res.Result.Datas;
             this.TotlePageCount = res.Result.PageCount;
-            for (var i = 1; i <= this.ProductionTaskData.length; i++) {
-              //this.ProductionTaskData[i].Seq = i;
-            }
-            console.log(this.ProductionTaskData);
+            console.log(this.ReturnData);
           } else {
             this.showPositionValue = true;
             this.Msg = res.Message;
@@ -194,40 +233,65 @@ export default {
           }
         });
     },
+    doSelectDep(value) {
+      console.log("部门id:" + value);
+      this.WorkshopId = value;
+      this.getForkliftStock(value);
+    },
     goDetial() {
-      if (this.PostProduceTaskId == 0) {
+      this.ShowCondition = true;
+    },
+    doCancel() {
+      this.ShowCondition = false;
+    },
+    doConfirm() {
+      if (this.Upi == null && this.BatchNo == null) {
         this.showPositionValue = true;
-        this.Msg = "请选择一条数据！";
+        this.Msg = "批次号和UPI不能同时为空！";
         return;
       }
-      this.$router.push({
-        name: "CuttingTaskDetailIndex",
-        params: {
-          PostProduceTaskId: this.PostProduceTaskId,
-        },
-      });
+      this.GetPunchOwe();
     },
-    //获取当前点击的检验单
+    //获取当前点击的单
     doChoice(item, index) {
       console.log(item);
       this.PostProduceTaskId = item.Id;
     },
-    judgeIsExec() {
-      this.ShowConfirm2 = true;
-      this.ConfirmMsg2 = "是否确定补扫？";
+    //刷新
+    doResaerch() {
+      if (this.Upi == null && this.BatchNo == null) {
+        this.showPositionValue = true;
+        this.Msg = "请先选择查询条件！";
+        return;
+      }
+      this.GetPunchOwe();
     },
-    finishProductionTaskDetailByFocus() {
-      this.$axiosApi
-        .finishProductionTaskDetailByFocus(this.PostProduceTaskId)
-        .then((res) => {
-          if (res.Success) {
-            this.showPositionValue = true;
-            this.Msg = "补扫成功";
-          } else {
-            this.showPositionValue = true;
-            this.Msg = res.Message;
-          }
-        });
+    //接口：获取备货流程的数据接口
+    getForkliftStock(WorkShopId) {
+      this.$axiosApi.getStockList(WorkShopId).then((res) => {
+        console.log(res);
+        if (res.Success == true) {
+          console.log(res.Result);
+          this.StockList = res.Result;
+        }
+      });
+    },
+    //接口：获取部门的数据接口
+    getForkliftDepartment() {
+      this.$axiosApi.getForkliftDepartment().then((res) => {
+        console.log(res);
+        if (res.Success == true) {
+          console.log(res.Result);
+          this.WorkShopList = res.Result;
+        }
+      });
+    },
+    Calculate(beginTime, endTime) {
+      var dateBegin = new Date(beginTime);
+      var dateEnd = new Date(endTime);
+      var dateDiff = dateEnd.getTime() - dateBegin.getTime(); //时间差的毫秒数
+      var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000)); //计算出相差天数
+      return dayDiff;
     },
     //上一页
     perPage() {
@@ -235,13 +299,7 @@ export default {
         this.NowPage = 1;
       } else {
         this.NowPage--;
-        this.getProductionDate(
-          this.PageSize,
-          this.NowPage,
-          this.WorkshopId,
-          this.ResourceId,
-          this.ProcessId
-        );
+        this.GetPunchOwe();
       }
     },
     //下一页
@@ -250,13 +308,7 @@ export default {
         this.NowPage = this.TotlePageCount;
       } else {
         this.NowPage++;
-        this.getProductionDate(
-          this.PageSize,
-          this.NowPage,
-          this.WorkshopId,
-          this.ResourceId,
-          this.ProcessId
-        );
+        this.GetPunchOwe();
       }
     },
     jumpPage() {
@@ -267,32 +319,14 @@ export default {
       if (this.JunpPageNum >= this.TotlePageCount) {
         this.NowPage = this.TotlePageCount;
         this.JunpPageNum = this.TotlePageCount;
-        this.getProductionDate(
-          this.PageSize,
-          this.NowPage,
-          this.WorkshopId,
-          this.ResourceId,
-          this.ProcessId
-        );
+        this.GetPunchOwe();
       } else if (this.JunpPageNum <= 1) {
         this.NowPage = 1;
         this.JunpPageNum = 1;
-        this.getProductionDate(
-          this.PageSize,
-          this.NowPage,
-          this.WorkshopId,
-          this.ResourceId,
-          this.ProcessId
-        );
+        this.GetPunchOwe();
       } else {
         this.NowPage = this.JunpPageNum;
-        this.getProductionDate(
-          this.PageSize,
-          this.NowPage,
-          this.WorkshopId,
-          this.ResourceId,
-          this.ProcessId
-        );
+        this.GetPunchOwe();
       }
     },
     onCancel() {
@@ -316,7 +350,6 @@ export default {
       this.Dangerbtn = false;
       this.BadColor = false;
       this.ConfirmMsg = "";
-      this.finishProductionTaskDetailByFocus();
     },
     onCancel2() {
       this.ShowConfirm = false;
@@ -326,29 +359,22 @@ export default {
       this.ConfirmMsg = "";
     },
     goToBack() {
-      this.$router.push({ name: "CuttingTaskSelectionIndex" });
+      this.$router.push({ name: "ReportViewIndex" });
     },
   },
+  mounted() {
+    this.divHeight = this.$refs.bscroll.offsetHeight - 50;
+    console.log(this.divHeight);
+  },
   created() {
-    this.WorkshopId =
-      this.$route.params.WorkshopId != null && this.$route.params.WorkshopId > 0
-        ? this.$route.params.WorkshopId
-        : localStorage.getItem("CuttingTaskWorkshopKey");
-    this.ProcessId =
-      this.$route.params.ProcessId != null && this.$route.params.ProcessId > 0
-        ? this.$route.params.ProcessId
-        : localStorage.getItem("CuttingTaskProcessKey");
-    this.ResourceId =
-      this.$route.params.ResourceId != null
-        ? this.$route.params.ResourceId
-        : localStorage.getItem("CuttingTaskResourceKey");
-    this.getProductionDate(
-      this.PageSize,
-      this.NowPage,
-      this.WorkshopId,
-      this.ResourceId,
-      this.ProcessId
-    );
+    this.showPositionValue = true;
+    this.Msg = "请先选择查询条件！";
+    // this.$nextTick(() => {
+    //   // 页面渲染完成后的回调
+    //   this.divHeight = this.$refs.bscroll.offsetHeight;
+    //   console.log(this.divHeight);
+    // });
+    // console.log(this.divHeight);
   },
 };
 </script>
