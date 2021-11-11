@@ -8,7 +8,7 @@ export default function (scanRequestParam) {
                 "Value": scanRequestParam
             }
         ],
-        "Method": "DoWork",
+        "Method": "DoWork1",
         "Context": {
             "Ticket": Storage.ticket(),
             "InvOrgId": Storage.orgid()
