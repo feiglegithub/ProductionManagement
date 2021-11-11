@@ -40,7 +40,7 @@
               ref="ChipNo"
               placeholder="请扫描芯片ID"
               type="text"
-              @keyup.enter="doJudge(isPrint)"
+              @keyup="doJudge(isPrint)"
               class="s-inpbg"
             />
           </span>
@@ -57,7 +57,7 @@
             title="打印"
             :value-map="['否', '是']"
             v-model="isPrint"
-            @on-change="ReturnData = {}"
+            @on-change="doChangePrintStatus"
           ></x-switch>
           <div style="font-size: 16px; margin-left: 5px">
             {{ isPrint }}
@@ -181,8 +181,8 @@
       :content="ConfirmMsg2"
       :showConfirmButton="false"
       :showCancelButton="false"
-      :showSuccessButton="Successbtn"
-      :showDangerButton="Dangerbtn"
+      :showSuccessButton="Successbtn2"
+      :showDangerButton="Dangerbtn2"
       :bad="BadColor"
       @on-cancel="onCancel"
       @on-confirm="onConfirm2"
@@ -211,6 +211,8 @@ export default {
       ConfirmMsg: "提交成功",
       BadColor: false,
       Successbtn: true,
+      Dangerbtn2: true,
+      Successbtn2: true,
       Dangerbtn: true,
       ShowConfirm2: false, //控制提示弹窗的显隐
       ConfirmMsg2: "提交成功",
@@ -251,6 +253,14 @@ export default {
         this.getChipNo();
       } else {
         this.doPrint(0);
+      }
+    },
+    doChangePrintStatus() {
+      this.ReturnData = {};
+      if (this.isPrint == "是") {
+        this.$refs.ChipNo.focus();
+      } else {
+        this.$refs.UPI.focus();
       }
     },
     //获取芯片

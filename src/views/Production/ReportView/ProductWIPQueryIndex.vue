@@ -61,6 +61,8 @@
           </el-table-column>
           <el-table-column prop="CollecTime" min-width="100%" label="采集时间">
           </el-table-column>
+          <el-table-column prop="IsReplenish" min-width="100%" label="是否补料">
+          </el-table-column>
         </el-table>
         <!-- <div class="u-nodata" v-show="HasData">暂无数据</div> -->
       </div>

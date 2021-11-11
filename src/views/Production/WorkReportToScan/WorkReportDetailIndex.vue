@@ -266,11 +266,13 @@ export default {
           this.scanRequestParam.UpiCodeList.push(p.UpiCode);
         });
       }
+      this.showThost = true;
       this.$axiosApi.submitUpiDataInfo(this.scanRequestParam).then((res) => {
         if (res.Success) {
           this.showPositionValue = true;
           this.Msg = res.Result;
           this.showInfo = false;
+          this.showThost = false;
           this.reSet();
         } else {
           this.showPositionValue = true;
