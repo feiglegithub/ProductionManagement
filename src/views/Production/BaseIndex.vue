@@ -357,6 +357,18 @@
             </div>
           </div>
         </grid-item>
+        <grid-item
+          class="f-flexjscen"
+          @click.native="$router.push({ name: 'FeedingReworkAttach' })"
+          v-if="showFeedingReworkAttach"
+        >
+          <div class="m-otherchoice">
+            <div>
+              <span class="iconfont icon-dianjian"></span>
+              <p class="operationtitle">补料附件上传</p>
+            </div>
+          </div>
+        </grid-item>
       </grid>
     </div>
     <div class="m-footers">
@@ -404,6 +416,7 @@ export default {
       showPanelExceptionCollection: false,
       showSprayPowderPlate: false,
       showReportView: false,
+      showFeedingReworkAttach: false,
     };
   },
   components: {},
@@ -516,6 +529,9 @@ export default {
               }
               if (element.code == "报表查看") {
                 this.showReportView = true;
+              }
+              if (element.code == "补料附件上传") {
+                this.showFeedingReworkAttach = true;
               }
             });
           }

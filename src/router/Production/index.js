@@ -85,6 +85,7 @@ import ProductionProgressIndex from '../../views/Production/ReportView/Productio
 import MachineCapacityIndex from '../../views/Production/ReportView/MachineCapacityIndex.vue'
 import PunchOweIndex from '../../views/Production/ReportView/PunchOweIndex.vue'
 import ProductWIPQueryIndex from '../../views/Production/ReportView/ProductWIPQueryIndex.vue'
+import FeedingReworkAttach from '../../views/Production/FeedingRework/FeedingReworkAttach.vue'
 export default [
 
   {
@@ -392,6 +393,11 @@ export default [
     path: '/ProductWIPQuery',
     name: 'ProductWIPQueryIndex',
     component: ProductWIPQueryIndex
+  },
+  {//补料附件上传
+    path: '/FeedingReworkAttach',
+    name: 'FeedingReworkAttach',
+    component: FeedingReworkAttach
   }
 
 ]

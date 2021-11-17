@@ -377,6 +377,18 @@
                   <div class="select-text">{{ PanelNum }}</div>
                 </div>
               </div>
+              <div class="m-baserowbox">
+                <span class="label80">检验位置:</span>
+                <div @click="clickStationWhich" class="select s-bgwhile">
+                  <popup-picker
+                    :show.sync="ShowStationWhich"
+                    :data="StationWhichList"
+                    @on-change="changeStationWhich"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ ChoiceStationWhich }}</div>
+                </div>
+              </div>
               <!-- <div class="m-baserowbox">
                                 <span class="label80" >制单人:</span>
                                 <div class="select s-bgwhile"  @click="clickMaker">
@@ -515,6 +527,12 @@ export default {
       RelationExamineList: [[" ", "已考核", "未考核"]], //控制连带考核情况的显隐
       RelationExamine: null, //控制连带考核情况的显隐
       RelationExamineId: null, //控制连带考核情况的显隐
+
+      ShowStationWhich: false, //控制检验位置弹窗的显隐
+      ChoiceStationWhich: null, //选择的检验位置名称
+      ChoiceStationWhichId: null, //选择的检验位置id
+      StationWhichList: [[" "]], //显示的检验位置列表
+      GetStationWhich: null, //接口获取检验位置的数据
 
       ShowPanelNum: false,
       GetPanelNum: null,
@@ -679,6 +697,7 @@ export default {
       this.DetailData.ResponseData.QualityInspection = this.QualityTest;
       this.DetailData.ResponseData.ResponsMachine = this.Equipment;
       this.DetailData.ResponseData.ReproducePanelQty = this.PanelNum;
+      this.DetailData.ResponseData.StationWhich = this.ChoiceStationWhichId;
       if (this.LiableExamine == "已考核") {
         this.DetailData.ResponseData.ResEmpAssessment = 1;
       }
@@ -909,6 +928,14 @@ export default {
     changeRelationExamine(val) {
       this.RelationExamine = val[0];
     },
+    //检验位置选择
+    changeStationWhich(value) {
+      let code = value[0];
+      this.ChoiceStationWhichId = code;
+      this.ChoiceStationWhich = this.GetStationWhich.find(
+        (item) => item.Code == code
+      ).Name;
+    },
     //选择制单人
     // changeMaker(val){
     //     let id = val[0]
@@ -1007,6 +1034,22 @@ export default {
           this.showPositionValue = true;
           this.Msg = res.Message;
           return;
+        }
+      });
+    },
+    clickStationWhich() {
+      this.ShowStationWhich = true;
+      this.$axiosApi.getStationWhichList().then((res) => {
+        if (res.Success) {
+          this.GetStationWhich = res.Result;
+          this.StationWhichList = [
+            this.GetStationWhich.map((item) => {
+              return { name: item.Name, value: item.Code };
+            }),
+          ];
+        } else {
+          this.showPositionValue = true;
+          this.Msg = resl.Message;
         }
       });
     },
