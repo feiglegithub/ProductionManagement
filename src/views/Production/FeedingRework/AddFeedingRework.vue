@@ -131,6 +131,30 @@
                 ></popup-picker>
                 <div class="select-text">{{ Maker }}</div>
               </div>
+              <div
+                class="m-inp f-mtb5"
+                style="
+                  position: fixed;
+                  z-index: 9999;
+                  width: 60%;
+                  left: 20%;
+                  top: 63%;
+                  overflow: hidden;
+                "
+                v-show="ShowMaker"
+              >
+                <input
+                  class="inp s-bgwhile"
+                  style="
+                    text-align: center;
+                    width: 1%;
+                    margin: 0 auto;
+                    opacity: 0.6;
+                  "
+                  v-model="MakerFilter"
+                  @keyup="doMakerFilter"
+                />
+              </div>
             </div>
 
             <!-- 批次补料 类型为：是  的情况 -->
@@ -463,6 +487,7 @@ export default {
       MakerList: [[" "]], //控制制单人的显隐
       Maker: null, //控制制单人的显隐
       MakerId: null, //控制制单人的显隐
+      MakerFilter: null,
 
       ShowPostConfirm: false,
       ShowConfirm: false,
@@ -1043,6 +1068,16 @@ export default {
         this.Maker = null;
       }
     },
+    //制单人搜索方法
+    doMakerFilter(){
+      this.MakerList = [
+        this.getMaker.filter((p) => p.Name.indexOf(this.MakerFilter) >= 0).map(
+          (item) => {
+            return { name: item.Name, value: item.Id };
+          }
+        ),
+      ];
+    },
     //点击设备
     clickEquipment() {
       this.ShowEquipment = true;
@@ -1336,8 +1371,7 @@ export default {
             } else {
               this.saleOrderNo = res.Result.Details[0].SaleOrderNo;
               if (this.FeedingReworkData.Details.length > 0) {
-                res.Result.Details.forEach(model=>
-                {
+                res.Result.Details.forEach((model) => {
                   this.FeedingReworkData.Details.unshift(model);
                 });
               } else {

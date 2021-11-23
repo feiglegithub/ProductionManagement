@@ -45,28 +45,48 @@
       ></s-messageheader>
       <div v-show="isShow">
         <div class="m-baserowbox">
-          <span class="label80">补料返工订单号:</span>
-          <div class="select s-bgwhile">
-            <div class="select-text">{{ Info.OrderNo }}</div>
-          </div>
+          <span class="label80">返工单编号:</span>
+          <input
+            class="inp"
+            type="text"
+            v-model="Info.OrderNo"
+            name=""
+            id=""
+            style="border: 1px solid #666666"
+          />
         </div>
         <div class="m-baserowbox">
           <span class="label80">制作班组:</span>
-          <div class="select s-bgwhile">
-            <div class="select-text">{{ Info.MakeGroup }}</div>
-          </div>
+          <input
+            class="inp"
+            type="text"
+            v-model="Info.MakeGroup"
+            name=""
+            id=""
+            style="border: 1px solid #666666"
+          />
         </div>
         <div class="m-baserowbox">
           <span class="label80">制单人:</span>
-          <div class="select s-bgwhile">
-            <div class="select-text">{{ Info.MakeBy }}</div>
-          </div>
+          <input
+            class="inp"
+            type="text"
+            v-model="Info.MakeBy"
+            name=""
+            id=""
+            style="border: 1px solid #666666"
+          />
         </div>
         <div class="m-baserowbox">
           <span class="label80">制单时间:</span>
-          <div class="select s-bgwhile">
-            <div class="select-text">{{ Info.MakeTime }}</div>
-          </div>
+         <input
+            class="inp"
+            type="text"
+            v-model="Info.MakeTime"
+            name=""
+            id=""
+            style="border: 1px solid #666666"
+          />
         </div>
         <div class="m-baserowbox">
           <span class="label80">附件:</span>
@@ -141,12 +161,15 @@ export default {
         this.Msg = "条码不能为空";
         return;
       }
+      this.showThost = true;
+      this.loadingtitle = "加载中";
       this.$axiosApi.getFeedingReworkAttachDetail(this.BarCode).then((res) => {
         if (res.Success == true) {
           this.Info = res.Result;
           console.log(this.Info);
           this.isShow = true;
           this.BarCode = null;
+          this.showThost = false;
         } else {
           this.showPositionValue = true;
           this.Msg = res.Message;
