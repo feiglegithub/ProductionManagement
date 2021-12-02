@@ -80,11 +80,17 @@ import CuttingTaskDetailIndex from '../../views/Production/CuttingTask/CuttingTa
 import PanelExceptionCollectionSelectIndex from '../../views/Production/PanelExceptionCollection/PanelExceptionCollectionSelectIndex.vue'//板件异常采集选择页面
 import PanelExceptionCollectionIndex from '../../views/Production/PanelExceptionCollection/PanelExceptionCollectionIndex.vue'//板件异常采集
 import SprayPowderPlateIndex from '../../views/Production/SprayPowderPlate/SprayPowderPlateIndex.vue'//板件喷粉
-import ReportViewIndex from '../../views/Production/ReportView/ReportViewIndex.vue'//报表查看
+
+//报表查看
+import ReportViewIndex from '../../views/Production/ReportView/ReportViewIndex.vue'
 import ProductionProgressIndex from '../../views/Production/ReportView/ProductionProgressIndex.vue'
 import MachineCapacityIndex from '../../views/Production/ReportView/MachineCapacityIndex.vue'
 import PunchOweIndex from '../../views/Production/ReportView/PunchOweIndex.vue'
 import ProductWIPQueryIndex from '../../views/Production/ReportView/ProductWIPQueryIndex.vue'
+import PanelExCollectReportIndex from '../../views/Production/ReportView/PanelExCollectReportIndex.vue'
+
+//
+
 import FeedingReworkAttach from '../../views/Production/FeedingRework/FeedingReworkAttach.vue'
 export default [
 
@@ -369,6 +375,7 @@ export default [
     name: 'SprayPowderPlateIndex',
     component: SprayPowderPlateIndex,
   },
+
   {//报表查看
     path: '/ReportView',
     name: 'ReportViewIndex',
@@ -394,6 +401,12 @@ export default [
     name: 'ProductWIPQueryIndex',
     component: ProductWIPQueryIndex
   },
+  {//板件异常采集
+    path: '/PanelExCollectReport',
+    name: 'PanelExCollectReportIndex',
+    component: PanelExCollectReportIndex
+  },
+
   {//补料附件上传
     path: '/FeedingReworkAttach',
     name: 'FeedingReworkAttach',

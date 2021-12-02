@@ -164,8 +164,7 @@ export default {
       ConfirmMsg: "",
       ShowConfirm2: false, //控制弹窗的显隐
       ConfirmMsg2: "",
-      loadingtitle: "",
-      loadingtitle: "",
+      loadingtitle: "加载中",
       WorkshopId: 0,
       WorkshopName: "",
       WorkshopList: [],
@@ -183,10 +182,12 @@ export default {
   },
   methods: {
     GetProductionWipData() {
+      this.showThost = true;
       this.$axiosApi
         .getProductWipQuery(this.PageSize, this.NowPage, this.Upi)
         .then((res) => {
           if (res.Success == true) {
+            this.showThost = false;
             this.ReturnData = res.Result.Datas;
             this.TotlePageCount = res.Result.PageCount;
             console.log(this.ReturnData);

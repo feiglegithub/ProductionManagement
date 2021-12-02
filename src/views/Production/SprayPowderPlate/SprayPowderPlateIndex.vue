@@ -271,7 +271,7 @@ export default {
       //   this.ChipNo = null;
       //   return;
       // }
-      this.$axiosApi.judgeHasChipNo().then((res) => {
+      this.$axiosApi.judgeHasChipNo(this.ChipNo).then((res) => {
         if (res.Success) {
           this.ReturnData.ChipNo = this.ChipNo;
           this.$refs.UPI.focus();
