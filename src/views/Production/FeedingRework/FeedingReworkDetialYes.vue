@@ -1,172 +1,1131 @@
 <template>
-    <div class="g-index">
-
-        <x-header class="m-header" :left-options="{showBack:false}"  style="background-color:#22292C">
-            <a slot="left" @click="addFeedingRework">
-                <span style="font-size:26px;" class="iconfont icon-weibiaoti-"></span>
-            </a>
-                补料返工单明细
-            <a slot="right" @click="doPost">确定</a>
-        </x-header>
-        <div class="f-flexvw f-flexg1 f-pdlr5">
-
-            <div class="g-scrollbox">
-                <div class="f-auto">
-                    <s-messageheader class="f-mt10" messagetitle="单明细"></s-messageheader>
-                    <div class="g-notflexbox s-bgE7E7E7">
-                        <div>
-                            <div class="m-baserowbox">
-                                <span class="label80" >板件信息:</span>
-                                <span class="text">{{DetailData.UPI}}</span>
-                            </div>
-                            <div class="m-baserowbox">
-                                <span class="label80" >物料:</span>
-                                <span class="text">{{DetailData.ItemCode}}</span>
-                            </div>
-                            <div class="m-baserowbox">
-                                <span class="label80" >规格:</span>
-                                <span class="text">{{DetailData.Specifacation}}</span>
-                            </div>
-                            <div class="m-baserowbox">
-                                <span class="label80" >名称:</span>
-                                <span class="text">{{DetailData.ItemName}}</span>
-                            </div>
-                            <!-- <div class="m-baserowbox">
+  <div class="g-index">
+    <x-header
+      class="m-header"
+      :left-options="{ showBack: false }"
+      style="background-color: #22292c"
+    >
+      <a slot="left" @click="addFeedingRework">
+        <span style="font-size: 26px" class="iconfont icon-weibiaoti-"></span>
+      </a>
+      补料返工单明细
+      <a slot="right" @click="doPost">确定</a>
+    </x-header>
+    <div class="f-flexvw f-flexg1 f-pdlr5">
+      <div class="g-scrollbox">
+        <div class="f-auto">
+          <s-messageheader
+            class="f-mt10"
+            messagetitle="单明细"
+          ></s-messageheader>
+          <div class="g-notflexbox s-bgE7E7E7">
+            <div>
+              <div class="m-baserowbox">
+                <span class="label80">板件信息:</span>
+                <span class="text">{{ DetailData.UPI }}</span>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">物料:</span>
+                <span class="text">{{ DetailData.ItemCode }}</span>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">规格:</span>
+                <span class="text">{{ DetailData.Specifacation }}</span>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">名称:</span>
+                <span class="text">{{ DetailData.ItemName }}</span>
+              </div>
+              <!-- <div class="m-baserowbox">
                                 <span class="label80" >设备:</span>
                                 <span class="text">{{DetailData.UPI}}</span>
                             </div> -->
-                            <div class="m-baserowbox">
-                                <span class="label80" >封边:</span>
-                                <span class="text">{{DetailData.EdgeBandingType}}</span>
-                            </div>
-                            <div class="m-baserowbox">
-                                <span class="label80" >花色:</span>
-                                <span class="text">{{DetailData.Colour}}</span>
-                            </div>
-                            <div class="g-pdabtn">
-                                <div class="u-pdabtn" @click="doEdit">修改</div>
-                                <!-- <div class="u-pdabtn" @click="doDelete">删除</div> -->
-                            </div>
-                        </div>
-                    </div>
+              <div class="m-baserowbox">
+                <span class="label80">封边:</span>
+                <span class="text">{{ DetailData.EdgeBandingType }}</span>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">花色:</span>
+                <span class="text">{{ DetailData.Colour }}</span>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">设备:</span>
+                <div class="select s-bgwhile" @click="clickEquipment">
+                  <popup-picker
+                    :show.sync="ShowEquipment"
+                    :data="EquipmentList"
+                    @on-change="changeEquipment"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ Equipment }}</div>
                 </div>
+                <div
+                  class="m-inp f-mtb5"
+                  style="
+                    position: fixed;
+                    z-index: 9999;
+                    width: 60%;
+                    left: 20%;
+                    top: 63%;
+                    overflow: hidden;
+                  "
+                  v-show="ShowEquipment"
+                >
+                  <input
+                    class="inp s-bgwhile"
+                    style="
+                      text-align: center;
+                      width: 1%;
+                      margin: 0 auto;
+                      opacity: 0.6;
+                    "
+                    v-model="EquipmentFilter"
+                    @keyup="doEquipmentFilter"
+                  />
+                </div>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">出错中类:</span>
+                <div class="select s-bgwhile" @click="clickMiddleError">
+                  <popup-picker
+                    :show.sync="ShowMiddleError"
+                    :data="MiddleErrorList"
+                    @on-change="changeMiddleError"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ MiddleError }}</div>
+                </div>
+                <div
+                  class="m-inp f-mtb5"
+                  style="
+                    position: fixed;
+                    z-index: 9999;
+                    width: 60%;
+                    left: 20%;
+                    top: 63%;
+                    overflow: hidden;
+                  "
+                  v-show="ShowMiddleError"
+                >
+                  <input
+                    class="inp s-bgwhile"
+                    style="
+                      text-align: center;
+                      width: 1%;
+                      margin: 0 auto;
+                      opacity: 0.6;
+                    "
+                    v-model="MidErrerFilter"
+                    @keyup="doMidErrerFilter"
+                  />
+                </div>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">缺陷代码:</span>
+                <div class="select s-bgwhile" @click="clickDefectCode">
+                  <popup-picker
+                    :show.sync="ShowDefectCode"
+                    :data="DefectCodeList"
+                    @on-change="changeDefectCode"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ DefectCode }}</div>
+                </div>
+                <div
+                  class="m-inp f-mtb5"
+                  style="
+                    position: fixed;
+                    z-index: 9999;
+                    width: 60%;
+                    left: 20%;
+                    top: 63%;
+                    overflow: hidden;
+                  "
+                  v-show="ShowDefectCode"
+                >
+                  <input
+                    class="inp s-bgwhile"
+                    style="
+                      text-align: center;
+                      width: 1%;
+                      margin: 0 auto;
+                      opacity: 0.6;
+                    "
+                    v-model="DefectCodeFilter"
+                    @keyup="doDefectCodeFilter"
+                  />
+                </div>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">出错描述:</span>
+                <input
+                  class="inp"
+                  type="text"
+                  v-model="DefectDescription"
+                  name=""
+                  id=""
+                  style="border: 1px solid #666666"
+                />
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">班组类别:</span>
+                <div class="select s-bgwhile" @click="clickGroupType">
+                  <popup-picker
+                    :show.sync="ShowGroupType"
+                    :data="GroupTypeList"
+                    @on-change="changeGroupType"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ GroupType }}</div>
+                </div>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">责任班组:</span>
+                <div class="select s-bgwhile" @click="clickGroup">
+                  <popup-picker
+                    :show.sync="ShowGroup"
+                    :data="GroupList"
+                    @on-change="changeGroup"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ Group }}</div>
+                </div>
+                <div
+                  class="m-inp f-mtb5"
+                  style="
+                    position: fixed;
+                    z-index: 9999;
+                    width: 60%;
+                    left: 20%;
+                    top: 63%;
+                    overflow: hidden;
+                  "
+                  v-show="ShowGroup"
+                >
+                  <input
+                    class="inp s-bgwhile"
+                    style="
+                      text-align: center;
+                      width: 1%;
+                      margin: 0 auto;
+                      opacity: 0.6;
+                    "
+                    v-model="GroupFilter"
+                    @keyup="doGroupFilter"
+                  />
+                </div>
+              </div>
+              <div class="m-baserowbox" v-if="GroupType != '非生产性责任班组'">
+                <span class="label80">责任人:</span>
+                <div class="select s-bgwhile" @click="clickPersonLiable">
+                  <popup-picker
+                    :show.sync="ShowPersonLiable"
+                    :data="PersonLiableList"
+                    @on-change="changePersonLiable"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ PersonLiable }}</div>
+                </div>
+                <div
+                  class="m-inp f-mtb5"
+                  style="
+                    position: fixed;
+                    z-index: 9999;
+                    width: 60%;
+                    left: 20%;
+                    top: 63%;
+                    overflow: hidden;
+                  "
+                  v-show="ShowPersonLiable"
+                >
+                  <input
+                    class="inp s-bgwhile"
+                    style="
+                      text-align: center;
+                      width: 1%;
+                      margin: 0 auto;
+                      opacity: 0.6;
+                    "
+                    v-model="PersonFilter"
+                    @keyup="doPersonLiableFilter"
+                  />
+                </div>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">定责质检:</span>
+                <div class="select s-bgwhile" @click="clickQualityTest">
+                  <popup-picker
+                    :show.sync="ShowQualityTest"
+                    :data="QualityTestList"
+                    @on-change="changeQualityTest"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ QualityTest }}</div>
+                </div>
+                <div
+                  class="m-inp f-mtb5"
+                  style="
+                    position: fixed;
+                    z-index: 9999;
+                    width: 60%;
+                    left: 20%;
+                    top: 63%;
+                    overflow: hidden;
+                  "
+                  v-show="ShowQualityTest"
+                >
+                  <input
+                    class="inp s-bgwhile"
+                    style="
+                      text-align: center;
+                      width: 1%;
+                      margin: 0 auto;
+                      opacity: 0.6;
+                    "
+                    v-model="QualityTestFilter"
+                    @keyup="doQualityTestFilter"
+                  />
+                </div>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">考核情况:</span>
+                <div class="select s-bgwhile" @click="clickLiableExamine">
+                  <popup-picker
+                    :show.sync="ShowLiableExamine"
+                    :data="LiableExamineList"
+                    @on-change="changeLiableExamine"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ LiableExamine }}</div>
+                </div>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">连带责任人:</span>
+                <div class="select s-bgwhile" @click="clickRelationPerson">
+                  <popup-picker
+                    :show.sync="ShowRelationPerson"
+                    :data="RelationPersonList"
+                    @on-change="changeRelationPerson"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ RelationPerson }}</div>
+                </div>
+                <div
+                  class="m-inp f-mtb5"
+                  style="
+                    position: fixed;
+                    z-index: 9999;
+                    width: 60%;
+                    left: 20%;
+                    top: 63%;
+                    overflow: hidden;
+                  "
+                  v-show="ShowRelationPerson"
+                >
+                  <input
+                    class="inp s-bgwhile"
+                    style="
+                      text-align: center;
+                      width: 1%;
+                      margin: 0 auto;
+                      opacity: 0.6;
+                    "
+                    v-model="PersonFilter"
+                    @keyup="doRelationPersonFilter"
+                  />
+                </div>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">考核情况:</span>
+                <div class="select s-bgwhile" @click="clickRelationExamine">
+                  <popup-picker
+                    :show.sync="ShowRelationExamine"
+                    :data="RelationExamineList"
+                    @on-change="changeRelationExamine"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ RelationExamine }}</div>
+                </div>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">补料板件:</span>
+                <div
+                  class="select s-bgwhile"
+                  @click="clickPanelNum(DetailData.PanelCount)"
+                >
+                  <popup-picker
+                    :show.sync="ShowPanelNum"
+                    :data="PanelNumList"
+                    @on-change="changePanelNum"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ PanelNum }}</div>
+                </div>
+              </div>
+              <div class="m-baserowbox">
+                <span class="label80">检验位置:</span>
+                <div @click="clickStationWhich" class="select s-bgwhile">
+                  <popup-picker
+                    :show.sync="ShowStationWhich"
+                    :data="StationWhichList"
+                    @on-change="changeStationWhich"
+                    value-text-align="left"
+                  ></popup-picker>
+                  <div class="select-text">{{ ChoiceStationWhich }}</div>
+                </div>
+              </div>
+              <div class="g-pdabtn">
+                <div class="u-pdabtn" @click="doEdit">修改</div>
+                <!-- <div class="u-pdabtn" @click="doDelete">删除</div> -->
+              </div>
             </div>
-
+          </div>
         </div>
-        <s-confirm 
-            v-model="ShowPostConfirm" 
-            content="提交成功" 
-            :showConfirmButton='false' 
-            :showCancelButton='false' 
-            :showSuccessButton='true'
-            :showDangerButton='false'
-            @on-cancel="onCancel" 
-            @on-confirm="onConfirm">
-        </s-confirm>
- 
+      </div>
     </div>
+    <s-confirm
+      v-model="ShowPostConfirm"
+      content="提交成功"
+      :showConfirmButton="false"
+      :showCancelButton="false"
+      :showSuccessButton="true"
+      :showDangerButton="false"
+      @on-cancel="onCancel"
+      @on-confirm="onConfirm"
+    >
+    </s-confirm>
+    <toast
+      width="12em"
+      v-model="showPositionValue"
+      type="text"
+      :time="2500"
+      :text="Msg"
+      position="middle"
+    ></toast>
+    <loading :show="showThost" :text="loadingtitle"></loading>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
 export default {
-    name: 'FeedingReworkDetialYes',
+  name: "FeedingReworkDetialYes",
 
-    data() {
-        return {
+  data() {
+    return {
+      ShowEquipment: false, //控制设备弹窗的显隐
+      GetEquipment: null, //接口获取到的设备的数据
+      EquipmentList: [[" "]], //设备的列表
+      Equipment: null, //选择的设备
+      EquipmentId: null, //选择的设备
+      EquipmentFilter: null, //搜索的设备
 
-            ShowPostConfirm:false,
-            ShowConfirm:false,
+      ShowMiddleError: false, //控制出错中类弹窗的显隐
+      GetMiddleError: null, //接口获取到的出错中类的数据
+      MiddleErrorList: [[" "]], //出错中类的列表
+      MiddleError: null, //选择的出错中类
+      MiddleErrorId: null, //选择的出错中类
+      MidErrerFilter: null, //搜索的出错种类
 
-            DetailData:{        //单信息
-                "UPI":null,     //板件信息
-                "ItemCode":null,    //物料编码
-                "Specifacation":null,   //规格
-                "ItemName":null,    //物料名称
-                "EdgeBandingType":null, //封边
-                "Colour":null,      //花色
-                "SaleOrderNo":null, //销售订单号
-                "IsModifyBillDetail":null,  //是否改变保存。1是点击了保存
-                "UpiData":null,     //修改单明细的信息
-                "ResponseData":{
-                    "EquipId":null,     //设备id
-                    "MachineAndTypeName":null,  //设备名称
-                    "DefectCategoryId":null,    //出错种类的id
-                    "DefectCategory":null,      //出错种类名称
-                    "DefectId":null,            //缺陷代码id
-                    "Defect":null,              //缺陷代码名称
-                    "DefectDescription":null,   //缺陷描述
-                    "ResWorkGroupId":null,      //责任班组id
-                    "ResWorkGroup":null,        //责任班组名称
-                    "ResEmployeeId":null,       //责任人id
-                    "ResEmployee":null,         //责任人名称
-                    "QualityInspectionId":null, //定责质检id
-                    "QualityInspection":null,   //定责质检名称
-                    "ResEmpAssessment":null,    //（责任人的）1已考核，0未考核
-                    "JointEmpId":null,          //连带定责质检id
-                    "JointEmp":null,            //连带定责质检名称
-                    "JonitEmpAssessment":null,  //（连带责任人的）1已考核，0未考核
-                },
-            },
-            DeepDetailData:{            //用于保存原数据源
-            },
+      ShowDefectCode: false, //控制缺陷代码弹窗的显隐
+      GetDefectCode: null, //接口获取到的缺陷代码的数据
+      DefectCodeList: [[" "]], //缺陷代码的列表
+      DefectCode: null, //选择的缺陷代码
+      DefectCodeId: null, //选择的缺陷代码
+      DefectCodeFilter: null, //搜索的缺陷代码
+
+      ShowGroup: false, //控制班组弹窗的显隐
+      GetGroup: null, //接口获取到的班组的数据
+      GroupList: [[" "]], //班组的列表
+      Group: null, //选择的班组
+      GroupId: null, //选择的班组
+      GroupIsProduct: null, //选择的班组是否为生产班组
+      GroupFilter: null, //搜索的班组
+
+      GetGroupType: null, //获取的班组类别
+      ShowGroupType: false, //控制班组班组类别弹窗的显隐
+      GroupTypeList: null, //班组类别的列表
+      GroupType: null, //选择的班组类别
+
+      ShowQualityTest: false, //控制定责质检的显隐
+      GetQualityTest: null, //接口获取到定责质检的数据
+      QualityTestList: [[{ name: "", value: "" }]], //定责质检的列表
+      QualityTest: null, //选择的定责质检
+      QualityTestId: null, //定责质检id
+      QualityTestFilter: null,
+
+      ShowPersonLiable: false, //控制责任人的显隐
+      GetPersonLiable: null, //接口获取到责任人数据
+      PersonLiableList: [[" "]], //责任人列表
+      PersonLiable: null, //选择的责任人
+      PersonLiableId: null, //责任人id
+      PersonFilter: null, //搜索的责任人
+
+      ShowLiableExamine: false, //控制考核情况的显隐
+      GetLiableExamine: null, //接口获取考核情况的数据
+      LiableExamineList: [[" ", "已考核", "未考核"]], //考核情况的列表
+      LiableExamine: null, //选择的考核情况
+      LiableExamineId: null, //考核情况Id
+
+      ShowRelationPerson: false, //控制连带责任人的显隐
+      GetRelationPerson: null, //接口获取连带责任人的数据
+      RelationPersonList: [[" "]], //连带责任人的列表
+      RelationPerson: null, //选择的连带责任人
+      RelationPersonId: null, //连带责任人id
+
+      ShowRelationExamine: false, //控制连带考核情况的显隐
+      GetRelationExamine: null, //控制连带考核情况的显隐
+      RelationExamineList: [[" ", "已考核", "未考核"]], //控制连带考核情况的显隐
+      RelationExamine: null, //控制连带考核情况的显隐
+      RelationExamineId: null, //控制连带考核情况的显隐
+
+      ShowStationWhich: false, //控制检验位置弹窗的显隐
+      ChoiceStationWhich: null, //选择的检验位置名称
+      ChoiceStationWhichId: null, //选择的检验位置id
+      StationWhichList: [[" "]], //显示的检验位置列表
+      GetStationWhich: null, //接口获取检验位置的数据
+
+      ShowPostConfirm: false,
+      ShowConfirm: false,
+
+      showPositionValue: false, //提示信息显隐
+      Msg: "有问题", //提示信息
+
+      ShowPanelNum: false,
+      GetPanelNum: null,
+      PanelNumList: [[]],
+      PanelNum: 1,
+
+      DetailData: {
+        //单信息
+        UPI: null, //板件信息
+        ItemCode: null, //物料编码
+        Specifacation: null, //规格
+        ItemName: null, //物料名称
+        EdgeBandingType: null, //封边
+        Colour: null, //花色
+        SaleOrderNo: null, //销售订单号
+        IsModifyBillDetail: null, //是否改变保存。1是点击了保存
+        UpiData: null, //修改单明细的信息
+        ResponseData: {
+          EquipId: null, //设备id
+          MachineAndTypeName: null, //设备名称
+          DefectCategoryId: null, //出错种类的id
+          DefectCategory: null, //出错种类名称
+          DefectId: null, //缺陷代码id
+          Defect: null, //缺陷代码名称
+          DefectDescription: null, //缺陷描述
+          ResWorkGroupId: null, //责任班组id
+          ResWorkGroup: null, //责任班组名称
+          ResEmployeeId: null, //责任人id
+          ResEmployee: null, //责任人名称
+          QualityInspectionId: null, //定责质检id
+          QualityInspection: null, //定责质检名称
+          ResEmpAssessment: null, //（责任人的）1已考核，0未考核
+          JointEmpId: null, //连带定责质检id
+          JointEmp: null, //连带定责质检名称
+          JonitEmpAssessment: null, //（连带责任人的）1已考核，0未考核
+        },
+      },
+      DeepDetailData: {
+        //用于保存原数据源
+      },
+    };
+  },
+  components: {},
+  methods: {
+    //点击修改按钮
+    doEdit() {
+      this.$router.push({
+        name: "EditFeedingRework",
+        params: {
+          Details: this.DetailData,
+          DeepDetailData: this.DeepDetailData,
+        },
+      });
+    },
+    //点击删除按钮
+    doDelete() {
+      this.$store.dispatch("removeKeepAlive", "BatchAddFeedingRework");
+    },
+
+    //点击提示弹窗的删除按钮
+    onCancel() {},
+    //点击提示弹窗的确认按钮
+    onConfirm() {},
+    //点击提交按钮
+    doPost() {
+      // console.log(this.GroupIsProduct);
+      if (this.GroupType == "非生产性责任班组" && this.QualityTest == null) {
+        this.Msg = "责任班组为非生产班组，定责质检必填";
+        this.showPositionValue = true;
+        return;
+      }
+      this.DetailData.ResponseData = {};
+      console.log(this.DetailData.ResponseData);
+      this.DetailData.ResponseData.EquipId = this.EquipmentId;
+      this.DetailData.ResponseData.MachineAndTypeName = this.Equipment;
+      this.DetailData.ResponseData.DefectCategoryId = this.MiddleErrorId;
+      this.DetailData.ResponseData.DefectCategory = this.MiddleError;
+      this.DetailData.ResponseData.DefectId = this.DefectCodeId;
+      this.DetailData.ResponseData.Defect = this.DefectCode;
+      this.DetailData.ResponseData.DefectDescription = this.DefectDescription;
+      this.DetailData.ResponseData.ResRemark = this.GroupType;
+      this.DetailData.ResponseData.ResWorkGroupId = this.GroupId;
+      this.DetailData.ResponseData.ResWorkGroup = this.Group;
+      this.DetailData.ResponseData.ResWorkGroupIsProduct = this.GroupIsProduct;
+      this.DetailData.ResponseData.ResEmployeeId = this.PersonLiableId;
+      this.DetailData.ResponseData.ResEmployee = this.PersonLiable;
+      this.DetailData.ResponseData.QualityInspectionId = this.QualityTestId;
+      this.DetailData.ResponseData.QualityInspection = this.QualityTest;
+      this.DetailData.ResponseData.ResponsMachine = this.Equipment;
+      this.DetailData.ResponseData.ReproducePanelQty = this.PanelNum;
+      this.DetailData.ResponseData.StationWhich = this.ChoiceStationWhichId;
+      if (this.LiableExamine == "已考核") {
+        this.DetailData.ResponseData.ResEmpAssessment = 1;
+      }
+      if (this.LiableExamine == "未考核") {
+        this.DetailData.ResponseData.ResEmpAssessment = 0;
+      }
+      this.DetailData.ResponseData.JointEmpId = this.RelationPersonId;
+      this.DetailData.ResponseData.JointEmp = this.RelationPerson;
+      if (this.RelationExamine == "已考核") {
+        this.DetailData.ResponseData.JonitEmpAssessment = 1;
+      }
+      if (this.RelationExamine == "未考核") {
+        this.DetailData.ResponseData.JonitEmpAssessment = 0;
+      }
+      // this.DetailData.ResponseData.MakerId=this.MakerId
+      // this.DetailData.ResponseData.Maker=this.Maker
+      console.log(this.DetailData.ResponseData);
+      this.$store.dispatch("removeKeepAlive", "FeedingReworkDetialYes");
+      this.$router.push({
+        name: "BatchAddFeedingRework",
+        params: { BtnType: "Save" },
+      });
+    },
+
+    addFeedingRework() {
+      this.DetailData.ResponseData = this.DeepDetailData.ResponseData;
+      console.log(this.DeepDetailData.ResponseData);
+      this.$store.dispatch("removeKeepAlive", "FeedingReworkDetial");
+      this.$router.push({
+        name: "BatchAddFeedingRework",
+        params: { BtnType: "Back" },
+      });
+    },
+    //深拷贝
+    deepClone(obj) {
+      let _obj = JSON.stringify(obj),
+        objClone = JSON.parse(_obj);
+      return objClone;
+    },
+    //选择设备
+    changeEquipment(val) {
+      let id = val[0];
+      this.EquipmentId = val[0];
+      if (!!this.EquipmentId) {
+        this.Equipment = this.GetEquipment.find(
+          (item) => item.EquipId == id
+        ).MachineAndTypeName;
+      } else {
+        this.EquipmentId = null;
+        this.Equipment = null;
+      }
+    },
+    doEquipmentFilter() {
+      this.EquipmentList = [
+        this.GetEquipment.filter(
+          (p) => p.MachineAndTypeName.indexOf(this.EquipmentFilter) >= 0
+        ).map((item) => {
+          return { name: item.MachineAndTypeName, value: item.EquipId };
+        }),
+      ];
+    },
+    //选择错误中类
+    changeMiddleError(val) {
+      let id = val[0];
+      this.MiddleErrorId = val[0];
+      this.DefectCodeId = null;
+      this.DefectCode = null;
+      if (!!this.MiddleErrorId) {
+        this.MiddleError = this.GetMiddleError.find(
+          (item) => item.Id == id
+        ).Name;
+      } else {
+        this.MiddleErrorId = null;
+        this.MiddleError = null;
+      }
+    },
+    doMidErrerFilter() {
+      this.MiddleErrorList = [
+        this.GetMiddleError.filter(
+          (p) => p.Name.indexOf(this.MidErrerFilter) >= 0
+        ).map((item) => {
+          return { name: item.Name, value: item.Id };
+        }),
+      ];
+    },
+    //选择缺陷代码
+    changeDefectCode(val) {
+      let id = val[0];
+      this.DefectCodeId = val[0];
+      let cid;
+      if (!!this.DefectCodeId) {
+        this.DefectCode = this.GetDefectCode.find((item) => item.Id == id).Name;
+        this.MiddleError = this.GetDefectCode.find(
+          (item) => item.Id == id
+        ).DefectCategoryName;
+      } else {
+        this.DefectCodeId = null;
+        this.DefectCode = null;
+      }
+    },
+    doDefectCodeFilter() {
+      this.DefectCodeList = [
+        this.GetDefectCode.filter(
+          (p) => p.Name.indexOf(this.DefectCodeFilter) >= 0
+        ).map((item) => {
+          return { name: item.Name, value: item.Id };
+        }),
+      ];
+    },
+    //选择班组类别
+    changeGroupType(val) {
+      //只要切换班组类别 就重新设置
+      if (this.GroupType != val[0]) {
+        this.PersonLiableId = null;
+        this.PersonLiable = null;
+        this.QualityTestId = null;
+        this.QualityTest = null;
+        this.RelationPersonId = null;
+        this.RelationPerson = null;
+        this.Group = null;
+        this.GroupId = null;
+        this.GroupType = val[0];
+      }
+    },
+    //选择班组
+    changeGroup(val) {
+      let id = val[0];
+      //重置与班组关联的查询信息
+      if (this.GroupId != val[0]) {
+        this.PersonLiableId = null;
+        this.PersonLiable = null;
+        this.QualityTestId = null;
+        this.QualityTest = null;
+        this.RelationPersonId = null;
+        this.RelationPerson = null;
+      }
+      this.GroupId = val[0];
+      if (!!this.GroupId) {
+        this.Group = this.GetGroup.find((item) => item.Id == id).Name;
+        this.GroupIsProduct = this.GetGroup.find(
+          (item) => item.Id == id
+        ).IsProduct;
+        console.log(this.GroupIsProduct);
+      } else {
+        this.GroupId = null;
+        this.Group = null;
+      }
+    },
+
+    doGroupFilter() {
+      this.GroupList = [
+        this.GetGroup.filter((p) => p.Name.indexOf(this.GroupFilter) >= 0).map(
+          (item) => {
+            return { name: item.Name, value: item.Id };
+          }
+        ),
+      ];
+    },
+
+    //选择的责任人
+    changePersonLiable(val) {
+      let id = val[0];
+      this.PersonLiableId = val[0];
+      if (!!this.PersonLiableId) {
+        this.PersonLiable = this.GetPersonLiable.find(
+          (item) => item.Id == id
+        ).Name;
+      } else {
+        this.PersonLiableId = null;
+        this.PersonLiable = null;
+      }
+    },
+
+    doPersonLiableFilter() {
+      this.PersonLiableList = [
+        this.GetPersonLiable.filter(
+          (p) => p.Name.indexOf(this.PersonFilter) >= 0
+        ).map((item) => {
+          return { name: item.Name, value: item.Id };
+        }),
+      ];
+    },
+    //选择定责质检
+    changeQualityTest(val) {
+      let id = val[0];
+      this.QualityTestId = val[0];
+      if (!!this.QualityTestId) {
+        this.QualityTest = this.GetQualityTest.find(
+          (item) => item.Id == id
+        ).Name;
+      } else {
+        this.QualityTestId = null;
+        this.QualityTest = null;
+      }
+    },
+    doQualityTestFilter() {
+      this.QualityTestList = [
+        this.GetQualityTest.filter(
+          (p) => p.Name.indexOf(this.QualityTestFilter) >= 0
+        ).map((item) => {
+          return { name: item.Name, value: item.Id };
+        }),
+      ];
+    },
+    //选择的责任人的考核请款
+    changeLiableExamine(val) {
+      this.LiableExamine = val[0];
+    },
+    //选择连带责任人
+    changeRelationPerson(val) {
+      let id = val[0];
+      this.RelationPersonId = val[0];
+      if (!!this.RelationPersonId) {
+        this.RelationPerson = this.GetRelationPerson.find(
+          (item) => item.Id == id
+        ).Name;
+      } else {
+        this.RelationPersonId = null;
+        this.RelationPerson = null;
+      }
+    },
+
+    doRelationPersonFilter() {
+      this.RelationPersonList = [
+        this.GetRelationPerson.filter(
+          (p) => p.Name.indexOf(this.PersonFilter) >= 0
+        ).map((item) => {
+          return { name: item.Name, value: item.Id };
+        }),
+      ];
+    },
+    //连带责任人的考核情况
+    changeRelationExamine(val) {
+      this.RelationExamine = val[0];
+    },
+    //检验位置选择
+    changeStationWhich(value) {
+      let code = value[0];
+      this.ChoiceStationWhichId = code;
+      this.ChoiceStationWhich = this.GetStationWhich.find(
+        (item) => item.Code == code
+      ).Name;
+    },
+    //选择制单人
+    // changeMaker(val){
+    //     let id = val[0]
+    //     this.MakerId=val[0]
+    //     if(!!this.MakerId){
+    //         this.Maker = this.getMaker.find(item=>item.Id == id).Name
+    //     }else{
+    //         this.MakerId=null
+    //         this.Maker=null
+    //     }
+    // },
+    //点击设备
+    clickEquipment() {
+      this.ShowEquipment = true;
+      this.$axiosApi.getRepResourceManages(this.DeptId).then((res) => {
+        if (res.Success == true) {
+          console.log(res);
+          this.GetEquipment = res.Result;
+          this.EquipmentList = [[{ name: "", value: "" }]];
+          let EquipmentListData = [
+            this.GetEquipment.map((item) => {
+              return { name: item.MachineAndTypeName, value: item.EquipId };
+            }),
+          ];
+          this.EquipmentList[0].push(...EquipmentListData[0]);
+        } else {
+          this.showPositionValue = true;
+          this.Msg = res.Message;
         }
+      });
     },
-    components: {
-    },
-    methods: {
 
-        //点击修改按钮
-        doEdit(){
-            this.$router.push({name:'EditFeedingRework',params:{Details:this.DetailData,DeepDetailData:this.DeepDetailData}})
-        },
-        //点击删除按钮
-        doDelete(){
-            this.$store.dispatch('removeKeepAlive', 'BatchAddFeedingRework')
-        },
-
-        //点击提示弹窗的删除按钮
-        onCancel(){
-
-        },
-        //点击提示弹窗的确认按钮
-        onConfirm(){},
-        //点击提交按钮
-        doPost(){
-            this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetialYes')
-            this.$router.push({name:'BatchAddFeedingRework',params:{BtnType:'Save'}})
-        },
- 
-        addFeedingRework(){
-            this.DetailData.ResponseData=this.DeepDetailData.ResponseData
-            console.log(this.DeepDetailData.ResponseData);
-            this.$store.dispatch('removeKeepAlive', 'FeedingReworkDetial')
-            this.$router.push({name:'BatchAddFeedingRework',params:{BtnType:'Back'}})
-        },
-        //深拷贝
-        deepClone(obj){
-            let _obj = JSON.stringify(obj),
-                objClone = JSON.parse(_obj);
-            return objClone
-        } 
-    },
-    created(){
-        console.log(JSON.stringify(this.$route.params.Details));
-        if(this.$route.params.Details){
-            this.DeepDetailData=this.deepClone(this.$route.params.Details)
-            this.DetailData=this.$route.params.Details
+    //点击出错中类
+    clickMiddleError() {
+      this.ShowMiddleError = true;
+      this.$axiosApi.getRepDefectCategories().then((res) => {
+        if (res.Success == true) {
+          console.log(res);
+          this.GetMiddleError = res.Result;
+          this.MiddleErrorList = [[{ name: "", value: "" }]];
+          let MiddleErrorListData = [
+            this.GetMiddleError.map((item) => {
+              return { name: item.Name, value: item.Id };
+            }),
+          ];
+          this.MiddleErrorList[0].push(...MiddleErrorListData[0]);
+        } else {
+          this.showPositionValue = true;
+          this.Msg = res.Message;
         }
+      });
     },
 
-    mounted () {
-        this.$store.dispatch('addKeepAlive', 'FeedingReworkDetialYes')
-        console.log("BillNo:"+localStorage.getItem('BillNo'));
-        console.log('333'+this.$store.getters.getIsBatchFeeding);
-        // this.IsBatchFeeding=this.$store.getters.getIsBatchFeeding
+    //点击缺陷代码
+    clickDefectCode() {
+      // console.log(this.MiddleErrorId);
+      // if(this.MiddleErrorId===null || this.MiddleErrorId===''){
+      //     this.showPositionValue=true
+      //     this.Msg='请先填出错中类'
+      //     return
+      // }
+      this.ShowDefectCode = true;
+      this.$axiosApi.getRepDefectCodes(this.MiddleErrorId).then((res) => {
+        if (res.Success == true) {
+          console.log(res);
+          this.GetDefectCode = res.Result;
+          this.DefectCodeList = [[{ name: "", value: "" }]];
+          let DefectCodeListData = [
+            this.GetDefectCode.map((item) => {
+              return { name: item.Name, value: item.Id };
+            }),
+          ];
+          this.DefectCodeList[0].push(...DefectCodeListData[0]);
+        } else {
+          this.showPositionValue = true;
+          this.Msg = res.Message;
+        }
+      });
+    },
+    //点击责任班组类别
+    clickGroupType() {
+      this.ShowGroupType = true;
+
+      this.$axiosApi.getRepWorkGroupType().then((res) => {
+        if (res.Success == true) {
+          console.log(res);
+          this.GetGroupType = res.Result;
+          this.GroupTypeList = [[{ name: "", value: "" }]];
+          let GroupTypeListData = [
+            this.GetGroupType.map((item) => {
+              return { name: item, value: item };
+            }),
+          ];
+          this.GroupTypeList[0].push(...GroupTypeListData[0]);
+        } else {
+          this.showPositionValue = true;
+          this.Msg = res.Message;
+          return;
+        }
+      });
+    },
+    clickStationWhich() {
+      this.ShowStationWhich = true;
+      this.$axiosApi.getStationWhichList().then((res) => {
+        if (res.Success) {
+          this.GetStationWhich = res.Result;
+          this.StationWhichList = [
+            this.GetStationWhich.map((item) => {
+              return { name: item.Name, value: item.Code };
+            }),
+          ];
+        } else {
+          this.showPositionValue = true;
+          this.Msg = resl.Message;
+        }
+      });
+    },
+    //点击责任班组
+    clickGroup() {
+      //dugger;
+      this.ShowGroup = true;
+      if (!this.GroupType) {
+        this.showPositionValue = true;
+        this.Msg = "请先选择责任班组类别";
+        return;
+      }
+      this.$axiosApi
+        .getRepWorkGroups(this.DeptId, this.GroupType)
+        .then((res) => {
+          if (res.Success == true) {
+            console.log(res);
+            this.GetGroup = res.Result;
+            this.GroupList = [[{ name: "", value: "" }]];
+            let GroupListData = [
+              this.GetGroup.map((item) => {
+                return { name: item.Name, value: item.Id };
+              }),
+            ];
+            this.GroupList[0].push(...GroupListData[0]);
+          } else {
+            this.showPositionValue = true;
+            this.Msg = res.Message;
+            return;
+          }
+        });
+    },
+    //点击责任人
+    clickPersonLiable() {
+      console.log(!this.GroupId);
+      if (!this.GroupId) {
+        this.showPositionValue = true;
+        this.Msg = "请先选择责任班组";
+        return;
+      }
+
+      this.ShowPersonLiable = true;
+      // 0-选择责任人，1-选择连带责任人，2-选择定责质检
+      this.$axiosApi.getRepEmps(0, this.GroupId).then((res) => {
+        if (res.Success == true) {
+          console.log(res);
+          this.GetPersonLiable = res.Result;
+          this.PersonLiableList = [[{ name: "", value: "" }]];
+          let PersonLiableListData = [
+            this.GetPersonLiable.map((item) => {
+              return { name: item.Name, value: item.Id };
+            }),
+          ];
+          this.PersonLiableList[0].push(...PersonLiableListData[0]);
+        } else {
+          this.showPositionValue = true;
+          this.Msg = res.Message;
+        }
+        if (this.PersonLiableList[0].length == 0) {
+          this.showPositionValue = true;
+          this.Msg = "此班组没有责任人";
+          return;
+        }
+      });
+    },
+    //点击定责质检
+    clickQualityTest() {
+      // if(!this.GroupId){
+      //     this.showPositionValue=true
+      //     this.Msg='请先选择责任班组'
+      //     return
+      // }
+      this.ShowQualityTest = true;
+      // 0-选择责任人，1-选择连带责任人，2-选择定责质检
+      this.$axiosApi
+        .getDetermineEmps(this.$route.params.PostProduceTaskId)
+        .then((res) => {
+          if (res.Success == true) {
+            console.log(res);
+            this.GetQualityTest = res.Result;
+            this.QualityTestList = [[{ name: "", value: "" }]];
+            let QualityTestListData = [
+              this.GetQualityTest.map((item) => {
+                return { name: item.Name, value: item.Id };
+              }),
+            ];
+            this.QualityTestList[0].push(...QualityTestListData[0]);
+            console.log(this.QualityTestList);
+          } else {
+            this.showPositionValue = true;
+            this.Msg = res.Message;
+          }
+          if (this.QualityTestList[0].length == 0) {
+            this.showPositionValue = true;
+            this.Msg = "此班组没有定责质检";
+            return;
+          }
+        });
+    },
+
+    //点击考核情况
+    clickLiableExamine() {
+      this.ShowLiableExamine = true;
+    },
+
+    //点击连带责任人
+    clickRelationPerson() {
+      if (!this.GroupId) {
+        this.showPositionValue = true;
+        this.Msg = "请先选择责任班组";
+        return;
+      }
+      this.ShowRelationPerson = true;
+      // 0-选择责任人，1-选择连带责任人，2-选择定责质检
+      this.$axiosApi.getRepEmps(1, this.GroupId).then((res) => {
+        if (res.Success == true) {
+          console.log(res);
+          this.GetRelationPerson = res.Result;
+          this.RelationPersonList = [[{ name: "", value: "" }]];
+          let RelationPersonListData = [
+            this.GetRelationPerson.map((item) => {
+              return { name: item.Name, value: item.Id };
+            }),
+          ];
+          this.RelationPersonList[0].push(...RelationPersonListData[0]);
+        } else {
+          this.showPositionValue = true;
+          this.Msg = res.Message;
+        }
+        if (this.RelationPersonList[0].length == 0) {
+          this.showPositionValue = true;
+          this.Msg = "此班组没有连带责任人";
+          return;
+        }
+      });
+    },
+
+    //点击连带责任人的考核情况
+    clickRelationExamine() {
+      this.ShowRelationExamine = true;
+    },
+    //点击制单人
+    clickMaker() {
+      this.ShowMaker = true;
+      this.$axiosApi.getMaker().then((res) => {
+        if (res.Success == true) {
+          console.log(res);
+          this.getMaker = res.Result;
+          this.MakerList = [[{ name: "", value: "" }]];
+          let MakerListData = [
+            this.getMaker.map((item) => {
+              return { name: item.Name, value: item.Id };
+            }),
+          ];
+          this.MakerList[0].push(...MakerListData[0]);
+        } else {
+          this.showPositionValue = true;
+          this.Msg = res.Message;
+        }
+      });
+    },
+    //点击补料板件
+    clickPanelNum(PanelCount) {
+      this.ShowPanelNum = true;
+      for (var i = 1; i <= PanelCount; i++) {
+        this.PanelNumList[0].push({ name: i, value: i });
+      }
+    },
+    //选择补料板件
+    changePanelNum(val) {
+      this.PanelNum = val[0];
+    },
+  },
+  created() {
+    console.log(JSON.stringify(this.$route.params.Details));
+    if (this.$route.params.Details) {
+      this.DeepDetailData = this.deepClone(this.$route.params.Details);
+      this.DetailData = this.$route.params.Details;
     }
-}
+  },
+
+  mounted() {
+    this.$store.dispatch("addKeepAlive", "FeedingReworkDetialYes");
+    console.log("BillNo:" + localStorage.getItem("BillNo"));
+    console.log("333" + this.$store.getters.getIsBatchFeeding);
+    // this.IsBatchFeeding=this.$store.getters.getIsBatchFeeding
+  },
+};
 </script>
 
 <style lang="less">
-
-
 </style>

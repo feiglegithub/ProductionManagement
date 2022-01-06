@@ -206,7 +206,7 @@ export default {
           this.WorkshopList = [[]];
           this.WorkshopList = [
             this.GetWorkshop.map((item) => {
-              return { name: item.Code, value: item.Id };
+              return { name: item.Name, value: item.Id };
             }),
           ];
         } else {

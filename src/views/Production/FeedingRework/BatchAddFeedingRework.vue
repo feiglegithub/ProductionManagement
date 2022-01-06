@@ -13,7 +13,14 @@
       <a slot="right" @click="doPost">提交</a>
     </x-header>
     <div class="f-flexvw f-flexg1 f-pdlr5">
-      <div class="g-inp">
+      <div
+        class="g-inp"
+        :style="
+          LineDetail == '行明细' && FeedingReworkData.Details.length > 0
+            ? 'height:25%'
+            : ''
+        "
+      >
         <div class="m-inp f-mtb5">
           <span class="laber" style="min-width: 74px">条码</span>
           <span class="inp s-inpbg">
@@ -29,6 +36,24 @@
               @click="scanBarCode"
             ></span>
           </span>
+        </div>
+        <div class="m-inp f-mtb5">
+          <x-switch
+            class="f-mtb5"
+            style="
+              font-size: 16px;
+              padding: 0 10px;
+              margin-left: 57px;
+              width: 140px;
+            "
+            title="选择"
+            :value-map="['行', '行明细']"
+            v-model="LineDetail"
+            @on-change="changeIsLineDetail"
+          ></x-switch>
+          <div style="font-size: 16px; margin-left: 5px">
+            {{ LineDetail }}
+          </div>
         </div>
       </div>
       <el-tabs
@@ -93,7 +118,15 @@
                   <span class="label80">创建日期:</span>
                   <span class="text">{{ FeedingReworkData.CreateDate }}</span>
                 </div>
-
+                <div class="m-baserowbox">
+                  <span class="label80">附件:</span>
+                  <upload-img
+                    :imgData="arrayImage"
+                    @add="addImg"
+                    @del="deleteImg"
+                    :maxLength="imglength"
+                  />
+                </div>
                 <div class="m-baserowbox">
                   <span class="label80">制单人:</span>
                   <div class="select s-bgwhile" @click="clickMaker">
@@ -107,8 +140,8 @@
                   </div>
                 </div>
                 <!-- 批次补料 类型为：是  的情况 -->
-                <div>
-                  <div class="m-baserowbox">
+
+                <!-- <div class="m-baserowbox">
                     <span class="label80">设备:</span>
                     <div class="select s-bgwhile" @click="clickEquipment">
                       <popup-picker
@@ -450,17 +483,7 @@
                         }}
                       </div>
                     </div>
-                  </div>
-                  <div class="m-baserowbox">
-                    <span class="label80">附件:</span>
-                    <upload-img
-                      :imgData="arrayImage"
-                      @add="addImg"
-                      @del="deleteImg"
-                      :maxLength="imglength"
-                    />
-                  </div>
-                </div>
+                  </div> -->
               </div>
 
               <s-messageheader
@@ -487,9 +510,11 @@
                     >
                   </div>
                   <div slot="content" class="f-pd5 vux-1px-t">
-                    <div class="g-tranbox s-bgE7E7E7" @click="goDetial(item)">
-                      <div class="m-ordernumber">{{ idx + 1 }}</div>
-                      <div>
+                    <div class="g-tranbox s-bgE7E7E7">
+                      <div class="m-ordernumber" @click="goDetial(item)">
+                        {{ idx + 1 }}
+                      </div>
+                      <div style="width: 80%" @click="goDetial(item)">
                         <div class="m-baserowbox">
                           <span class="label80">板件信息:</span>
                           <span class="text">{{ item.UPI }}</span>
@@ -510,6 +535,18 @@
                                             <span class="label80" >设备:</span>
                                             <span class="text">{{item.ItemName}}</span>
                                         </div> -->
+                      </div>
+                      <div style="margin-top: 10px">
+                        <input
+                          type="checkbox"
+                          v-model="item.IsCheck"
+                          style="width: 40px; height: 40px; border-radius: 100%"
+                          @change="
+                            item.IsCheck = !item.BatchDetail
+                              ? !item.BatchDetail
+                              : item.IsCheck
+                          "
+                        />
                       </div>
                       <!-- <div class="target" @click.stop="showMore(item,$event)">点击展示</div> -->
                     </div>
@@ -585,6 +622,7 @@ export default {
       BadColor: false,
       Successbtn: false,
       Dangerbtn: false,
+      LineDetail: "行",
 
       showPositionValue: false, //提示信息显隐
       Msg: "有问题", //提示信息

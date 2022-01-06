@@ -1439,7 +1439,7 @@ export default {
           this.Dangerbtn = true;
           this.ShowPostConfirm = true;
         }
-      });
+      }).catch();
     },
     //接口：删除补料返工单
     deleteProduceTask(id) {

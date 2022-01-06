@@ -268,11 +268,11 @@ export default {
       }
       this.showThost = true;
       this.$axiosApi.submitUpiDataInfo(this.scanRequestParam).then((res) => {
+        this.showThost = false;
         if (res.Success) {
           this.showPositionValue = true;
           this.Msg = res.Result;
           this.showInfo = false;
-          this.showThost = false;
           this.reSet();
         } else {
           this.showPositionValue = true;
