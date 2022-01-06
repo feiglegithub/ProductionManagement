@@ -49,7 +49,6 @@
             title="选择"
             :value-map="['行', '行明细']"
             v-model="LineDetail"
-            @on-change="changeIsLineDetail"
           ></x-switch>
           <div style="font-size: 16px; margin-left: 5px">
             {{ LineDetail }}
