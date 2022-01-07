@@ -13,14 +13,7 @@
       <a slot="right" @click="doPost">提交</a>
     </x-header>
     <div class="f-flexvw f-flexg1 f-pdlr5">
-      <div
-        class="g-inp"
-        :style="
-          LineDetail == '行明细' && FeedingReworkData.Details.length > 0
-            ? 'height:25%'
-            : ''
-        "
-      >
+      <div style="border-bottom: 1px solid #283034">
         <div class="m-inp f-mtb5">
           <span class="laber" style="min-width: 74px">条码</span>
           <span class="inp s-inpbg">
@@ -140,349 +133,347 @@
                 </div>
                 <!-- 批次补料 类型为：是  的情况 -->
 
-                <!-- <div class="m-baserowbox">
-                    <span class="label80">设备:</span>
-                    <div class="select s-bgwhile" @click="clickEquipment">
-                      <popup-picker
-                        :show.sync="ShowEquipment"
-                        :data="EquipmentList"
-                        @on-change="changeEquipment($event, index)"
-                        value-text-align="left"
-                      ></popup-picker>
-                      <div class="select-text">
-                        {{ FeedingReworkData.PcDetails[index].rData.ResponsMachine }}
-                      </div>
-                    </div>
-                    <div
-                      class="m-inp f-mtb5"
-                      style="
-                        position: fixed;
-                        z-index: 9999;
-                        width: 60%;
-                        left: 20%;
-                        top: 63%;
-                        overflow: hidden;
-                      "
-                      v-show="ShowEquipment"
-                    >
-                      <input
-                        class="inp s-bgwhile"
-                        style="
-                          text-align: center;
-                          width: 1%;
-                          margin: 0 auto;
-                          opacity: 0.6;
-                        "
-                        v-model="EquipmentFilter"
-                        @keyup="doEquipmentFilter"
-                      />
-                    </div>
-                  </div>
-                  <div class="m-baserowbox">
-                    <span class="label80">出错中类:</span>
-                    <div class="select s-bgwhile" @click="clickMiddleError">
-                      <popup-picker
-                        :show.sync="ShowMiddleError"
-                        :data="MiddleErrorList"
-                        @on-change="changeMiddleError($event, index)"
-                        value-text-align="left"
-                      ></popup-picker>
-                      <div class="select-text">
-                        {{
-                          FeedingReworkData.PcDetails[index].rData
-                            .DefectCategory
-                        }}
-                      </div>
-                    </div>
-                    <div
-                      class="m-inp f-mtb5"
-                      style="
-                        position: fixed;
-                        z-index: 9999;
-                        width: 60%;
-                        left: 20%;
-                        top: 63%;
-                        overflow: hidden;
-                      "
-                      v-show="ShowMiddleError"
-                    >
-                      <input
-                        class="inp s-bgwhile"
-                        style="
-                          text-align: center;
-                          width: 1%;
-                          margin: 0 auto;
-                          opacity: 0.6;
-                        "
-                        v-model="MiddleErrorFilter"
-                        @keyup="doMiddleErrorFilter"
-                        ref="MiddleErrorRef"
-                      />
-                    </div>
-                  </div>
-                  <div class="m-baserowbox">
-                    <span class="label80">缺陷代码:</span>
-                    <div class="select s-bgwhile" @click="clickDefectCode()">
-                      <popup-picker
-                        :show.sync="ShowDefectCode"
-                        :data="DefectCodeList"
-                        @on-change="changeDefectCode($event, index)"
-                        value-text-align="left"
-                      ></popup-picker>
-                      <div class="select-text">
-                        {{ FeedingReworkData.PcDetails[index].rData.Defect }}
-                      </div>
-                    </div>
-                    <div
-                      class="m-inp f-mtb5"
-                      style="
-                        position: fixed;
-                        z-index: 9999;
-                        width: 60%;
-                        left: 20%;
-                        top: 63%;
-                        overflow: hidden;
-                      "
-                      v-show="ShowDefectCode"
-                    >
-                      <input
-                        class="inp s-bgwhile"
-                        style="
-                          text-align: center;
-                          width: 1%;
-                          margin: 0 auto;
-                          opacity: 0.6;
-                        "
-                        v-model="DefectCodeFilter"
-                        @keyup="doDefectCodeFilter"
-                      />
-                    </div>
-                  </div>
-                  <div class="m-baserowbox">
-                    <span class="label80">出错描述:</span>
-                    <input
-                      class="inp"
-                      v-model="
-                        FeedingReworkData.PcDetails[index].rData
-                          .DefectDescription
-                      "
-                      type="text"
-                      name=""
-                      id=""
-                      style="border: 1px solid #666666"
-                    />
-                  </div>
-                  <div class="m-baserowbox">
-                    <span class="label80">班组类别:</span>
-                    <div class="select s-bgwhile" @click="clickGroupType">
-                      <popup-picker
-                        :show.sync="ShowGroupType"
-                        :data="GroupTypeList"
-                        @on-change="changeGroupType($event, index)"
-                        value-text-align="left"
-                      ></popup-picker>
-                      <div class="select-text">
-                        {{ FeedingReworkData.PcDetails[index].rData.ResRemark }}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="m-baserowbox">
-                    <span class="label80">责任班组:</span>
-                    <div class="select s-bgwhile" @click="clickGroup()">
-                      <popup-picker
-                        :show.sync="ShowGroup"
-                        :data="GroupList"
-                        @on-change="changeGroup($event, index)"
-                        value-text-align="left"
-                      ></popup-picker>
-                      <div class="select-text">
-                        {{
-                          FeedingReworkData.PcDetails[index].rData.ResWorkGroup
-                        }}
-                      </div>
-                    </div>
-                    <div
-                      class="m-inp f-mtb5"
-                      style="
-                        position: fixed;
-                        z-index: 9999;
-                        width: 60%;
-                        left: 20%;
-                        top: 63%;
-                        overflow: hidden;
-                      "
-                      v-show="ShowGroup"
-                    >
-                      <input
-                        class="inp s-bgwhile"
-                        style="
-                          text-align: center;
-                          width: 1%;
-                          margin: 0 auto;
-                          opacity: 0.6;
-                        "
-                        v-model="GroupFilter"
-                        @keyup="doGroupFilter"
-                      />
+                <div class="m-baserowbox">
+                  <span class="label80">设备:</span>
+                  <div class="select s-bgwhile" @click="clickEquipment">
+                    <popup-picker
+                      :show.sync="ShowEquipment"
+                      :data="EquipmentList"
+                      @on-change="changeEquipment($event, index)"
+                      value-text-align="left"
+                    ></popup-picker>
+                    <div class="select-text">
+                      {{
+                        FeedingReworkData.PcDetails[index].rData.ResponsMachine
+                      }}
                     </div>
                   </div>
                   <div
-                    class="m-baserowbox"
-                    v-if="GroupType != '非生产性责任班组'"
+                    class="m-inp f-mtb5"
+                    style="
+                      position: fixed;
+                      z-index: 9999;
+                      width: 60%;
+                      left: 20%;
+                      top: 63%;
+                      overflow: hidden;
+                    "
+                    v-show="ShowEquipment"
                   >
-                    <span class="label80">责任人:</span>
-                    <div class="select s-bgwhile" @click="clickPersonLiable()">
-                      <popup-picker
-                        :show.sync="ShowPersonLiable"
-                        :data="PersonLiableList"
-                        @on-change="changePersonLiable($event, index)"
-                        value-text-align="left"
-                      ></popup-picker>
-                      <div class="select-text">
-                        {{
-                          FeedingReworkData.PcDetails[index].rData.ResEmployee
-                        }}
-                      </div>
-                    </div>
-                    <div
-                      class="m-inp f-mtb5"
+                    <input
+                      class="inp s-bgwhile"
                       style="
-                        position: fixed;
-                        z-index: 9999;
-                        width: 60%;
-                        left: 20%;
-                        top: 63%;
-                        overflow: hidden;
+                        text-align: center;
+                        width: 1%;
+                        margin: 0 auto;
+                        opacity: 0.6;
                       "
-                      v-show="ShowPersonLiable"
-                    >
-                      <input
-                        class="inp s-bgwhile"
-                        style="
-                          text-align: center;
-                          width: 1%;
-                          margin: 0 auto;
-                          opacity: 0.6;
-                        "
-                        v-model="PersonFilter"
-                        @keyup="doPersonLiableFilter"
-                      />
+                      v-model="EquipmentFilter"
+                      @keyup="doEquipmentFilter"
+                    />
+                  </div>
+                </div>
+                <div class="m-baserowbox">
+                  <span class="label80">出错中类:</span>
+                  <div class="select s-bgwhile" @click="clickMiddleError">
+                    <popup-picker
+                      :show.sync="ShowMiddleError"
+                      :data="MiddleErrorList"
+                      @on-change="changeMiddleError($event, index)"
+                      value-text-align="left"
+                    ></popup-picker>
+                    <div class="select-text">
+                      {{
+                        FeedingReworkData.PcDetails[index].rData.DefectCategory
+                      }}
                     </div>
                   </div>
-                  <div class="m-baserowbox">
-                    <span class="label80">定责质检:</span>
-                    <div class="select s-bgwhile" @click="clickQualityTest">
-                      <popup-picker
-                        :show.sync="ShowQualityTest"
-                        :data="QualityTestList"
-                        @on-change="changeQualityTest($event, index)"
-                        value-text-align="left"
-                      ></popup-picker>
-                      <div class="select-text">
-                        {{
-                          FeedingReworkData.PcDetails[index].rData
-                            .QualityInspection
-                        }}
-                      </div>
-                    </div>
-                    <div
-                      class="m-inp f-mtb5"
+                  <div
+                    class="m-inp f-mtb5"
+                    style="
+                      position: fixed;
+                      z-index: 9999;
+                      width: 60%;
+                      left: 20%;
+                      top: 63%;
+                      overflow: hidden;
+                    "
+                    v-show="ShowMiddleError"
+                  >
+                    <input
+                      class="inp s-bgwhile"
                       style="
-                        position: fixed;
-                        z-index: 9999;
-                        width: 60%;
-                        left: 20%;
-                        top: 63%;
-                        overflow: hidden;
+                        text-align: center;
+                        width: 1%;
+                        margin: 0 auto;
+                        opacity: 0.6;
                       "
-                      v-show="ShowQualityTest"
-                    >
-                      <input
-                        class="inp s-bgwhile"
-                        style="
-                          text-align: center;
-                          width: 1%;
-                          margin: 0 auto;
-                          opacity: 0.6;
-                        "
-                        v-model="QualityTestFilter"
-                        @keyup="doQualityTestFilter"
-                      />
+                      v-model="MiddleErrorFilter"
+                      @keyup="doMiddleErrorFilter"
+                      ref="MiddleErrorRef"
+                    />
+                  </div>
+                </div>
+                <div class="m-baserowbox">
+                  <span class="label80">缺陷代码:</span>
+                  <div class="select s-bgwhile" @click="clickDefectCode()">
+                    <popup-picker
+                      :show.sync="ShowDefectCode"
+                      :data="DefectCodeList"
+                      @on-change="changeDefectCode($event, index)"
+                      value-text-align="left"
+                    ></popup-picker>
+                    <div class="select-text">
+                      {{ FeedingReworkData.PcDetails[index].rData.Defect }}
                     </div>
                   </div>
-                  <div class="m-baserowbox">
-                    <span class="label80">考核情况:</span>
-                    <div class="select s-bgwhile" @click="clickLiableExamine">
-                      <popup-picker
-                        :show.sync="ShowLiableExamine"
-                        :data="LiableExamineList"
-                        @on-change="changeLiableExamine($event, index)"
-                        value-text-align="left"
-                      ></popup-picker>
-                      <div class="select-text">
-                        {{
-                          FeedingReworkData.PcDetails[index].rData
-                            .StrResEmpAssessment
-                        }}
-                      </div>
+                  <div
+                    class="m-inp f-mtb5"
+                    style="
+                      position: fixed;
+                      z-index: 9999;
+                      width: 60%;
+                      left: 20%;
+                      top: 63%;
+                      overflow: hidden;
+                    "
+                    v-show="ShowDefectCode"
+                  >
+                    <input
+                      class="inp s-bgwhile"
+                      style="
+                        text-align: center;
+                        width: 1%;
+                        margin: 0 auto;
+                        opacity: 0.6;
+                      "
+                      v-model="DefectCodeFilter"
+                      @keyup="doDefectCodeFilter"
+                    />
+                  </div>
+                </div>
+                <div class="m-baserowbox">
+                  <span class="label80">出错描述:</span>
+                  <input
+                    class="inp"
+                    v-model="
+                      FeedingReworkData.PcDetails[index].rData.DefectDescription
+                    "
+                    type="text"
+                    name=""
+                    id=""
+                    style="border: 1px solid #666666"
+                  />
+                </div>
+                <div class="m-baserowbox">
+                  <span class="label80">班组类别:</span>
+                  <div class="select s-bgwhile" @click="clickGroupType">
+                    <popup-picker
+                      :show.sync="ShowGroupType"
+                      :data="GroupTypeList"
+                      @on-change="changeGroupType($event, index)"
+                      value-text-align="left"
+                    ></popup-picker>
+                    <div class="select-text">
+                      {{ FeedingReworkData.PcDetails[index].rData.ResRemark }}
                     </div>
                   </div>
-                  <div class="m-baserowbox">
-                    <span class="label80">连带责任人:</span>
-                    <div class="select s-bgwhile" @click="clickRelationPerson">
-                      <popup-picker
-                        :show.sync="ShowRelationPerson"
-                        :data="RelationPersonList"
-                        @on-change="changeRelationPerson($event, index)"
-                        value-text-align="left"
-                      ></popup-picker>
-                      <div class="select-text">
-                        {{ FeedingReworkData.PcDetails[index].rData.JointEmp }}
-                      </div>
+                </div>
+                <div class="m-baserowbox">
+                  <span class="label80">责任班组:</span>
+                  <div class="select s-bgwhile" @click="clickGroup()">
+                    <popup-picker
+                      :show.sync="ShowGroup"
+                      :data="GroupList"
+                      @on-change="changeGroup($event, index)"
+                      value-text-align="left"
+                    ></popup-picker>
+                    <div class="select-text">
+                      {{
+                        FeedingReworkData.PcDetails[index].rData.ResWorkGroup
+                      }}
                     </div>
+                  </div>
+                  <div
+                    class="m-inp f-mtb5"
+                    style="
+                      position: fixed;
+                      z-index: 9999;
+                      width: 60%;
+                      left: 20%;
+                      top: 63%;
+                      overflow: hidden;
+                    "
+                    v-show="ShowGroup"
+                  >
+                    <input
+                      class="inp s-bgwhile"
+                      style="
+                        text-align: center;
+                        width: 1%;
+                        margin: 0 auto;
+                        opacity: 0.6;
+                      "
+                      v-model="GroupFilter"
+                      @keyup="doGroupFilter"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="m-baserowbox"
+                  v-if="GroupType != '非生产性责任班组'"
+                >
+                  <span class="label80">责任人:</span>
+                  <div class="select s-bgwhile" @click="clickPersonLiable()">
+                    <popup-picker
+                      :show.sync="ShowPersonLiable"
+                      :data="PersonLiableList"
+                      @on-change="changePersonLiable($event, index)"
+                      value-text-align="left"
+                    ></popup-picker>
+                    <div class="select-text">
+                      {{ FeedingReworkData.PcDetails[index].rData.ResEmployee }}
+                    </div>
+                  </div>
+                  <div
+                    class="m-inp f-mtb5"
+                    style="
+                      position: fixed;
+                      z-index: 9999;
+                      width: 60%;
+                      left: 20%;
+                      top: 63%;
+                      overflow: hidden;
+                    "
+                    v-show="ShowPersonLiable"
+                  >
+                    <input
+                      class="inp s-bgwhile"
+                      style="
+                        text-align: center;
+                        width: 1%;
+                        margin: 0 auto;
+                        opacity: 0.6;
+                      "
+                      v-model="PersonFilter"
+                      @keyup="doPersonLiableFilter"
+                    />
+                  </div>
+                </div>
+                <div class="m-baserowbox">
+                  <span class="label80">定责质检:</span>
+                  <div class="select s-bgwhile" @click="clickQualityTest">
+                    <popup-picker
+                      :show.sync="ShowQualityTest"
+                      :data="QualityTestList"
+                      @on-change="changeQualityTest($event, index)"
+                      value-text-align="left"
+                    ></popup-picker>
+                    <div class="select-text">
+                      {{
+                        FeedingReworkData.PcDetails[index].rData
+                          .QualityInspection
+                      }}
+                    </div>
+                  </div>
+                  <div
+                    class="m-inp f-mtb5"
+                    style="
+                      position: fixed;
+                      z-index: 9999;
+                      width: 60%;
+                      left: 20%;
+                      top: 63%;
+                      overflow: hidden;
+                    "
+                    v-show="ShowQualityTest"
+                  >
+                    <input
+                      class="inp s-bgwhile"
+                      style="
+                        text-align: center;
+                        width: 1%;
+                        margin: 0 auto;
+                        opacity: 0.6;
+                      "
+                      v-model="QualityTestFilter"
+                      @keyup="doQualityTestFilter"
+                    />
+                  </div>
+                </div>
+                <div class="m-baserowbox">
+                  <span class="label80">考核情况:</span>
+                  <div class="select s-bgwhile" @click="clickLiableExamine">
+                    <popup-picker
+                      :show.sync="ShowLiableExamine"
+                      :data="LiableExamineList"
+                      @on-change="changeLiableExamine($event, index)"
+                      value-text-align="left"
+                    ></popup-picker>
+                    <div class="select-text">
+                      {{
+                        FeedingReworkData.PcDetails[index].rData
+                          .StrResEmpAssessment
+                      }}
+                    </div>
+                  </div>
+                </div>
+                <div class="m-baserowbox">
+                  <span class="label80">连带责任人:</span>
+                  <div class="select s-bgwhile" @click="clickRelationPerson">
+                    <popup-picker
+                      :show.sync="ShowRelationPerson"
+                      :data="RelationPersonList"
+                      @on-change="changeRelationPerson($event, index)"
+                      value-text-align="left"
+                    ></popup-picker>
+                    <div class="select-text">
+                      {{ FeedingReworkData.PcDetails[index].rData.JointEmp }}
+                    </div>
+                  </div>
 
-                    <div
-                      class="m-inp f-mtb5"
+                  <div
+                    class="m-inp f-mtb5"
+                    style="
+                      position: fixed;
+                      z-index: 9999;
+                      width: 60%;
+                      left: 20%;
+                      top: 63%;
+                      overflow: hidden;
+                    "
+                    v-show="ShowRelationPerson"
+                  >
+                    <input
+                      class="inp s-bgwhile"
                       style="
-                        position: fixed;
-                        z-index: 9999;
-                        width: 60%;
-                        left: 20%;
-                        top: 63%;
-                        overflow: hidden;
+                        text-align: center;
+                        width: 1%;
+                        margin: 0 auto;
+                        opacity: 0.6;
                       "
-                      v-show="ShowRelationPerson"
-                    >
-                      <input
-                        class="inp s-bgwhile"
-                        style="
-                          text-align: center;
-                          width: 1%;
-                          margin: 0 auto;
-                          opacity: 0.6;
-                        "
-                        v-model="RelationPersonFilter"
-                        @keyup="doRelationPersonFilter"
-                      />
+                      v-model="RelationPersonFilter"
+                      @keyup="doRelationPersonFilter"
+                    />
+                  </div>
+                </div>
+                <div class="m-baserowbox">
+                  <span class="label80">考核情况:</span>
+                  <div class="select s-bgwhile" @click="clickRelationExamine">
+                    <popup-picker
+                      :show.sync="ShowRelationExamine"
+                      :data="RelationExamineList"
+                      @on-change="changeRelationExamine($event, index)"
+                      value-text-align="left"
+                    ></popup-picker>
+                    <div class="select-text">
+                      {{
+                        FeedingReworkData.PcDetails[index].rData
+                          .StrJonitEmpAssessment
+                      }}
                     </div>
                   </div>
-                  <div class="m-baserowbox">
-                    <span class="label80">考核情况:</span>
-                    <div class="select s-bgwhile" @click="clickRelationExamine">
-                      <popup-picker
-                        :show.sync="ShowRelationExamine"
-                        :data="RelationExamineList"
-                        @on-change="changeRelationExamine($event, index)"
-                        value-text-align="left"
-                      ></popup-picker>
-                      <div class="select-text">
-                        {{
-                          FeedingReworkData.PcDetails[index].rData
-                            .StrJonitEmpAssessment
-                        }}
-                      </div>
-                    </div>
-                  </div> -->
+                </div>
               </div>
 
               <s-messageheader
@@ -768,6 +759,7 @@ export default {
       SelTabName: 1,
       tabIndex: 0,
       SelIndex: 0,
+      isHasValue: false,
     };
   },
   components: {
@@ -780,6 +772,13 @@ export default {
       //  这里的vm指的就是vue实例，可以用来当做this使用
       if (vm.$route.params.BtnType == "Save") {
         console.log("调用接口，获取明细");
+        var pcDetails = vm.FeedingReworkData.PcDetails;
+        for (var i = 0; i < pcDetails.length; i++) {
+          console.log("进来了");
+          console.log("panelnum:" + vm.$route.params.ReproducePanelQty);
+          pcDetails[i].rData.ReproducePanelQty =
+            vm.$route.params.ReproducePanelQty;
+        }
         // console.log(vm.$route.params.Details);  //获取到的类型
         // vm.Details=vm.$route.params.Details
         // console.log(vm.FeedingReworkData.Details.find(item=>item.UPI == vm.$route.params.Details.UPI));
@@ -915,6 +914,7 @@ export default {
       }
 
       if (
+        this.FeedingReworkData != null &&
         this.FeedingReworkData.PcDetails != null &&
         this.FeedingReworkData.PcDetails.length > 0
       ) {
@@ -941,7 +941,8 @@ export default {
       this.scanProduceTaskUpi(
         this.BarCode,
         this.FeedingReworkData.IsBatch,
-        this.saleOrderNo
+        this.saleOrderNo,
+        this.LineDetail == "行明细"
       );
     },
     //触发单项左右滑动
@@ -1177,8 +1178,11 @@ export default {
           this.Msg = "制单人不能为空";
           return;
         }
-
+        var details = this.FeedingReworkData.Details.filter(
+          (p) => p.IsCheck == true
+        );
         this.FeedingReworkData.PcDetails.forEach((item) => {
+          item.Details = details;
           if (!item.rData.DefectId) {
             this.showPositionValue = true;
             this.Msg = "缺陷代码不能为空";
@@ -1818,7 +1822,7 @@ export default {
       });
     },
     //接口：扫描upi
-    scanProduceTaskUpi(barcode, isBatch, saleOrderNo) {
+    scanProduceTaskUpi(barcode, isBatch, saleOrderNo, isLineDetail) {
       let isInit = false;
       this.loadingtitle = "加载中";
       this.showThost = true;
@@ -1832,13 +1836,18 @@ export default {
           barcode,
           saleOrderNo,
           this.FeedingReworkData,
-          this.SelTabName
+          this.SelTabName,
+          isLineDetail
         )
         .then((res) => {
           this.showThost = false;
           if (res.Success == true) {
             console.log(res);
-
+            res.Result.Details.forEach((item) => {
+              if (!item.BatchDetail) {
+                item.IsCheck = true;
+              }
+            });
             this.saleOrderNo = res.Result.Details[0].SaleOrderNo;
             //12月5日，用于卡控，不同订单相同批次不允许加入
             console.log(res.Result.BatchNo);
@@ -1852,7 +1861,6 @@ export default {
               this.BarCode = null;
               return;
             }
-
             if (res.Result.Message != null) {
               this.HasMessage = 1;
               this.TempFeedingReworkData = res.Result;
@@ -1861,8 +1869,10 @@ export default {
               this.Successbtn = true;
               this.Dangerbtn = true;
               this.ShowPostConfirm = true;
+              return;
             } else {
               this.FeedingReworkData = res.Result;
+              this.isHasValue = true;
               this.NowBatchNo = res.Result.BatchNo;
               var resRemark =
                 this.FeedingReworkData.PcDetails[0].rData.ResRemark;
@@ -2003,7 +2013,7 @@ export default {
     this.FeedingReworkData.IsBatch = this.PostIsBatch;
   },
   mounted() {
-    console.log(this.FeedingReworkData.BatchNo);
+    console.log("pc:" + this.FeedingReworkData.PcDetails.length);
     console.log(this.$store.getters.keepAlive);
     this.$store.dispatch("addKeepAlive", "BatchAddFeedingRework");
     this.$refs.BarcodeInp.focus();
