@@ -759,7 +759,6 @@ export default {
       SelTabName: 1,
       tabIndex: 0,
       SelIndex: 0,
-      isHasValue: false,
     };
   },
   components: {
@@ -994,7 +993,16 @@ export default {
         ) {
           this.consoleAddTab();
         }
-        this.FeedingReworkData = this.TempFeedingReworkData;
+        if (
+          this.FeedingReworkData != null &&
+          this.FeedingReworkData.Details.length > 0
+        ) {
+          this.FeedingReworkData.Details.unshift(
+            this.TempFeedingReworkData.Details[0]
+          );
+        } else {
+          this.FeedingReworkData = this.TempFeedingReworkData;
+        }
         var resRemark = this.FeedingReworkData.PcDetails[0].rData.ResRemark;
         this.FeedingReworkData.PcDetails[0].rData.ResRemark =
           resRemark == null ? "生产性责任班组" : resRemark;
@@ -1861,6 +1869,15 @@ export default {
               this.BarCode = null;
               return;
             }
+            if (
+              this.saleOrderNo != null &&
+              res.Result.Details[0].SaleOrderNo != this.saleOrderNo
+            ) {
+              this.showPositionValue = true;
+              this.Msg = "不同订单都不能添加";
+              this.BarCode = null;
+              return;
+            }
             if (res.Result.Message != null) {
               this.HasMessage = 1;
               this.TempFeedingReworkData = res.Result;
@@ -1871,8 +1888,15 @@ export default {
               this.ShowPostConfirm = true;
               return;
             } else {
-              this.FeedingReworkData = res.Result;
-              this.isHasValue = true;
+              this.saleOrderNo = res.Result.Details[0].SaleOrderNo;
+              if (this.FeedingReworkData.Details.length > 0) {
+                res.Result.Details.forEach((model) => {
+                  this.FeedingReworkData.Details.unshift(model);
+                });
+              } else {
+                this.FeedingReworkData = res.Result;
+              }
+              console.log(this.FeedingReworkData.Details);
               this.NowBatchNo = res.Result.BatchNo;
               var resRemark =
                 this.FeedingReworkData.PcDetails[0].rData.ResRemark;

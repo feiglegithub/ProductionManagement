@@ -205,6 +205,9 @@ export default {
     if (this.$route.params.Details) {
       this.DeepDetailData = this.deepClone(this.$route.params.Details);
       this.DetailData = this.$route.params.Details;
+      if (this.DetailData.ResponseData != null) {
+        this.PanelNum = this.DetailData.ResponseData.ReproducePanelQty;
+      }
     }
   },
 
