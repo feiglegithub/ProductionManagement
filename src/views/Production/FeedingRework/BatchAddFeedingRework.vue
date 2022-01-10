@@ -1889,7 +1889,10 @@ export default {
               return;
             } else {
               this.saleOrderNo = res.Result.Details[0].SaleOrderNo;
-              if (this.FeedingReworkData.Details.length > 0) {
+              if (
+                this.FeedingReworkData != null &&
+                this.FeedingReworkData.Details.length > 0
+              ) {
                 res.Result.Details.forEach((model) => {
                   this.FeedingReworkData.Details.unshift(model);
                 });
