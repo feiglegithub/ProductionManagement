@@ -1231,9 +1231,12 @@ export default {
         ) {
           this.FeedingReworkData.PhotoList = [];
         }
+        debugger;
         this.FeedingReworkData.PcDetails.forEach((item) => {
           item.Details.forEach((o) => {
-            o.ResponseData = item.rData;
+            var qty = o.ResponseData.ReproducePanelQty;
+            o.ResponseData =  JSON.parse(JSON.stringify(item.rData));
+            o.ResponseData.ReproducePanelQty = qty;
           });
         });
         this.submitReproduce(this.FeedingReworkData);
