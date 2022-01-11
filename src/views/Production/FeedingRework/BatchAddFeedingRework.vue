@@ -939,7 +939,6 @@ export default {
       console.log(this.saleOrderNo);
       this.scanProduceTaskUpi(
         this.BarCode,
-        this.FeedingReworkData.IsBatch,
         this.saleOrderNo,
         this.LineDetail == "行明细"
       );
@@ -1231,11 +1230,13 @@ export default {
         ) {
           this.FeedingReworkData.PhotoList = [];
         }
-        debugger;
         this.FeedingReworkData.PcDetails.forEach((item) => {
           item.Details.forEach((o) => {
+            if (o.ResponseData == null) {
+              o.ResponseData = { ReproducePanelQty: 1 };
+            }
             var qty = o.ResponseData.ReproducePanelQty;
-            o.ResponseData =  JSON.parse(JSON.stringify(item.rData));
+            o.ResponseData = JSON.parse(JSON.stringify(item.rData));
             o.ResponseData.ReproducePanelQty = qty;
           });
         });
@@ -1833,11 +1834,14 @@ export default {
       });
     },
     //接口：扫描upi
-    scanProduceTaskUpi(barcode, isBatch, saleOrderNo, isLineDetail) {
+    scanProduceTaskUpi(barcode, saleOrderNo, isLineDetail) {
       let isInit = false;
       this.loadingtitle = "加载中";
       this.showThost = true;
-      if (this.FeedingReworkData.PcDetails.length == 0) {
+      if (
+        this.FeedingReworkData != null &&
+        this.FeedingReworkData.PcDetails.length == 0
+      ) {
         this.FeedingReworkData = null;
         isInit = true;
       }
