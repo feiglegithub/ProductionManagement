@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="g-index">
     <!-- 头部 -->
     <x-header
@@ -271,16 +271,18 @@ export default {
       //   this.ChipNo = null;
       //   return;
       // }
-      this.$axiosApi.judgeHasChipNo(this.ChipNo).then((res) => {
-        if (res.Success) {
-          this.ReturnData.ChipNo = this.ChipNo;
-          this.$refs.UPI.focus();
-        } else {
-          this.showPositionValue = true;
-          this.Msg = res.Message;
-        }
-        this.ChipNo = null;
-      });
+      if (this.ChipNo != null) {
+        this.$axiosApi.judgeHasChipNo(this.ChipNo).then((res) => {
+          if (res.Success) {
+            this.ReturnData.ChipNo = this.ChipNo;
+            this.$refs.UPI.focus();
+          } else {
+            this.showPositionValue = true;
+            this.Msg = res.Message;
+          }
+          this.ChipNo = null;
+        });
+      }
     },
     doPrint(isRePrint) {
       if (!!!this.ChipNo) {
