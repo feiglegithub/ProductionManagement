@@ -194,6 +194,7 @@ export default {
     //获取条码
     getSupportNumber() {
       console.log(this.BarCode);
+      this.BarCode = this.BarCode.trim();
       if (!!this.BarCode == false) {
         this.showPositionValue = true;
         this.Msg = "包装条码不能为空";
