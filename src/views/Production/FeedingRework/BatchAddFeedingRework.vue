@@ -917,16 +917,14 @@ export default {
         this.FeedingReworkData.PcDetails != null &&
         this.FeedingReworkData.PcDetails.length > 0
       ) {
-        let Isrepeat = true;
-        this.FeedingReworkData.PcDetails.forEach((o) => {
-          o.Details.forEach((item) => {
-            console.log(item.UPI);
-            if (item.UPI == this.BarCode) Isrepeat = false;
-          });
+        var barcode = this.BarCode;
+        let Isrepeat = false;
+        this.FeedingReworkData.Details.map((item) => {
+          if (item.UPI == barcode) {
+            Isrepeat = true;
+          }
         });
-        console.log(Isrepeat[0]);
-
-        if (!Isrepeat) {
+        if (Isrepeat) {
           this.showPositionValue = true;
           this.Msg = "此条码已经存在";
           this.BarCode = null;
@@ -950,7 +948,7 @@ export default {
     //点击删除按钮，删除当前项
     onButtonClick(index, idx, item) {
       console.log(item);
-      this.FeedingReworkData.PcDetails[index].Details.splice(idx, 1);
+      this.FeedingReworkData.Details.splice(idx, 1);
       this.deleteProduceTaskDetail(item.UPI);
     },
 
@@ -1836,8 +1834,6 @@ export default {
     //接口：扫描upi
     scanProduceTaskUpi(barcode, saleOrderNo, isLineDetail) {
       let isInit = false;
-      this.loadingtitle = "加载中";
-      this.showThost = true;
       if (
         this.FeedingReworkData != null &&
         this.FeedingReworkData.PcDetails.length == 0
