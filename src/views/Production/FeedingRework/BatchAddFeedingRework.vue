@@ -714,6 +714,7 @@ export default {
 
       ShowPostConfirm: false,
       ShowConfirm: false,
+      IsRun: false,
 
       BarCode: null, //条码
       IsBatchFeeding: "否", //是否批次补料类型，默认为否
@@ -906,40 +907,55 @@ export default {
 
     //获取条码
     getBarCode() {
-      if (this.BarCode == null || this.BarCode == "") {
-        this.showPositionValue = true;
-        this.Msg = "条码不能为空";
-        return;
-      }
-
-      if (
-        this.FeedingReworkData != null &&
-        this.FeedingReworkData.PcDetails != null &&
-        this.FeedingReworkData.PcDetails.length > 0
-      ) {
-        var barcode = this.BarCode;
-        let Isrepeat = false;
-        this.FeedingReworkData.Details.map((item) => {
-          if (item.UPI == barcode) {
-            Isrepeat = true;
-          }
-        });
-        if (Isrepeat) {
+      try {
+        if (this.IsRun) {
           this.showPositionValue = true;
-          this.Msg = "此条码已经存在";
-          this.BarCode = null;
+          this.Msg = "运行中";
           return;
         }
-      }
+        this.IsRun = true;
+        if (this.BarCode == null || this.BarCode == "") {
+          this.showPositionValue = true;
+          this.Msg = "条码不能为空";
+          this.IsRun = false;
+          this.showThost = false;
+          return;
+        }
 
-      // this.MakerId=this.$store.getters.getUserId
-      // this.Maker=this.$store.getters.getUserName.split("[")[0]
-      console.log(this.saleOrderNo);
-      this.scanProduceTaskUpi(
-        this.BarCode,
-        this.saleOrderNo,
-        this.LineDetail == "行明细"
-      );
+        if (
+          this.FeedingReworkData != null &&
+          this.FeedingReworkData.PcDetails != null &&
+          this.FeedingReworkData.PcDetails.length > 0
+        ) {
+          var barcode = this.BarCode;
+          let Isrepeat = false;
+          this.FeedingReworkData.Details.map((item) => {
+            if (item.UPI == barcode) {
+              Isrepeat = true;
+            }
+          });
+          if (Isrepeat) {
+            this.showPositionValue = true;
+            this.Msg = "此条码已经存在";
+            this.BarCode = null;
+            this.IsRun = false;
+            this.showThost = false;
+            return;
+          }
+        }
+
+        // this.MakerId=this.$store.getters.getUserId
+        // this.Maker=this.$store.getters.getUserName.split("[")[0]
+        console.log(this.saleOrderNo);
+        this.scanProduceTaskUpi(
+          this.BarCode,
+          this.saleOrderNo,
+          this.LineDetail == "行明细"
+        );
+      } catch (e) {
+        console.log(e);
+        this.IsRun = false;
+      }
     },
     //触发单项左右滑动
     handleEvents(type) {
@@ -1852,6 +1868,7 @@ export default {
         )
         .then((res) => {
           this.showThost = false;
+          this.IsRun = false;
           if (res.Success == true) {
             console.log(res);
             res.Result.Details.forEach((item) => {
@@ -1897,7 +1914,16 @@ export default {
                 this.FeedingReworkData.Details.length > 0
               ) {
                 res.Result.Details.forEach((model) => {
-                  this.FeedingReworkData.Details.unshift(model);
+                  var detail = this.FeedingReworkData.Details;
+                  var isRep = false;
+                  for (var i = 0; i < detail.length; i++) {
+                    if (detail[i].UPI == model.UPI) {
+                      isRep = true;
+                    }
+                  }
+                  if (!isRep) {
+                    this.FeedingReworkData.Details.unshift(model);
+                  }
                 });
               } else {
                 this.FeedingReworkData = res.Result;
@@ -1916,6 +1942,7 @@ export default {
           } else {
             this.showPositionValue = true;
             this.Msg = res.Message;
+            this.IsRun = false;
             this.BarCode = null;
           }
         });
