@@ -243,6 +243,7 @@ export default {
         // },
       ],
       IsChange: false, //控制托号是否能控制
+      IsRun: false,
       ReturnData: {},
     };
   },
@@ -285,36 +286,51 @@ export default {
       }
     },
     doPrint(isRePrint) {
-      if (!!!this.ChipNo) {
-        this.showPositionValue = true;
-        this.Msg = "请先扫描芯片！";
-        return;
-      }
-      this.loadingtitle = "打印中";
-      this.showThost = true;
-      var ReturnData = {};
-      ReturnData.ChipNo = this.ChipNo;
-      ReturnData.IsRePrint = isRePrint;
-      this.$axiosApi.doPrintLabel(ReturnData).then((res) => {
-        if (res.Success) {
-          var returnData = res.Result;
-          if (returnData.Msg != null) {
-            this.ShowConfirm2 = true;
-            this.ConfirmMsg2 = returnData.Msg;
-            this.showThost = false;
-            return;
-          }
+      try {
+        if (this.IsRun) {
           this.showPositionValue = true;
-          this.Msg = "打印成功！";
-          this.ReturnData = res.Result;
-          this.showThost = false;
-        } else {
-          this.showPositionValue = true;
-          this.Msg = "打印失败；" + res.Message;
-          this.showThost = false;
+          this.Msg = "运行中";
+          return;
         }
-        this.ChipNo = null;
-      });
+        this.IsRun = true;
+        if (!!!this.ChipNo) {
+          this.showPositionValue = true;
+          this.Msg = "请先扫描芯片！";
+          this.IsRun = false;
+          return;
+        }
+        this.loadingtitle = "打印中";
+        this.showThost = true;
+        var ReturnData = {};
+        ReturnData.ChipNo = this.ChipNo;
+        ReturnData.IsRePrint = isRePrint;
+        this.$axiosApi.doPrintLabel(ReturnData).then((res) => {
+          if (res.Success) {
+            var returnData = res.Result;
+            if (returnData.Msg != null) {
+              this.ShowConfirm2 = true;
+              this.ConfirmMsg2 = returnData.Msg;
+              this.showThost = false;
+              this.IsRun = false;
+              return;
+            }
+            this.showPositionValue = true;
+            this.Msg = "打印成功！";
+            this.ReturnData = res.Result;
+            this.showThost = false;
+            this.IsRun = false;
+          } else {
+            this.showPositionValue = true;
+            this.Msg = "打印失败；" + res.Message;
+            this.showThost = false;
+            this.IsRun = false;
+          }
+          this.ChipNo = null;
+        });
+      } catch (e) {
+        console.log(e);
+        this.IsRun = false;
+      }
     },
     //获取UPI
     getUPI() {
