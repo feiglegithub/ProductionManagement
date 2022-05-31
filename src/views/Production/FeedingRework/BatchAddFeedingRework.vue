@@ -1005,6 +1005,14 @@ export default {
           this.FeedingReworkData.PcDetails.length == 0
         ) {
           this.consoleAddTab();
+        } else if (
+          this.FeedingReworkData != null &&
+          this.FeedingReworkData.PcDetails.length > 0
+        ) {
+          this.FeedingReworkData.PcDetails[this.SelIndex].Details.unshift({
+            UPI: this.TempFeedingReworkData.Details[0].UPI,
+            ResponseData: {},
+          });
         }
         if (
           this.FeedingReworkData != null &&
@@ -1146,13 +1154,11 @@ export default {
     //点击提交按钮
     doPost() {
       this.Msg = "";
-      this.FeedingReworkData.PcDetails.forEach((item) => {
-        if (item.Details.length <= 0) {
-          this.showPositionValue = true;
-          this.Msg = "无数据，不能提交";
-          return;
-        }
-      });
+      if (this.FeedingReworkData.Details.length <= 0) {
+        this.showPositionValue = true;
+        this.Msg = "无数据，不能提交";
+        return;
+      }
       // console.log(this.FeedingReworkData.Details);
 
       // if(this.FeedingReworkData.IsBatch==0){
@@ -1203,7 +1209,11 @@ export default {
           (p) => p.IsCheck == true
         );
         this.FeedingReworkData.PcDetails.forEach((item) => {
-          item.Details = details;
+          var detaillist = [];
+          item.Details.forEach((p) => {
+            detaillist.unshift(details.filter((o) => o.UPI == p.UPI)[0]);
+          });
+          item.Details = detaillist;
           if (!item.rData.DefectId) {
             this.showPositionValue = true;
             this.Msg = "缺陷代码不能为空";
@@ -1925,6 +1935,17 @@ export default {
                     this.FeedingReworkData.Details.unshift(model);
                   }
                 });
+                if (
+                  this.FeedingReworkData != null &&
+                  this.FeedingReworkData.PcDetails.length > 0
+                ) {
+                  this.FeedingReworkData.PcDetails[
+                    this.SelIndex
+                  ].Details.unshift({
+                    UPI: res.Result.Details[0].UPI,
+                    ResponseData: {},
+                  });
+                }
               } else {
                 this.FeedingReworkData = res.Result;
               }
