@@ -369,6 +369,19 @@
             </div>
           </div>
         </grid-item>
+
+        <grid-item
+          class="f-flexjscen"
+          @click.native="$router.push({ name: 'MaterialRequestIndex' })"
+          v-show="showMaterialRequest"
+        >
+          <div class="m-otherchoice">
+            <div>
+              <span class="iconfont icon-lingliao"></span>
+              <p class="operationtitle">手机领料</p>
+            </div>
+          </div>
+        </grid-item>
       </grid>
     </div>
     <div class="m-footers">
@@ -388,6 +401,7 @@ export default {
   name: "",
   data() {
     return {
+      showMaterialRequest: false,
       showExcretePanel: false,
       showUntying: false,
       showProcessHandover: false,
@@ -437,12 +451,16 @@ export default {
       this.$axiosApi
         .getAuthorizedAppMenus("生产管理", this.$store.getters.getUserId)
         .then((res) => {
-          // console.log(res);
+          console.log(res);
           if (res !== null) {
             this.RoleController = res.Result;
             // console.log(this.RoleController.childs);
             this.RoleController.childs.forEach((element) => {
               // console.log(element.code);
+              if (element.name == "手机领料") {
+                this.showMaterialRequest = true;
+              }
+
               if (element.code == "封边返修合托") {
                 this.showExcretePanel = true;
               }

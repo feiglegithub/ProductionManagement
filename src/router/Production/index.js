@@ -411,6 +411,12 @@ export default [
     path: '/FeedingReworkAttach',
     name: 'FeedingReworkAttach',
     component: FeedingReworkAttach
-  }
+  },
 
+  //手机领料
+  {
+    path: '/MaterialRequestIndex',
+    name: 'MaterialRequestIndex',
+    component: () => import('../../views/Production/MaterialRequest/MaterialRequestIndex')
+  }
 ]

@@ -21,8 +21,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     historyApiFallback: true,
     hot: true,
     compress: true,
-    host: process.env.HOST || config.dev.host,
-    port: process.env.PORT || config.dev.port,
+    host: process.env.HOST || config.dev.host,
+    port: process.env.PORT || config.dev.port,
     open: config.dev.autoOpenBrowser,
     overlay: config.dev.errorOverlay ? {
       warnings: false,
@@ -30,12 +30,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     } : false,
     publicPath: config.dev.assetsPublicPath,
     // proxy: config.dev.proxyTable,
-    proxy:{
-      '/api/*':{
-         // target:'http://10.10.18.46:810/Server.svc/',
-        target:'http://localhost:880/Server.svc/',
-        host:'http://10.10.18.46:888',
-        changeOrigin:true,
+    proxy: {
+      '/api/*': {
+        target: 'http://10.10.18.46:810/Server.svc/',
+        // target:'http://localhost:880/Server.svc/',
+        host: 'http://10.10.18.46:888',
+        changeOrigin: true,
       }
     },
     quiet: true, // necessary for FriendlyErrorsPlugin
@@ -76,8 +76,8 @@ module.exports = new Promise((resolve, reject) => {
           messages: [`Your application is running here: http://${config.dev.host}:${port}`],
         },
         onErrors: config.dev.notifyOnErrors
-        ? utils.createNotifierCallback()
-        : undefined
+          ? utils.createNotifierCallback()
+          : undefined
       }))
 
       resolve(devWebpackConfig)
