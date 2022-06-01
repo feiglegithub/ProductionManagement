@@ -36,9 +36,11 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 解决方法，把获取物料编码的页面当成一个组件，引入到整个页面当中。这样可以通过父子组件互相传值的方式来进行数据交互。
 
 生产管理主页
+
 ![localhost_8081_(iPhone SE)](https://user-images.githubusercontent.com/25633298/171309887-7c9d50b0-fb2b-452e-a15c-865804e70777.png)
 
 手机领料
+
 ![localhost_8081_(iPhone SE) (1)](https://user-images.githubusercontent.com/25633298/171310098-4d3c2ec8-95ea-4584-b1af-94057d29d14e.png)
 
 ![localhost_8081_(iPhone SE) (2)](https://user-images.githubusercontent.com/25633298/171310093-fde28c88-316b-4fa7-b117-591f8d466a8b.png)
