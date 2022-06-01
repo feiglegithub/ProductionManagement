@@ -60,7 +60,9 @@ import {
   SwipeoutButton,
   Toast,
   Icon,
+  XNumber
 } from 'vux'
+Vue.component('x-number', XNumber)
 Vue.component('check-icon', CheckIcon)
 Vue.component('alert', Alert)
 Vue.component('grid', Grid)
